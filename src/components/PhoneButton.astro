@@ -1,0 +1,62 @@
+---
+/*
+ * The primary call button. Phone is the main conversion, so every primary
+ * button dials. The number is printed on the button for readers who dial
+ * from another phone.
+ */
+import type { CtaLocation } from '../content/types';
+import { site } from '../content/site';
+import { fill } from '../lib/text';
+
+interface Props {
+  location: CtaLocation;
+  /** First line, the LP's own wording. Omit for the single-line compact button. */
+  label?: string;
+  /** Single-line text for the compact button. {phone} is replaced. */
+  compactLabel?: string;
+  block?: boolean;
+}
+
+const { location, label, compactLabel = '{phone}', block = true } = Astro.props;
+const href = `tel:${site.phone.e164}`;
+---
+
+<a
+  class:list={['btn', 'btn--primary', 'phone-button', { 'btn--block-mobile': block, 'phone-button--two-line': label }]}
+  href={href}
+  data-cta={location}
+  data-cta-method="phone"
+>
+  {
+    label ? (
+      <>
+        <span class="phone-button__label">{label}</span>
+        <span class="phone-button__number">
+          {site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span>
+        </span>
+      </>
+    ) : (
+      <span class="phone-button__label">{fill(compactLabel, { phone: site.phone.display })}</span>
+    )
+  }
+</a>
+
+<style>
+  .phone-button {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .phone-button--two-line {
+    padding-block: var(--space-1);
+  }
+
+  .phone-button__number {
+    font-size: var(--fs-lead);
+    line-height: var(--lh-button);
+    font-weight: var(--weight-regular);
+  }
+
+  .phone-button--two-line .phone-button__number {
+    margin-top: var(--hairline);
+  }
+</style>
