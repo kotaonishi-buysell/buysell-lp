@@ -1,7 +1,10 @@
 # Repository instructions
 
 ## Read before frontend work
-- Read DESIGN_SYSTEM.md and README.md.
+- Read README.md and docs/design/README.md to identify the target LP.
+- For /downsizing, read docs/design/downsizing/DESIGN_SYSTEM.md.
+- For /home-value, read docs/design/home-value/DESIGN_SYSTEM.md.
+- For changes affecting multiple LPs, read each affected LP's design system.
 - For home-value, also read src/content/lps/home-value/README.md.
 - Preserve the existing Astro application, /downsizing route, and / redirect.
 - Apply Friendly Discovery styling only to home-value unless migration is explicitly requested.
@@ -10,7 +13,10 @@
 - Never introduce a nested repository, a second package manifest or a new framework for an LP.
 
 ## Design and content
-- DESIGN_SYSTEM.md is the design source of truth within its stated scope.
+- Each LP's own DESIGN_SYSTEM.md is its design source of truth; there is no universal visual design system.
+- Do not apply one LP's colors, typography, imagery, radii or layout rules to another LP.
+- Add docs/design/<slug>/DESIGN_SYSTEM.md and register it in docs/design/README.md for every new LP.
+- Shared components and form/analytics code may be reused. Scope visual changes to the target LP; verify both LPs if shared CSS or markup changes.
 - Scope new CSS to body[data-lp="home-value"] in src/styles/home-value.css.
 - Keep actual business facts in src/content/site.ts. Do not invent fees, service areas, accepted items, phone numbers or customer testimonials.
 - Mark unconfirmed business facts using the existing {{TODO: ...}} convention.

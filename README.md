@@ -6,7 +6,7 @@
 
 - URL: `/home-value`。既存の `/` → `/downsizing` は維持します。
 - 文言・順序・制作メモ: [src/content/lps/home-value/](src/content/lps/home-value/README.md)
-- 新デザイン仕様: [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)。既存LPへは全面適用しません。
+- 新デザイン仕様: [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md)
 - 開発ルール: [AGENTS.md](AGENTS.md)
 - 専用スタイル: `src/styles/home-value.css`（`body[data-lp="home-value"]` に限定）
 - 写真の配置先: `public/images/home-value/`。現在は仮画像です。
@@ -15,8 +15,18 @@
 フォーム送信は既存のスタブのままです。写真・事業情報・送信先の確定前は公開用の完成版ではありません。
 
 - 仕様：Home Appraisal LPs — Build Specification（2026-10-07）
-- デザイン：Home Appraisal デザインシステム（tokens.json / README）
+- デザイン仕様はLPごとに独立して管理します（[一覧](docs/design/README.md)）。
 - 仕様と食い違う点は「LP要件定義書（簡易版）」（2026-09-25）に合わせた（[仕様からの変更点](#仕様からの変更点)）
+
+## LPごとのデザインシステム
+
+| LP | 仕様 |
+|---|---|
+| `/downsizing` | [Downsizing DESIGN_SYSTEM.md](docs/design/downsizing/DESIGN_SYSTEM.md) |
+| `/home-value` | [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md) |
+
+色・フォント・写真・角丸・レイアウトは各LPの仕様で個別に決めます。
+既存のCSS基盤・部品・フォーム・計測は一部共有しています。見た目の変更は対象LPに限定し、共通部分を変更する場合は両LPを確認します。
 
 ## 使い方
 
@@ -53,12 +63,14 @@ public/images/           OG 画像（仮）
 ```
 
 - 文言はすべて `src/content/` にあり、部品にはコピーを直書きしていない。
-- 色・サイズ・角丸はすべて `tokens.css` の変数を参照している（ブレークポイントの 720px / 1024px だけはメディアクエリに直接書いている）。
+- Downsizingの色・サイズ・角丸は `tokens.css` の変数を参照します。Home Valueは `home-value.css` でLP固有の値を上書きします。
 
 ### LP を追加するには
 
 1. `src/content/lps/downsizing.ts` をコピーし、`slug`・`scene`（`move` / `sort` / `memory` / `brand`）・コピー・`sections` の並び順を書き換える。
 2. `src/content/lps/index.ts` の `landingPages` に追加する。
+3. `docs/design/<slug>/DESIGN_SYSTEM.md` を作成し、`docs/design/README.md` に登録する。
+4. 他LPへ影響しない専用スタイルを用意する。既存LPのデザインを自動的に引き継がない。
 
 `scene` を変えると、ヘッダー・ファーストビュー・引用帯・最後の申込みセクションの背景色が切り替わる。`brand` では文字・リンク・フォーカスリング・主ボタンが反転する（濃い背景で pine が読めないため）。フォームの入力欄は、どのLPでも明るいパネルの上に置いている。
 

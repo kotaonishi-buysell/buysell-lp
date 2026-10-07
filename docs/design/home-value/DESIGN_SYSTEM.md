@@ -1,6 +1,8 @@
 # Implementation scope
 
-このデザインシステムは新しい `/home-value` LPと、明示的にこのデザインへ移行する将来のLPに適用します。既存 `/downsizing` は `src/styles/tokens.css` と既存部品を維持します。共通スタイルを全面置換しないでください。
+このデザインシステムは `/home-value` LP専用です。他のLPにはそれぞれ独立した仕様書を用意し、この仕様を自動適用しません。Downsizingの仕様は `docs/design/downsizing/DESIGN_SYSTEM.md` にあります。
+
+実装は `src/styles/home-value.css` に限定します。既存のCSS基盤と部品を一部再利用しているため、共通部分を変更する場合は両LPの影響を確認してください。
 
 以下は参照会話「デザインシステム作成」のMarkdown仕様を保存したものです。元のロゴ画像からの色の再測定は未実施です。初期実装は指定されたフォールバックフォントを使用します。DM Sans、写真、正式なロゴは公開前に用意してください。
 
@@ -10,7 +12,7 @@
 
 ## 0. Purpose
 
-This document is the source of truth for the BuySell America website design.
+This document is the source of truth for the BuySell America Home Value LP design only.
 
 When implementing or modifying UI, follow this design system unless explicitly instructed otherwise.
 
