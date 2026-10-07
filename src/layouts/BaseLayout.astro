@@ -2,6 +2,7 @@
 import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
+import '../styles/home-value.css';
 import type { LandingPage } from '../content/types';
 import { site } from '../content/site';
 import { plain } from '../lib/text';
@@ -68,7 +69,7 @@ const gtmScript = gtmId
     <script type="application/ld+json" set:html={structuredDataJson} />
     {gtmId && <script is:inline set:html={gtmScript} />}
   </head>
-  <body data-scene={lp.scene}>
+  <body data-scene={lp.scene} data-lp={lp.slug}>
     {
       gtmId && (
         <noscript>

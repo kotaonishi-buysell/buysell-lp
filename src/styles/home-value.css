@@ -1,0 +1,69 @@
+/* Friendly Discovery: opt-in only; never redefine :root legacy tokens. */
+body[data-lp="home-value"] {
+  --paper: #FFF8EC;
+  --paper-raised: #FFFFFF;
+  --paper-sunk: #D9E8E0;
+  --ink: #20231F;
+  --ink-muted: #62665F;
+  --pine: #01472F;
+  --pine-deep: #003B28;
+  --on-pine: #FFFFFF;
+  --brass: var(--pine);
+  --hv-yellow: #F4C95D;
+  --hv-pink: #F3D6CF;
+  --hv-blue: #E8F1F8;
+  --hv-peach: #F3A66A;
+  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: var(--font-sans);
+  --radius-md: 28px;
+  --radius-sm: 12px;
+  --shadow-card: 0 6px 20px rgba(0, 0, 0, .06);
+  --content-max: 1200px;
+  --gutter: 20px;
+  --scene: var(--paper);
+  --fs-display-xl: 44px;
+  --lh-display-xl: 46px;
+  --fs-display-l: 36px;
+  --lh-display-l: 40px;
+  --fs-body: 17px;
+  --lh-body: 28px;
+  --fs-lead: 18px;
+  --lh-lead: 28px;
+}
+[data-lp="home-value"] :is(.t-display-xl, .t-display-l, .t-heading) {
+  color: var(--pine);
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+[data-lp="home-value"] :is(.choice, .category) { border: 0; }
+[data-lp="home-value"] :is(.choice, .category):nth-child(5n + 1) { background: var(--paper-sunk); }
+[data-lp="home-value"] :is(.choice, .category):nth-child(5n + 2) { background: var(--hv-yellow); }
+[data-lp="home-value"] :is(.choice, .category):nth-child(5n + 3) { background: var(--hv-pink); }
+[data-lp="home-value"] :is(.choice, .category):nth-child(5n + 4) { background: var(--hv-blue); }
+[data-lp="home-value"] :is(.choice, .category):nth-child(5n + 5) { background: var(--hv-peach); }
+[data-lp="home-value"] :is(.choice, .category) .muted { color: var(--ink); }
+[data-lp="home-value"] #questions { background: var(--hv-blue); }
+[data-lp="home-value"] .final {
+  --scene: var(--pine);
+  --on-scene: var(--paper);
+  --on-scene-muted: var(--paper);
+  --focus-color: var(--paper);
+  --btn-primary-bg: var(--paper);
+  --btn-primary-bg-hover: var(--hv-yellow);
+  --btn-primary-fg: var(--pine);
+}
+[data-lp="home-value"] .final__intro .t-display-l { color: var(--paper); }
+@media (min-width: 720px) {
+  body[data-lp="home-value"] {
+    --gutter: 24px;
+    --fs-display-xl: clamp(56px, 6vw, 76px);
+    --lh-display-xl: 1.02;
+    --fs-display-l: clamp(42px, 4vw, 56px);
+    --lh-display-l: 1.08;
+    --fs-lead: 20px;
+    --lh-lead: 31px;
+  }
+}
+@media (min-width: 1024px) {
+  body[data-lp="home-value"] { --gutter: 32px; --section-pad: 96px; }
+}

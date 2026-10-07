@@ -5,5 +5,6 @@
  */
 import type { LandingPage } from '../types';
 import { downsizing } from './downsizing';
+import { homeValue } from './home-value';
 
-export const landingPages: LandingPage[] = [downsizing];
+export const landingPages: LandingPage[] = [downsizing, homeValue];

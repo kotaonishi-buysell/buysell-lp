@@ -1,6 +1,18 @@
 # Home Appraisal LPs
 
-訪問査定・リセール事業の米国（テキサス）向け英語LP。今は **Downsizing LP（`/downsizing`）** の1本だけ。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
+訪問査定・リセール事業の米国（テキサス）向け英語LP。**Downsizing LP（`/downsizing`）** と **Home Value LP（`/home-value`、初期実装）** を同じAstroアプリで管理します。
+
+## 新LP: Home Value
+
+- URL: `/home-value`。既存の `/` → `/downsizing` は維持します。
+- 文言・順序・制作メモ: [src/content/lps/home-value/](src/content/lps/home-value/README.md)
+- 新デザイン仕様: [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md)。既存LPへは全面適用しません。
+- 開発ルール: [AGENTS.md](AGENTS.md)
+- 専用スタイル: `src/styles/home-value.css`（`body[data-lp="home-value"]` に限定）
+- 写真の配置先: `public/images/home-value/`。現在は仮画像です。
+
+新LP用に別のアプリやパッケージを作らず、既存のコンテンツ登録と共通部品を使います。
+フォーム送信は既存のスタブのままです。写真・事業情報・送信先の確定前は公開用の完成版ではありません。
 
 - 仕様：Home Appraisal LPs — Build Specification（2026-10-07）
 - デザイン：Home Appraisal デザインシステム（tokens.json / README）
