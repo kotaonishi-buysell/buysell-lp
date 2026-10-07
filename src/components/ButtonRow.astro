@@ -1,0 +1,16 @@
+---
+import type { CtaRowSection, LandingPage } from '../content/types';
+import CtaGroup from './CtaGroup.astro';
+import Section from './Section.astro';
+
+interface Props {
+  section: CtaRowSection;
+  lp: LandingPage;
+}
+
+const { section, lp } = Astro.props;
+---
+
+<Section id={section.id} band={section.band}>
+  <CtaGroup location="mid" label={lp.cta.label} reassurance={section.reassurance} secondary={section.secondary} />
+</Section>

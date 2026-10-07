@@ -1,0 +1,100 @@
+---
+import type { CompanySection } from '../content/types';
+import { site } from '../content/site';
+import { rich } from '../lib/text';
+import Section from './Section.astro';
+
+interface Props {
+  section: CompanySection;
+}
+
+const { section } = Astro.props;
+const headingId = `${section.id}-title`;
+const labels = site.ui.companyLabels;
+const rows = [
+  { label: labels.name, value: rich(site.company.name) },
+  { label: labels.address, value: rich(site.company.address) },
+  { label: labels.registration, value: rich(site.company.registration.value) },
+  { label: labels.hours, value: rich(site.company.hours) },
+];
+---
+
+<Section id={section.id} band={section.band} labelledby={headingId}>
+  <h2 id={headingId} class="t-display-l company__title">{site.ui.companyHeading}</h2>
+  <dl class="company">
+    {
+      rows.map((row) => (
+        <div class="company__row">
+          <dt class="company__label">{row.label}</dt>
+          <dd set:html={row.value} />
+        </div>
+      ))
+    }
+    <div class="company__row">
+      <dt class="company__label">{labels.phone}</dt>
+      <dd>
+        <a class="link" href={`tel:${site.phone.e164}`} data-cta="company" data-cta-method="phone">
+          <span data-phone-number>{site.phone.display}</span>
+        </a>
+      </dd>
+    </div>
+    <div class="company__row">
+      <dt class="company__label">{labels.serviceArea}</dt>
+      <dd class="company__area">
+        <p set:html={rich(site.serviceArea.summary)} />
+        <ul class="company__places" role="list">
+          {site.serviceArea.places.map((place) => <li class="tag" set:html={rich(place)} />)}
+        </ul>
+        <p class="muted">{site.serviceArea.outsideNote}</p>
+      </dd>
+    </div>
+  </dl>
+</Section>
+
+<style>
+  .company__title {
+    margin-bottom: var(--space-5);
+  }
+
+  .company {
+    max-width: var(--content-max);
+    border-top: var(--hairline) solid var(--line);
+  }
+
+  .company__row {
+    display: grid;
+    gap: 0 var(--space-3);
+    padding-block: var(--space-2);
+    border-bottom: var(--hairline) solid var(--line);
+  }
+
+  .company__label {
+    font-weight: var(--weight-semibold);
+  }
+
+  .company__area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .company__places {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .tag {
+    padding: 0 var(--space-1);
+    border: var(--hairline) solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--paper-raised);
+  }
+
+  @media (min-width: 720px) {
+    .company__row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+    }
+  }
+</style>

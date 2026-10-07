@@ -1,0 +1,275 @@
+/* Resets, type classes and layout helpers. Values come from tokens.css only. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  interpolate-size: allow-keywords;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--weight-regular);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure, blockquote, fieldset {
+  margin: 0;
+}
+
+ul, ol {
+  padding: 0;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Focus: 2px solid ring, 3px offset, on every interactive element. */
+:focus-visible {
+  outline: var(--focus-width) solid var(--focus-color);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---------- type ---------- */
+.t-display-xl {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display-xl);
+  line-height: var(--lh-display-xl);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-display);
+  font-optical-sizing: auto;
+}
+
+.t-display-l {
+  font-family: var(--font-serif);
+  font-size: var(--fs-display-l);
+  line-height: var(--lh-display-l);
+  font-weight: var(--weight-regular);
+  font-optical-sizing: auto;
+}
+
+.t-heading {
+  font-family: var(--font-serif);
+  font-size: var(--fs-heading);
+  line-height: var(--lh-heading);
+  font-weight: var(--weight-medium);
+  font-optical-sizing: auto;
+}
+
+.t-lead {
+  font-family: var(--font-sans);
+  font-size: var(--fs-lead);
+  line-height: var(--lh-lead);
+  font-weight: var(--weight-regular);
+}
+
+.t-body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  font-weight: var(--weight-regular);
+}
+
+.t-label {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.t-button {
+  font-family: var(--font-sans);
+  font-size: var(--fs-button);
+  line-height: var(--lh-button);
+  font-weight: var(--weight-semibold);
+}
+
+.t-meta {
+  font-family: var(--font-sans);
+  font-size: var(--fs-label);
+  line-height: var(--lh-label);
+  font-weight: var(--weight-regular);
+}
+
+.muted {
+  color: var(--on-scene-muted);
+}
+
+/* ---------- layout ---------- */
+.container {
+  width: 100%;
+  max-width: calc(var(--content-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+.section {
+  padding-block: var(--section-pad);
+}
+
+.band--paper {
+  background: var(--paper);
+}
+
+.band--sunk {
+  background: var(--paper-sunk);
+}
+
+.scene {
+  background: var(--scene);
+  color: var(--on-scene);
+}
+
+.on-paper {
+  color: var(--on-scene);
+}
+
+/* ---------- links and buttons ---------- */
+.link {
+  color: var(--link);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: var(--underline-offset);
+}
+
+.link:hover {
+  color: var(--link-hover);
+}
+
+.btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-height: var(--tap-min);
+  padding: var(--space-1) var(--button-pad-inline);
+  border: var(--focus-width) solid transparent;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: var(--fs-button);
+  line-height: var(--lh-button);
+  font-weight: var(--weight-semibold);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn--primary {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+
+.btn--primary:hover {
+  background: var(--btn-primary-bg-hover);
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--btn-secondary-fg);
+  border-color: var(--btn-secondary-border);
+}
+
+.btn--secondary:hover {
+  border-color: var(--btn-secondary-border-hover);
+}
+
+/* On mobile, primary buttons go full width. */
+@media (max-width: 719.98px) {
+  .btn--block-mobile {
+    display: flex;
+    width: 100%;
+  }
+}
+
+/* ---------- placeholders for unconfirmed business facts ---------- */
+.todo {
+  display: inline;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  outline: var(--hairline) dashed var(--line-strong);
+  background: var(--paper-sunk);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: var(--weight-semibold);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* ---------- utilities ---------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: var(--space-2);
+  z-index: calc(var(--z-sticky) + 1);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}

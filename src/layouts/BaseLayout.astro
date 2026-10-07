@@ -1,0 +1,91 @@
+---
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import type { LandingPage } from '../content/types';
+import { site } from '../content/site';
+import { plain } from '../lib/text';
+
+interface Props {
+  lp: LandingPage;
+}
+
+const { lp } = Astro.props;
+const title = plain(lp.meta.title);
+const description = plain(lp.meta.description);
+const canonical = new URL(`/${lp.slug}`, Astro.site);
+const ogImage = new URL(lp.meta.ogImage, Astro.site);
+const hero = lp.sections.find((section) => section.type === 'hero');
+const gtmId = site.analytics.gtmId;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: plain(site.company.name),
+  url: canonical.href,
+  telephone: site.phone.e164,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: plain(site.company.address),
+    addressRegion: 'TX',
+    addressCountry: 'US',
+  },
+  areaServed: plain(site.serviceArea.summary),
+  openingHours: plain(site.company.hours),
+  identifier: plain(`${site.company.registration.label} ${site.company.registration.value}`),
+};
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+
+const gtmScript = gtmId
+  ? `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',${JSON.stringify(gtmId)});`
+  : '';
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="data:," />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {hero?.type === 'hero' && <meta property="og:image:alt" content={hero.imageAlt} />}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preload" href="/fonts/newsreader-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script type="application/ld+json" set:html={structuredDataJson} />
+    {gtmId && <script is:inline set:html={gtmScript} />}
+  </head>
+  <body data-scene={lp.scene}>
+    {
+      gtmId && (
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
+            title="Google Tag Manager"
+          />
+        </noscript>
+      )
+    }
+    <a class="skip-link" href="#main">{site.ui.skipLink}</a>
+    <slot />
+    <script>
+      import '../scripts/main';
+    </script>
+  </body>
+</html>

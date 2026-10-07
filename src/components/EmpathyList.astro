@@ -1,0 +1,24 @@
+---
+interface Props {
+  items: string[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="empathy" role="list">
+  {items.map((item) => <li class="t-heading empathy__item">{item}</li>)}
+</ul>
+
+<style>
+  .empathy {
+    list-style: none;
+    max-width: var(--measure);
+    border-bottom: var(--hairline) solid var(--line);
+  }
+
+  .empathy__item {
+    padding-block: var(--space-3);
+    border-top: var(--hairline) solid var(--line);
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ButtonRow from '../components/ButtonRow.astro';
+import CategoryGrid from '../components/CategoryGrid.astro';
+import ChoiceCards from '../components/ChoiceCards.astro';
+import CompanyInfo from '../components/CompanyInfo.astro';
+import EmpathyList from '../components/EmpathyList.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
+import Hero from '../components/Hero.astro';
+import ProcessSteps from '../components/ProcessSteps.astro';
+import QuoteBand from '../components/QuoteBand.astro';
+import Section from '../components/Section.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import StickyCta from '../components/StickyCta.astro';
+import { landingPages } from '../content/lps';
+import type { LandingPage } from '../content/types';
+
+export function getStaticPaths() {
+  return landingPages.map((lp) => ({ params: { slug: lp.slug }, props: { lp } }));
+}
+
+interface Props {
+  lp: LandingPage;
+}
+
+const { lp } = Astro.props;
+---
+
+<BaseLayout lp={lp}>
+  <SiteHeader />
+  <main id="main" tabindex="-1">
+    {
+      lp.sections.map((section) => {
+        const headingId = `${section.id}-title`;
+        switch (section.type) {
+          case 'hero':
+            return <Hero section={section} lp={lp} />;
+          case 'empathy':
+            return (
+              <Section id={section.id} band={section.band} labelledby={headingId}>
+                <SectionHeader header={section.header} headingId={headingId} />
+                <EmpathyList items={section.items} />
+              </Section>
+            );
+          case 'choices':
+            return (
+              <Section id={section.id} band={section.band} labelledby={headingId}>
+                <SectionHeader header={section.header} headingId={headingId} />
+                <ChoiceCards cards={section.cards} />
+              </Section>
+            );
+          case 'categories':
+            return (
+              <Section id={section.id} band={section.band} labelledby={headingId}>
+                <SectionHeader header={section.header} headingId={headingId} />
+                <CategoryGrid
+                  categories={section.categories}
+                  notAcceptedTitle={section.notAcceptedTitle}
+                  notAccepted={section.notAccepted}
+                  note={section.note}
+                  draftNote={section.draftNote}
+                />
+              </Section>
+            );
+          case 'quote':
+            return <QuoteBand id={section.id} text={section.text} />;
+          case 'process':
+            return (
+              <Section id={section.id} band="sunk" labelledby={headingId}>
+                <SectionHeader header={section.header} headingId={headingId} />
+                <ProcessSteps steps={section.steps} />
+              </Section>
+            );
+          case 'ctaRow':
+            return <ButtonRow section={section} lp={lp} />;
+          case 'faq':
+            return (
+              <Section id={section.id} band={section.band} labelledby={headingId}>
+                <SectionHeader header={section.header} headingId={headingId} />
+                <Faq items={section.items} />
+              </Section>
+            );
+          case 'final':
+            return <FinalCta section={section} lp={lp} />;
+          case 'company':
+            return <CompanyInfo section={section} />;
+        }
+      })
+    }
+  </main>
+  <SiteFooter />
+  <StickyCta lp={lp} />
+</BaseLayout>

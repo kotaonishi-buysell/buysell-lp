@@ -1,0 +1,153 @@
+/*
+ * Home Appraisal design tokens.
+ * The first block is copied verbatim from the build specification.
+ * Everything below "Additions" comes from the Home Appraisal design system
+ * (tokens.json) or names a value the components need, so that no colour,
+ * size or radius is hard-coded anywhere else.
+ *
+ * Breakpoints (CSS custom properties cannot be used in media queries):
+ *   720px  – type steps up, tablet layout
+ *   1024px – desktop layout
+ */
+:root {
+  /* colour */
+  --paper: #f5f1ea;        /* page background */
+  --paper-raised: #fffdf9; /* cards, FAQ, form fields */
+  --paper-sunk: #ece5d9;   /* alternating section bands */
+  --ink: #24211c;          /* text; focus ring */
+  --ink-muted: #5c564c;    /* secondary text */
+  --line: #d9d0c1;         /* decorative hairlines */
+  --line-strong: #8c8273;  /* control borders, accordion dividers */
+  --pine: #2e4a3b;         /* the only action colour */
+  --pine-deep: #22382c;    /* hover/pressed */
+  --on-pine: #fffdf9;
+  --brass: #9c7a44;        /* step numerals, ornaments; 24px+ only as text */
+  --scene-move: #dde5d9;   /* hero, quote band, final CTA */
+  /* type */
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  /* spacing */
+  --space-1: 8px; --space-2: 16px; --space-3: 24px;
+  --space-5: 40px; --space-8: 64px; --space-13: 104px;
+  /* radius */
+  --radius-sm: 4px; --radius-md: 12px; --radius-pill: 999px;
+  /* other */
+  --shadow-card: 0 1px 2px rgba(36,33,28,.06), 0 8px 24px rgba(36,33,28,.06);
+  --content-max: 1120px; --measure: 640px; --tap-min: 56px;
+}
+
+/* ---------- Additions ---------- */
+:root {
+  /* scene tints for the other three LPs (design system tokens.json) */
+  --scene-sort: #ebe0cc;
+  --scene-memory: #e3e1dc;
+  --scene-brand: #1f1d1a;
+  --on-scene-brand: #f5f1ea;
+
+  /* type scale (mobile values; see the 720px block below) */
+  --fs-display-xl: 40px; --lh-display-xl: 44px;
+  --fs-display-l: 32px;  --lh-display-l: 40px;
+  --fs-heading: 28px;    --lh-heading: 36px;
+  --fs-lead: 21px;       --lh-lead: 34px;
+  --fs-body: 18px;       --lh-body: 30px;
+  --fs-label: 15px;      --lh-label: 22px;
+  --fs-button: 18px;     --lh-button: 24px;
+  --fs-numeral: 44px;    --lh-numeral: 52px; /* step numerals, display-l size */
+  --fs-mark: 24px;       --lh-mark: 32px;    /* brass card marks: brass text must be 24px+ */
+  --tracking-display: -0.01em;
+  --tracking-label: 0.08em;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* lines and focus */
+  --hairline: 1px;
+  --border-control: 1px;
+  --border-error: 2px;
+  --focus-width: 2px;
+  --focus-offset: 3px;
+  --underline-offset: 4px;
+
+  /* layout */
+  --gutter: var(--space-3);
+  --section-pad: var(--space-8);
+  --header-min-height: 60px;
+  --button-pad-inline: var(--space-3);
+  --checkbox-size: 24px;
+  --hero-image-ratio: 4 / 5;         /* desktop, beside the text */
+  --hero-image-ratio-stacked: 4 / 3; /* mobile and tablet, under the text */
+
+  /* motion: only the FAQ and the sticky bar move */
+  --motion-fast: 200ms;
+
+  /* layering */
+  --z-sticky: 10;
+
+  /* scene defaults (overridden per LP below) */
+  --scene: var(--scene-move);
+  --on-scene: var(--ink);
+  --on-scene-muted: var(--ink-muted);
+  --focus-color: var(--ink);
+  --link: var(--pine);
+  --link-hover: var(--pine-deep);
+  --btn-primary-bg: var(--pine);
+  --btn-primary-bg-hover: var(--pine-deep);
+  --btn-primary-fg: var(--on-pine);
+  --btn-secondary-fg: var(--ink);
+  --btn-secondary-border: var(--line-strong);
+  --btn-secondary-border-hover: var(--ink);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --fs-display-xl: 64px; --lh-display-xl: 68px;
+    --fs-display-l: 44px;  --lh-display-l: 52px;
+    --gutter: var(--space-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --section-pad: var(--space-13);
+    --header-min-height: 72px;
+  }
+}
+
+/* Scene tint per LP: set data-scene on <body>. */
+[data-scene="move"]   { --scene: var(--scene-move); }
+[data-scene="sort"]   { --scene: var(--scene-sort); }
+[data-scene="memory"] { --scene: var(--scene-memory); }
+[data-scene="brand"]  { --scene: var(--scene-brand); }
+
+/*
+ * Brand goods: the dark scene inverts text, links, focus ring and the primary
+ * button inside scene bands only (pine has too little contrast on scene-brand).
+ */
+[data-scene="brand"] .scene {
+  --on-scene: var(--on-scene-brand);
+  --on-scene-muted: var(--on-scene-brand);
+  --focus-color: var(--on-scene-brand);
+  --link: var(--on-scene-brand);
+  --link-hover: var(--paper-raised);
+  --btn-primary-bg: var(--on-scene-brand);
+  --btn-primary-bg-hover: var(--paper-raised);
+  --btn-primary-fg: var(--ink);
+  --btn-secondary-fg: var(--on-scene-brand);
+  --btn-secondary-border: var(--line-strong);
+  --btn-secondary-border-hover: var(--on-scene-brand);
+}
+
+/* Surfaces that sit on a scene band but keep the light palette (the form panel). */
+[data-scene] .on-paper {
+  --on-scene: var(--ink);
+  --on-scene-muted: var(--ink-muted);
+  --focus-color: var(--ink);
+  --link: var(--pine);
+  --link-hover: var(--pine-deep);
+  --btn-primary-bg: var(--pine);
+  --btn-primary-bg-hover: var(--pine-deep);
+  --btn-primary-fg: var(--on-pine);
+  --btn-secondary-fg: var(--ink);
+  --btn-secondary-border: var(--line-strong);
+  --btn-secondary-border-hover: var(--ink);
+}

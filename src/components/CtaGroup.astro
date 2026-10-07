@@ -1,0 +1,87 @@
+---
+/*
+ * Phone button (primary), an optional secondary button, the reassurance line
+ * that must follow every primary button, and the hours the phone is answered.
+ */
+import type { CtaLocation } from '../content/types';
+import { site } from '../content/site';
+import { fill, rich } from '../lib/text';
+import PhoneButton from './PhoneButton.astro';
+
+interface Props {
+  location: CtaLocation;
+  label: string;
+  reassurance: string;
+  secondary?: {
+    label: string;
+    href: string;
+    /** Opens the online request form (scrolls to #consult and focuses its first field). */
+    booking?: boolean;
+  };
+  align?: 'start' | 'center';
+}
+
+const { location, label, reassurance, secondary, align = 'start' } = Astro.props;
+const hoursLine = rich(fill(site.phone.hoursLine, { hours: site.company.hours }));
+---
+
+<div class:list={['cta-group', `cta-group--${align}`]}>
+  <div class="cta-group__buttons">
+    <PhoneButton location={location} label={label} />
+    {
+      secondary &&
+        (secondary.booking ? (
+          <a
+            class="btn btn--secondary btn--block-mobile"
+            href={secondary.href}
+            data-booking
+            data-cta={location}
+            data-cta-method="form"
+          >
+            {secondary.label}
+          </a>
+        ) : (
+          <a class="btn btn--secondary btn--block-mobile" href={secondary.href}>
+            {secondary.label}
+          </a>
+        ))
+    }
+  </div>
+  <p class="cta-group__note">{reassurance}</p>
+  <p class="cta-group__hours muted" set:html={hoursLine} />
+</div>
+
+<style>
+  .cta-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .cta-group--center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .cta-group__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+  }
+
+  .cta-group--center .cta-group__buttons {
+    justify-content: center;
+  }
+
+  .cta-group__note {
+    font-weight: var(--weight-semibold);
+  }
+
+  @media (max-width: 719.98px) {
+    .cta-group__buttons {
+      align-self: stretch;
+    }
+  }
+</style>
