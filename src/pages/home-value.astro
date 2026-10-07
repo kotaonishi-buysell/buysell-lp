@@ -1,0 +1,122 @@
+---
+import '../styles/home-value.css';
+import { homeValue as c } from '../content/lps/home-value';
+import { homeValueConfig as config } from '../content/lps/home-value/config';
+import ContactActions from '../components/home-value/ContactActions.astro';
+import VisitRequestForm from '../components/home-value/VisitRequestForm.astro';
+const canonical = config.productionOrigin ? new URL('/home-value', config.productionOrigin).href : null;
+---
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{c.meta.title}</title>
+    <meta name="description" content={c.meta.description} />
+    {!canonical && <meta name="robots" content="noindex, nofollow" />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={c.meta.title} />
+    <meta property="og:description" content={c.meta.description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <link rel="icon" href="data:," />
+  </head>
+  <body data-lp="home-value">
+    <a class="hv-skip" href="#main">Skip to main content</a>
+    <header class="hv-header hv-container">
+      <a class="hv-brand" href="#top" aria-label="BuySell home">{config.brand}<span class="hv-small">In-home appraisals</span></a>
+      <nav aria-label="Page navigation"><a href="#what-we-appraise">Items</a><a href="#how-it-works">How it works</a><a href="#questions">FAQ</a></nav>
+      <ContactActions compact />
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="hv-hero hv-section" id="top" aria-labelledby="hero-title">
+        <div class="hv-container hv-hero-grid">
+          <div>
+            <p class="hv-eyebrow">{c.hero.label}</p>
+            <h1 id="hero-title">{c.hero.headline}</h1>
+            <p class="hv-lead">{c.hero.body}</p>
+            <ContactActions />
+            <p class="hv-small">{c.contact.preference}</p>
+            <ul class="hv-reassurance">{c.hero.reassurances.map((text) => <li>{text}</li>)}</ul>
+            <p id="phone-pending" class="hv-visually-hidden">{c.contact.phonePending}</p>
+          </div>
+          <figure class="hv-hero-media">
+            <img src={c.hero.image} alt={c.hero.imageAlt} width="800" height="900" fetchpriority="high" loading="eager" />
+            <figcaption class="hv-small">Sample illustration — real photography will replace this preview asset.</figcaption>
+            <span class="hv-badge">One item is enough.</span>
+          </figure>
+        </div>
+      </section>
+      <section class="hv-section hv-mint" id="sound-familiar" aria-labelledby="empathy-title">
+        <div class="hv-container">
+          <p class="hv-eyebrow">The things you already have</p>
+          <h2 id="empathy-title">{c.empathy.heading}</h2>
+          <div class="hv-three-grid">{c.empathy.items.map((text, i) => <div class="hv-card"><span class="hv-number">{String(i + 1).padStart(2, '0')}</span><p class="hv-lead">{text}</p></div>)}</div>
+          <p class="hv-lead hv-section-note">{c.empathy.closing}</p>
+        </div>
+      </section>
+      <section class="hv-section" id="what-we-appraise" aria-labelledby="categories-title">
+        <div class="hv-container">
+          <p class="hv-eyebrow">Items to ask about</p>
+          <h2 id="categories-title">{c.categories.heading}</h2>
+          <p class="hv-lead hv-measure">{c.categories.body}</p>
+          <ul class="hv-category-grid" role="list">{c.categories.items.map((item) => (
+            <li class="hv-card hv-category">
+              <img src={`/images/home-value/${item.image}-sample.svg`} alt={item.alt} width="480" height="320" loading="lazy" decoding="async" />
+              <h3>{item.name}</h3>
+            </li>
+          ))}</ul>
+          <p class="hv-section-note">{c.categories.qualification}</p>
+          <p class="hv-small">Sample illustrations shown. This is an appraisal and resale service, not junk removal or a whole-home cleanout.</p>
+        </div>
+      </section>
+      <section class="hv-section hv-blue" id="appraise-first" aria-labelledby="decision-title">
+        <div class="hv-container">
+          <p class="hv-eyebrow">Appraise first</p><h2 id="decision-title">{c.decision.heading}</h2>
+          <p class="hv-lead hv-measure">{c.decision.body}</p>
+          <div class="hv-three-grid">{c.decision.cards.map((card) => <div class="hv-card"><h3>{card.title}</h3><p>{card.body}</p></div>)}</div>
+        </div>
+      </section>
+      <section class="hv-section" id="consultation-examples" aria-labelledby="examples-title">
+        <div class="hv-container">
+          <p class="hv-eyebrow">{c.inquiries.label}</p><h2 id="examples-title">{c.inquiries.heading}</h2>
+          <div class="hv-three-grid">{c.inquiries.examples.map((text) => <blockquote class="hv-card"><p class="hv-lead">“{text}”</p></blockquote>)}</div>
+          <p class="hv-small hv-section-note">{c.inquiries.disclaimer}</p>
+          <aside class="hv-group" aria-labelledby="group-title">
+            <h3 id="group-title">{c.inquiries.groupHeading}</h3><p>{c.inquiries.groupBody}</p>
+            {!config.group.approved && <p class="hv-small hv-preview-note">{c.inquiries.groupDraft}</p>}
+          </aside>
+        </div>
+      </section>
+      <section class="hv-section hv-mint" id="how-it-works" aria-labelledby="process-title">
+        <div class="hv-container">
+          <p class="hv-eyebrow">From the first conversation</p><h2 id="process-title">{c.process.heading}</h2>
+          <ol class="hv-process" role="list">{c.process.steps.map((step, i) => <li class="hv-card"><span class="hv-number">{String(i + 1).padStart(2, '0')}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol>
+          <div class="hv-faq" id="questions">
+            <h3>{c.process.faqHeading}</h3>
+            {c.process.faqs.map((faq) => <details><summary>{faq.q}</summary><p>{faq.a}</p></details>)}
+          </div>
+        </div>
+      </section>
+      <section class="hv-section hv-final" id="get-started" aria-labelledby="final-title">
+        <div class="hv-container">
+          <div class="hv-final-intro">
+            <h2 id="final-title">{c.final.heading}</h2><p class="hv-lead">{c.final.body}</p><ContactActions /><p>{c.final.clarification}</p>
+          </div>
+          <VisitRequestForm />
+        </div>
+      </section>
+    </main>
+    <footer class="hv-footer hv-container">
+      <div><span class="hv-brand">{config.brand}</span><p>{config.area}</p>
+      {config.localOperator && <address>{config.localOperator.name}<br />{config.localOperator.address}<br />{config.localOperator.contact}</address>}</div>
+      <nav aria-label="Legal information">
+        {config.privacyUrl && <a href={config.privacyUrl}>Privacy information</a>}
+        {config.legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      </nav>
+      <p class="hv-small">© {new Date().getFullYear()} {config.brand}</p>
+    </footer>
+    <script>import '../scripts/home-value';</script>
+  </body>
+</html>

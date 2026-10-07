@@ -1,5 +1,5 @@
 # Home Value images
 
-正式な写真とOG画像をここへ配置します。ファイル名の例: hero.webp / bags.webp / watches.webp / jewelry.webp / tableware.webp / metals.webp / collectibles.webp / og.png。
+現在はオリジナルの仮SVGイラスト7点（*-sample.svg）を使用しています。実際のスタッフや顧客を表したものではありません。ページで仮イラストと明示しています。
 
-利用許諾を確認し、サイズと内容に合うaltを設定してください。現在のLPは写真未提供のため既存のプレースホルダーを使用します。
+正式な写真とOG画像をここへ配置し、src/content/lps/home-value/index.ts とページの画像寸法を更新します。利用許諾を確認し、サイズと内容に合うaltを設定してください。公開前に承認済み写真と共有画像に差し替えます。
