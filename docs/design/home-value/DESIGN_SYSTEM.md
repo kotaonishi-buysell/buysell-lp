@@ -887,7 +887,10 @@ On mobile:
 
 - Stack Hero content vertically.
 - Place copy before image.
-- Category cards may use 2-column grid.
+- Category cards must use a 2-column grid on mobile (two items per row), and a 3-column grid from 1024px.
+- Below 720px, category cards use 12px gaps/padding, 20px corners, and 16–20px labels so all six fit comfortably in three rows.
+- Keep the mobile brand and request button on the same header row; navigation sits on a separate row.
+- Reduce nested FAQ/form padding on mobile and let date/time fields shrink to the available width.
 - Complex layouts should become single-column.
 - Maintain large CTA touch areas.
 - Minimum button height: 52px.
