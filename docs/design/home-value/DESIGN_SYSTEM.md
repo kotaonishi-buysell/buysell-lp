@@ -4,7 +4,7 @@
 
 実装は `src/styles/home-value.css` と `src/components/home-value/` の専用部品に限定します。既存LPのCSS基盤・フォーム・ダミー情報は読み込みません。
 
-文言・事業情報・フォーム要件・セクション順は `docs/requirements/home-value.en.md` を優先します。この仕様のCTA例やカテゴリー例、3段階の流れは見た目の参考であり、要件の電話主体の導線、10カテゴリー、4段階の流れ、7セクション構成を上書きしません。仮素材は明示したオリジナルイラストを使用し、承認済み写真に差し替えます。
+文言・事業情報・フォーム要件・セクション順は `docs/requirements/home-value.en.md` を優先します。この仕様のCTA例やカテゴリー例、3段階の流れは見た目の参考であり、要件の電話主体の導線、9カテゴリー、4段階の流れ、7セクション構成を上書きしません。仮素材は明示したオリジナルイラストを使用し、承認済み写真に差し替えます。
 
 以下は参照会話「デザインシステム作成」のMarkdown仕様を保存したものです。元のロゴ画像からの色の再測定は未実施です。初期実装は指定されたフォールバックフォントを使用します。DM Sans、写真、正式なロゴは公開前に用意してください。
 
@@ -888,7 +888,7 @@ On mobile:
 - Stack Hero content vertically.
 - Place copy before image.
 - Category cards must use a 2-column grid on mobile (two items per row), and a 3-column grid from 1024px.
-- Below 720px, category cards use 12px gaps/padding, 20px corners, and 16–20px labels so all ten fit comfortably in five rows.
+- Below 720px, category cards use 12px gaps/padding, 20px corners, and 16–20px labels so nine items use five rows, with one item in the last row.
 - Keep the mobile brand and request button on the same header row; navigation sits on a separate row.
 - Reduce nested FAQ/form padding on mobile and let date/time fields shrink to the available width.
 - Complex layouts should become single-column.

@@ -8,7 +8,7 @@
 - Home Value now has an independent page, configuration, form and stylesheet. It does not import the legacy company placeholders, consent copy, scripts or submit stub.
 
 ## Implemented
-Seven sections in the required order; brand identification; ten categories; ten FAQs; examples labeled as illustrative; group-wide purchase history labeled client-supplied draft.
+Seven sections in the required order; brand identification; nine categories; ten FAQs; examples labeled as illustrative; group-wide purchase history labeled client-supplied draft.
 Confirmed copy includes Dallas–Fort Worth and surrounding areas, free appraisal and travel, one-item visits, additional items during the visit, value-only inquiries and bank-account payment within three business days after completed purchase.
 Primary phone actions are explicitly unavailable while the approved number is absent. All request actions lead to the same inline form.
 
@@ -54,7 +54,7 @@ Phone events represent tap intent; accepted requests are not confirmed appointme
 - Astro check: 43 files, zero errors/warnings/hints.
 - Astro build: /home-value, /downsizing and the existing / redirect generated.
 - npm run test:home-value: ten tests passed for U.S. phone formats, required/optional fields, impossible/past dates, Chicago day boundaries, preview without transmission, receiving-service acknowledgement, failures/retry and dummy phone suppression.
-- Browser: seven sections, all eleven sample assets loaded, no console errors, form navigation, required-field and past-date errors, successful local validation and explicit no-send/no-booking message.
+- Browser: seven sections, all ten displayed sample assets loaded, no console errors, form navigation, required-field and past-date errors, successful local validation and explicit no-send/no-booking message.
 - Responsive: desktop and narrow single-column layouts checked; no horizontal overflow.
 - Existing /downsizing main HTML compared before/after; content unchanged.
 - Real request delivery/Jobber verification: pending. Receiving-service states tested with mocked transport, not a live provider.

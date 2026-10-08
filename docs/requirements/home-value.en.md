@@ -153,7 +153,6 @@ The page must contain the following seven sections in this order. Include brand 
 - Watches
 - Jewelry and accessories
 - Tableware
-- Hobby and collectible items
 - Cameras
 - Musical instruments
 - Coins and stamps
@@ -161,6 +160,8 @@ The page must contain the following seven sections in this order. Include brand 
 - Other belongings you would like us to assess
 
 Amendment, October 8, 2026: The client approved the four additional categories above in this chat. The original six-category planning document is expanded to ten; this does not promise purchase of every item.
+
+Subsequent amendment, October 8, 2026: Remove the standalone “Hobby and collectible items” category from the cards and form choices, leaving nine categories. General hobby-related situations elsewhere remain unchanged.
 
 **Supporting copy:**
 
