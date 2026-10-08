@@ -11,7 +11,7 @@
 - 新デザイン仕様: [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md)
 - 開発ルール: [AGENTS.md](AGENTS.md)
 - 専用スタイル: `src/styles/home-value.css`（`body[data-lp="home-value"]` に限定）
-- 写真の配置先: `public/images/home-value/`。現在は仮イラスト7点です。
+- 写真の配置先: `public/images/home-value/`。現在は仮イラスト11点です。
 
 同じAstroアプリ内で新LP専用のページとフォームを管理します。
 電話番号未設定時は発信できない表示にし、送信先未接続のフォームは希望日時のローカル入力確認だけを行います。正式な受信先の了承前に送信完了や予約確定を表示しません。

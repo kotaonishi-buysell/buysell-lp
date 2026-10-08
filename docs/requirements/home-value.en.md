@@ -154,7 +154,13 @@ The page must contain the following seven sections in this order. Include brand 
 - Jewelry and accessories
 - Tableware
 - Hobby and collectible items
+- Cameras
+- Musical instruments
+- Coins and stamps
+- Art and antiques
 - Other belongings you would like us to assess
+
+Amendment, October 8, 2026: The client approved the four additional categories above in this chat. The original six-category planning document is expanded to ten; this does not promise purchase of every item.
 
 **Supporting copy:**
 

@@ -44,7 +44,7 @@ const config = JSON.stringify({
     <fieldset>
       <legend>{c.categories}</legend>
       <div class="hv-checkboxes">
-        {[...copy.categories.items.slice(0, 5).map((item) => item.name), 'Other / Not sure'].map((name, i) => (
+        {copy.categories.items.map((item) => item.image === 'other' ? 'Other / Not sure' : item.name).map((name, i) => (
           <label for={`visit-category-${i}`}><input id={`visit-category-${i}`} type="checkbox" name="categories" value={name} />{name}</label>
         ))}
       </div>
