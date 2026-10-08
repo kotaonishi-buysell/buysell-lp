@@ -889,7 +889,7 @@ On mobile:
 - Place copy before image.
 - Category cards must use a 2-column grid on mobile (two items per row), and a 3-column grid from 1024px.
 - Below 720px, category cards use 12px gaps/padding, 20px corners, and 16–20px labels so nine items use five rows, with one item in the last row.
-- Keep the mobile brand and request button on the same header row; navigation sits on a separate row.
+- Keep the mobile brand and request button on the same header row; navigation sits on a separate row. Use explicit named grid areas (brand/contact/navigation) so source order cannot push the request button into a third row.
 - Reduce nested FAQ/form padding on mobile and let date/time fields shrink to the available width.
 - Complex layouts should become single-column.
 - Maintain large CTA touch areas.
