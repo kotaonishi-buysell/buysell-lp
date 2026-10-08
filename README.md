@@ -1,10 +1,35 @@
 # Home Appraisal LPs
 
-訪問査定・リセール事業の米国（テキサス）向け英語LP。今は **Downsizing LP（`/downsizing`）** の1本だけ。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
+訪問査定・リセール事業の米国（テキサス）向け英語LP。**Downsizing LP（`/downsizing`）** と **Home Value LP（`/home-value`、初期実装）** を同じAstroアプリで管理します。
+
+## 新LP: Home Value
+
+- URL: `/home-value`。既存の `/` → `/downsizing` は維持します。
+- 文言・事業設定・制作メモ: [src/content/lps/home-value/](src/content/lps/home-value/README.md)
+- 機能・コピー要件: [home-value.en.md](docs/requirements/home-value.en.md)
+- 専用ページ: `src/pages/home-value.astro`（既存LPのダミー情報・フォーム送信スタブを読み込まない）
+- 新デザイン仕様: [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md)
+- 開発ルール: [AGENTS.md](AGENTS.md)
+- 専用スタイル: `src/styles/home-value.css`（`body[data-lp="home-value"]` に限定）
+- 写真の配置先: `public/images/home-value/`。現在は仮イラスト10点を表示しています。
+
+同じAstroアプリ内で新LP専用のページとフォームを管理します。
+電話番号未設定時は発信できない表示にし、送信先未接続のフォームは希望日時のローカル入力確認だけを行います。正式な受信先の了承前に送信完了や予約確定を表示しません。
+確認済みの無料査定・出張費無料、1点からの訪問、Dallas–Fort Worth対応、購入完了後3営業日以内の振込を反映しています。未確定の公開条件は制作メモに記録しています。
 
 - 仕様：Home Appraisal LPs — Build Specification（2026-10-07）
-- デザイン：Home Appraisal デザインシステム（tokens.json / README）
+- デザイン仕様はLPごとに独立して管理します（[一覧](docs/design/README.md)）。
 - 仕様と食い違う点は「LP要件定義書（簡易版）」（2026-09-25）に合わせた（[仕様からの変更点](#仕様からの変更点)）
+
+## LPごとのデザインシステム
+
+| LP | 仕様 |
+|---|---|
+| `/downsizing` | [Downsizing DESIGN_SYSTEM.md](docs/design/downsizing/DESIGN_SYSTEM.md) |
+| `/home-value` | [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md) |
+
+色・フォント・写真・角丸・レイアウトは各LPの仕様で個別に決めます。
+Home Valueは専用CSS・部品・フォーム・計測を使用します。見た目の変更は対象LPに限定します。
 
 ## 使い方
 
@@ -17,6 +42,7 @@ npm run build    # dist/ に静的ファイルを出力
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
 npm run todos    # 未確定の事業情報（TODO）の一覧
+npm run test:home-value # 希望日時フォームと送信境界の機能テスト
 ```
 
 `/` は `/downsizing` へリダイレクトする（`astro.config.mjs`）。公開ドメインが決まったら `site` を差し替える（canonical と OG 画像の URL に使う）。
@@ -41,12 +67,14 @@ public/images/           OG 画像（仮）
 ```
 
 - 文言はすべて `src/content/` にあり、部品にはコピーを直書きしていない。
-- 色・サイズ・角丸はすべて `tokens.css` の変数を参照している（ブレークポイントの 720px / 1024px だけはメディアクエリに直接書いている）。
+- Downsizingの色・サイズ・角丸は `tokens.css` の変数を参照します。Home Valueは独立した `home-value.css` と専用ページを使用します。
 
 ### LP を追加するには
 
 1. `src/content/lps/downsizing.ts` をコピーし、`slug`・`scene`（`move` / `sort` / `memory` / `brand`）・コピー・`sections` の並び順を書き換える。
 2. `src/content/lps/index.ts` の `landingPages` に追加する。
+3. `docs/design/<slug>/DESIGN_SYSTEM.md` を作成し、`docs/design/README.md` に登録する。
+4. 他LPへ影響しない専用スタイルを用意する。既存LPのデザインを自動的に引き継がない。
 
 `scene` を変えると、ヘッダー・ファーストビュー・引用帯・最後の申込みセクションの背景色が切り替わる。`brand` では文字・リンク・フォーカスリング・主ボタンが反転する（濃い背景で pine が読めないため）。フォームの入力欄は、どのLPでも明るいパネルの上に置いている。
 
