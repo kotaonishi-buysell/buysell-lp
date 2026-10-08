@@ -1,4 +1,5 @@
 import { homeValueConfig as config } from './config';
+const heroHeadlineLines = ['Before you clear it out,', "find out what it's worth."];
 
 export const homeValue = {
   slug: 'home-value',
@@ -14,7 +15,8 @@ export const homeValue = {
   },
   hero: {
     label: 'Free in-home appraisals in Dallas–Fort Worth',
-    headline: "Before you clear it out, find out what it's worth.",
+    headline: heroHeadlineLines.join(' '),
+    headlineLines: heroHeadlineLines,
     body: 'Bags you no longer use. Tableware tucked away. Things from an old hobby. BuySell comes to your home to assess them together, so you can decide what to keep and what to sell.',
     reassurances: ['Free appraisal and travel.', 'One item is enough.', "Just curious about the value? That's welcome, too."],
     image: '/images/home-value/hero-sample.svg',

@@ -301,6 +301,16 @@ Use CSS variables whenever possible.
 
 # 5. Typography
 
+## Current implementation override — October 8, 2026
+
+This hierarchy supersedes the weight/size examples below for Home Value.
+- Hero: weight 800, 48–68px on tablet/desktop, tracking -.045em, line height 1.04. The unchanged headline has two semantic blocks: “Before you clear it out,” and “find out what it's worth.” Balance wrapping within each block; constrain the total width to 15ch.
+- Section headings: weight 600, 34–50px, tracking -.035em, line height 1.14, maximum width 23ch with balanced wrapping.
+- Supporting headings: weight 600, 24px, tracking -.02em, line height 1.3. Category labels retain their compact mobile sizes.
+- Eyebrows: uppercase visual treatment, weight 700, 12px, tracking .12em, line height 1.6. Original accessible copy is preserved.
+- Below 720px: Hero 38–52px / 1.08, H2 30–38px / 1.18, H3 22px / 1.3; labels 11px / .1em. Hero body uses 17px / 1.65. Headline blocks remain flexible rather than forcing device-specific line breaks.
+- Keep the current system fallback stack until approved DM Sans assets are supplied; do not claim that DM Sans is loaded. No palette, card layout or other LP typography changes accompany this refinement.
+
 Preferred font:
 
 **DM Sans**

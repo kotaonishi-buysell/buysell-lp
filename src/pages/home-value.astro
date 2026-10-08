@@ -34,7 +34,7 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
         <div class="hv-container hv-hero-grid">
           <div>
             <p class="hv-eyebrow">{c.hero.label}</p>
-            <h1 id="hero-title">{c.hero.headline}</h1>
+            <h1 id="hero-title">{c.hero.headlineLines.map((line, i) => <span class="hv-headline-part">{i > 0 && ' '}{line}</span>)}</h1>
             <p class="hv-lead">{c.hero.body}</p>
             <ContactActions />
             <p class="hv-small">{c.contact.preference}</p>
