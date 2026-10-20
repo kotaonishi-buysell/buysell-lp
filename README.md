@@ -42,7 +42,7 @@ npm run build    # dist/ に静的ファイルを出力
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
 npm run todos    # 未確定の事業情報（TODO）の一覧
-npm test         # 共通フォームの入力チェックと送信処理のテスト
+npm test         # 共通フォームの入力チェック、送信処理、受付サーバーのテスト
 ```
 
 `/` は `/downsizing` へリダイレクトする（`astro.config.mjs`）。公開ドメインが決まったら `site` を差し替える（canonical と OG 画像の URL に使う）。
@@ -65,6 +65,8 @@ src/
   components/ContactForm.astro  全LP共通の問い合わせフォーム（スキンはLPごと）
   lib/contact-form.ts    フォームの入力チェック・整形・送信処理（テスト済み）
   scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ）
+  server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、メール通知）
+netlify/functions/       Netlify Functions（POST /api/contact）。設定は netlify.toml
 public/images/           OG 画像（仮）
 ```
 
@@ -78,7 +80,7 @@ public/images/           OG 画像（仮）
 
 ### 問い合わせフォーム（全LP共通）
 
-項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信先は `src/content/contact-form.ts` の `endpoint` を1か所変えれば、全LPに反映されます。詳しくは [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
+項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信先は全LPで同じ受付サーバー（`/api/contact`、Netlify Functions）で、訪問者の入力はメールでチームに通知されます。公開先は Netlify です。設定手順と環境変数は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
 3. `docs/design/<slug>/DESIGN_SYSTEM.md` を作成し、`docs/design/README.md` に登録する。
 4. 他LPへ影響しない専用スタイルを用意する。既存LPのデザインを自動的に引き継がない。
 
@@ -140,8 +142,8 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
 - 申込み後の連絡までの営業日数
 - SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
-- フォームの送信先（`src/content/contact-form.ts` の `endpoint`。全LP共通。未設定の間は「Preview only」と表示し、何も送信しない）
+- 通知メールの設定（Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL`、Resendの送信元ドメインの認証）。設定するまで、Netlify 上のフォームは「送れませんでした」と表示する
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - GTM コンテナ ID、コールトラッキングツール
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ
-- 公開ドメイン（`astro.config.mjs` の `site`）
+- 公開ドメイン（`astro.config.mjs` の `site`）と、Netlify へのサイトの作成

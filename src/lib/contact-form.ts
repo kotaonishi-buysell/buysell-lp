@@ -49,6 +49,10 @@ export interface ContactRequest {
   /** UTC time of the submit (browser clock). */
   submittedAt: string;
   utm: Record<string, string>;
+  /** Spam trap: a field people never see. Anything in it means a bot filled the form. */
+  honeypot: string;
+  /** Milliseconds from page load to submit. Bots submit almost instantly. */
+  elapsedMs: number;
 }
 
 // ---------- normalisers ----------
@@ -126,6 +130,8 @@ export interface RequestContext {
   smsConsentAt: string | null;
   smsConsentText: string;
   utm?: Record<string, string>;
+  honeypot?: string;
+  elapsedMs?: number;
   now?: Date;
 }
 
@@ -146,6 +152,8 @@ export function buildRequest(values: ContactFormValues, context: RequestContext)
     smsConsentText: consented ? context.smsConsentText : null,
     submittedAt: now.toISOString(),
     utm: context.utm ?? {},
+    honeypot: context.honeypot ?? '',
+    elapsedMs: Math.max(0, Math.round(context.elapsedMs ?? 0)),
   };
 }
 

@@ -186,6 +186,12 @@ const mark = (required: boolean) => (required ? copy.required : copy.optional);
 
   {UTM_KEYS.map((key) => <input type="hidden" name={key} value="" data-cf-utm={key} />)}
 
+  <!-- Spam trap: people never see or reach this field; bots tend to fill it in. -->
+  <div class="cf-trap" aria-hidden="true">
+    <label for={id('homepage')}>Leave this field empty</label>
+    <input id={id('homepage')} name="homepage_url" type="text" tabindex="-1" autocomplete="off" data-cf-trap />
+  </div>
+
   <div class="cf-actions">
     <button class={buttonClass} type="submit" data-cf-submit>{submitLabel}</button>
     <p class="cf-status" role="status" aria-live="polite" tabindex="-1" data-cf-status></p>

@@ -5,10 +5,13 @@
  */
 
 export const contactFormConfig = {
-  // TODO: shared receiving endpoint. Same-origin path (e.g. '/api/contact') or an https:// URL.
-  // It must answer 2xx with JSON { "accepted": true }. While null, no request is sent
-  // and the form says so (preview mode).
-  endpoint: null as string | null,
+  // Same-origin path (e.g. '/api/contact') or an https:// URL. It must answer 2xx with JSON
+  // { "accepted": true }. netlify.toml sets PUBLIC_CONTACT_ENDPOINT for Netlify builds; with
+  // nothing set (local builds) the form stays in preview mode: no request is sent and the
+  // form says so.
+  endpoint: ((import.meta as { env?: Record<string, string | undefined> }).env?.PUBLIC_CONTACT_ENDPOINT || null) as
+    | string
+    | null,
 };
 
 export const contactFormCopy = {

@@ -10,7 +10,7 @@
 - Preserve the existing Astro application, /downsizing route, and / redirect.
 - Apply Friendly Discovery styling only to home-value unless migration is explicitly requested.
 - Keep legacy tokens.css, base.css and existing LP content unchanged for this addition.
-- Reuse components where appropriate; keep page copy in src/content. All LPs share one contact form (src/components/ContactForm.astro, src/lib/contact-form.ts, src/content/contact-form.ts, docs/forms/contact-form.md). Change its fields, validation, delivery or endpoint in the shared files, and give each LP only a skin and its own panel, heading and button. The shared form has no analytics; each LP listens to its `cf:event` events. Home Value must not load the legacy analytics.
+- Reuse components where appropriate; keep page copy in src/content. All LPs share one contact form (src/components/ContactForm.astro, src/lib/contact-form.ts, src/content/contact-form.ts, docs/forms/contact-form.md). Change its fields, validation, delivery or endpoint in the shared files, and give each LP only a skin and its own panel, heading and button. The shared form has no analytics; each LP listens to its `cf:event` events. The receiving side is src/server/contact.ts, served by netlify/functions/contact.ts (host: Netlify, settings in netlify.toml); keep secrets in the Netlify dashboard, never in the repo. Home Value must not load the legacy analytics.
 - Never introduce a nested repository, a second package manifest or a new framework for an LP.
 
 ## Design and content
