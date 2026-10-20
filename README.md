@@ -86,7 +86,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - モック独自の予約フォーム、情報ダイアログ（ポリシー用）、`[...]` のダミー値は外し、`{{TODO}}` で表示される `site.ts` の値に置き換えた。
 - Google Fonts をやめ、Newsreader（イタリック追加）を自前ホストにした。
 - 画像はPNG（合計約10MB）から WebP（約1MB）に変換して `public/images/silver/` に置いた。元のPNGはリポジトリに入れていない。OG 画像 `public/images/og-silver.jpg` は hero 画像から切り出した仮のもの。
-- 追従バー（モバイル下部の「Call us / Book a free appraisal」）は、モックどおり常時表示（Downsizing の「ヒーローを過ぎたら出る」挙動にはしていない）。
+- 追従バー（モバイル下部の「Call us / Book a free appraisal」）は、Downsizing と同じく、ヒーローを過ぎたら出て、最後の申込みセクションで隠れる（`scripts/sticky.ts` を共用。モックは常時表示）。
 
 ### 公開前に確認が必要なもの（ダミーのまま取り込み済み）
 

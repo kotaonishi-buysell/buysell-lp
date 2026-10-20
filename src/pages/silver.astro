@@ -47,7 +47,7 @@ const zipConfigJson = JSON.stringify({
 <div class="header-contact"><p class="call-hours" set:html={hoursLine} /><a class="phone-text" href={telHref} data-cta="header" data-cta-method="phone">{site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span></a><div><span>{site.company.registration.label} <Fragment set:html={rich(site.company.registration.value)} /></span><button class="text-link" type="button" data-booking data-cta="header" data-cta-method="form">Book online <span aria-hidden="true">↗</span></button></div></div>
 </header>
 <main id="main">
-<section class="hero wrap" aria-labelledby="hero-title">
+<section class="hero wrap" aria-labelledby="hero-title" data-hero>
 <div class="hero-copy"><p class="eyebrow"><span class="short-rule"></span> YOUR SILVER. YOUR HOME. YOUR CHOICE.</p><h1 id="hero-title"><span>Keep the silver at home.</span><em>We'll handle the rest.</em></h1><h2 class="hero-sub">Free silver appraisals by house call,<br class="desktop-only"> right at your kitchen table.</h2><div class="hero-actions"><a class="button" href={telHref} data-cta="hero" data-cta-method="phone">{site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span> <span aria-hidden="true">↗</span></a><button class="text-link" type="button" data-booking data-cta="hero" data-cta-method="form">Book online <span aria-hidden="true">↗</span></button></div><ul class="hero-chips"><li>Free appraisal</li><li>No obligation</li><li>We come to you</li><li>Paid same day</li></ul></div>
 <figure class="hero-photo"><img src="/images/silver/house-call.webp" alt="Illustrative scene of a silver appraiser and homeowner exploring an open flatware chest at a kitchen table" width="1400" height="933" fetchpriority="high"><figcaption><span>GOOD THINGS DESERVE A NEXT CHAPTER.</span><span class="photo-caption">An appraisal, at your pace.</span><span class="image-note">Illustrative photography</span></figcaption></figure>
 </section>
@@ -87,7 +87,7 @@ const zipConfigJson = JSON.stringify({
           ))
         }
       </div></section>
-<section class="final-cta section"><div class="wrap"><p class="eyebrow">A BOX OF SILVER. A WORLD OF POSSIBILITIES.</p><h2>Curious what it's worth?<br><em>Let's find out.</em></h2><p>Free to ask. No obligation to sell.</p><a class="final-phone" href={telHref} data-cta="final" data-cta-method="phone">{site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span> <span aria-hidden="true">↗</span></a><p class="small" set:html={hoursLine} /><button class="text-link" type="button" data-booking data-cta="final" data-cta-method="form">Prefer to book online? <span aria-hidden="true">↗</span></button></div></section>
+<section class="final-cta section" data-final-cta><div class="wrap"><p class="eyebrow">A BOX OF SILVER. A WORLD OF POSSIBILITIES.</p><h2>Curious what it's worth?<br><em>Let's find out.</em></h2><p>Free to ask. No obligation to sell.</p><a class="final-phone" href={telHref} data-cta="final" data-cta-method="phone">{site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span> <span aria-hidden="true">↗</span></a><p class="small" set:html={hoursLine} /><button class="text-link" type="button" data-booking data-cta="final" data-cta-method="form">Prefer to book online? <span aria-hidden="true">↗</span></button></div></section>
 </main>
 
   <footer>
@@ -128,7 +128,7 @@ const zipConfigJson = JSON.stringify({
     </div>
   </footer>
 
-  <div class="mobile-bar">
+  <div class="mobile-bar" data-sticky-cta data-visible="false">
     <a href={telHref} data-cta="sticky" data-cta-method="phone">
       <svg class="cta-icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M7.3 3.5 10 8 8.2 9.8a15 15 0 0 0 6 6l1.8-1.8 4.5 2.7-.7 3.1c-.2.8-.9 1.3-1.7 1.2C10.4 20.1 3.9 13.6 3 5.9c-.1-.8.4-1.5 1.2-1.7l3.1-.7Z"></path>

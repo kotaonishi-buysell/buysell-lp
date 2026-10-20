@@ -1406,3 +1406,19 @@ a.final-phone {
 .consult-panel {
   margin-top: 20px;
 }
+
+/*
+ * The mobile bar appears once the hero has scrolled out of view and hides again at the
+ * final call to action, like the sticky bar of the other LPs (scripts/sticky.ts sets
+ * data-visible). The mock-up showed it all the time.
+ */
+.mobile-bar[data-sticky-cta] {
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s allow-discrete;
+}
+
+.mobile-bar[data-sticky-cta][data-visible='false'] {
+  opacity: 0;
+  visibility: hidden;
+}
