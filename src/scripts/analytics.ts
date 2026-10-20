@@ -6,8 +6,8 @@
  *   cta_click   { location, method }  location: header | hero | mid | final | sticky | company
  *                                     method: phone (tel: link) | form (opens the request form)
  *   faq_open    { question_id }
- *   form_start  {}                    first input in the request form
- *   form_submit { lp }                request accepted by submitConsultation()
+ *   form_start  { lp }                first input in the shared contact form
+ *   form_submit { lp }                request acknowledged by the receiving endpoint (never in preview)
  */
 declare global {
   interface Window {

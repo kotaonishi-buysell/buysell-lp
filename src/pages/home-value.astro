@@ -3,7 +3,7 @@ import '../styles/home-value.css';
 import { homeValue as c } from '../content/lps/home-value';
 import { homeValueConfig as config } from '../content/lps/home-value/config';
 import ContactActions from '../components/home-value/ContactActions.astro';
-import VisitRequestForm from '../components/home-value/VisitRequestForm.astro';
+import VisitRequestPanel from '../components/home-value/VisitRequestPanel.astro';
 const canonical = config.productionOrigin ? new URL('/home-value', config.productionOrigin).href : null;
 ---
 <!doctype html>
@@ -104,7 +104,7 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
           <div class="hv-final-intro">
             <h2 id="final-title">{c.final.heading}</h2><p class="hv-lead">{c.final.body}</p><ContactActions /><p>{c.final.clarification}</p>
           </div>
-          <VisitRequestForm />
+          <VisitRequestPanel />
         </div>
       </section>
     </main>
@@ -117,6 +117,7 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
       </nav>
       <p class="hv-small">© {new Date().getFullYear()} {config.brand}</p>
     </footer>
+    <script type="application/json" data-hv-config set:html={JSON.stringify({ measurementEnabled: config.measurementEnabled })} />
     <script>import '../scripts/home-value';</script>
   </body>
 </html>

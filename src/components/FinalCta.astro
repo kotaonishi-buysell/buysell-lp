@@ -1,7 +1,10 @@
 ---
 import type { FinalSection, LandingPage } from '../content/types';
 import CtaGroup from './CtaGroup.astro';
-import ConsultForm from './ConsultForm.astro';
+import '../styles/contact-form.downsizing.css';
+import { site } from '../content/site';
+import { plain } from '../lib/text';
+import ContactForm from './ContactForm.astro';
 
 interface Props {
   section: FinalSection;
@@ -23,7 +26,15 @@ const formHeadingId = 'consult-title';
 
     <div id="consult" class="final__panel on-paper">
       <h3 id={formHeadingId} class="t-heading final__form-heading">{section.formHeading}</h3>
-      <ConsultForm lp={lp} />
+      <ContactForm
+        lp={lp.slug}
+        company={plain(site.company.name)}
+        buttonClass="btn btn--primary btn--block-mobile"
+        submitLabel={lp.form.submitLabel}
+        success={lp.form.success}
+        afterSubmit={lp.form.afterSubmit}
+        privacyUrl={site.links.privacy}
+      />
     </div>
   </div>
 </section>

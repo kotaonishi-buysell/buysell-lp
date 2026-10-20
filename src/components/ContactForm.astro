@@ -1,0 +1,214 @@
+---
+/*
+ * The one contact form shared by every LP.
+ * Markup, validation, delivery and copy are common; the look comes from the
+ * LP's skin (CSS custom properties, see src/styles/contact-form.css).
+ * The LP supplies the surrounding panel, heading and button classes.
+ */
+import '../styles/contact-form.css';
+import { contactFormConfig, contactFormCopy as copy, smsConsentText } from '../content/contact-form';
+import { MESSAGE_MAX, NAME_MAX, UTM_KEYS } from '../lib/contact-form';
+import { fill, rich } from '../lib/text';
+
+interface Props {
+  /** Identifies the LP in every request, e.g. "downsizing". */
+  lp: string;
+  /** Company name used in the SMS consent wording. */
+  company: string;
+  /** Class names for the submit button, from the LP's own button style. */
+  buttonClass: string;
+  /** Overrides the default submit label. */
+  submitLabel?: string;
+  /** Thank-you text shown after a successful request. */
+  success?: string;
+  /** Note under the submit button. May contain {{TODO: ...}} markers. */
+  afterSubmit?: string;
+  /** Link to the privacy policy, when one exists. */
+  privacyUrl?: string | null;
+  /** Prefix for element ids; change it only when two forms share a page. */
+  idPrefix?: string;
+}
+
+const {
+  lp,
+  company,
+  buttonClass,
+  submitLabel = copy.submit,
+  success = copy.defaultSuccess,
+  afterSubmit,
+  privacyUrl = null,
+  idPrefix = 'cf',
+} = Astro.props;
+
+const id = (name: string) => `${idPrefix}-${name}`;
+const consentText = smsConsentText(company);
+const endpoint = contactFormConfig.endpoint;
+
+const config = {
+  lp,
+  endpoint,
+  idPrefix,
+  consentText,
+  copy: {
+    errors: copy.errors,
+    summary: copy.summary,
+    summaryOne: copy.summaryOne,
+    remaining: copy.remaining,
+    remainingOne: copy.remainingOne,
+    sending: copy.sending,
+    failure: copy.failure,
+  },
+};
+const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
+
+const mark = (required: boolean) => (required ? copy.required : copy.optional);
+---
+
+<form class="cf" data-cf data-cf-lp={lp} novalidate autocomplete="on">
+  <script type="application/json" data-cf-config set:html={configJson} />
+
+  {!endpoint && <p class="cf-preview-note">{copy.previewNote}</p>}
+
+  <div class="cf-grid">
+    <div class="cf-field" data-cf-field="firstName">
+      <label class="cf-label" for={id('first-name')}>
+        {copy.fields.firstName} <span class="cf-mark">{mark(true)}</span>
+      </label>
+      <input
+        class="cf-input"
+        id={id('first-name')}
+        name="firstName"
+        type="text"
+        autocomplete="given-name"
+        maxlength={NAME_MAX}
+        required
+        aria-describedby={id('first-name-error')}
+      />
+      <p class="cf-error" id={id('first-name-error')} data-cf-error hidden></p>
+    </div>
+
+    <div class="cf-field" data-cf-field="lastName">
+      <label class="cf-label" for={id('last-name')}>
+        {copy.fields.lastName} <span class="cf-mark">{mark(true)}</span>
+      </label>
+      <input
+        class="cf-input"
+        id={id('last-name')}
+        name="lastName"
+        type="text"
+        autocomplete="family-name"
+        maxlength={NAME_MAX}
+        required
+        aria-describedby={id('last-name-error')}
+      />
+      <p class="cf-error" id={id('last-name-error')} data-cf-error hidden></p>
+    </div>
+
+    <div class="cf-field" data-cf-field="zip">
+      <label class="cf-label" for={id('zip')}>
+        {copy.fields.zip} <span class="cf-mark">{mark(true)}</span>
+      </label>
+      <input
+        class="cf-input"
+        id={id('zip')}
+        name="zip"
+        type="text"
+        autocomplete="postal-code"
+        inputmode="numeric"
+        maxlength="10"
+        required
+        aria-describedby={`${id('zip-hint')} ${id('zip-error')}`}
+      />
+      <p class="cf-hint" id={id('zip-hint')}>{copy.zipHint}</p>
+      <p class="cf-error" id={id('zip-error')} data-cf-error hidden></p>
+    </div>
+
+    <div class="cf-field" data-cf-field="phone">
+      <label class="cf-label" for={id('phone')}>
+        {copy.fields.phone} <span class="cf-mark">{mark(true)}</span>
+      </label>
+      <input
+        class="cf-input"
+        id={id('phone')}
+        name="phone"
+        type="tel"
+        autocomplete="tel"
+        inputmode="tel"
+        maxlength="20"
+        required
+        aria-describedby={id('phone-error')}
+      />
+      <p class="cf-error" id={id('phone-error')} data-cf-error hidden></p>
+    </div>
+
+    <div class="cf-field cf-field--wide cf-field--consent">
+      <label class="cf-check" for={id('sms')}>
+        <input class="cf-checkbox" id={id('sms')} name="smsConsent" type="checkbox" value="yes" data-cf-sms />
+        <span>{consentText}</span>
+      </label>
+    </div>
+
+    <div class="cf-field cf-field--wide" data-cf-field="email">
+      <label class="cf-label" for={id('email')}>
+        {copy.fields.email} <span class="cf-mark">{mark(false)}</span>
+      </label>
+      <input
+        class="cf-input"
+        id={id('email')}
+        name="email"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        spellcheck="false"
+        aria-describedby={id('email-error')}
+      />
+      <p class="cf-error" id={id('email-error')} data-cf-error hidden></p>
+    </div>
+
+    <div class="cf-field cf-field--wide" data-cf-field="message">
+      <label class="cf-label" for={id('message')}>
+        {copy.fields.message} <span class="cf-mark">{mark(false)}</span>
+      </label>
+      <textarea
+        class="cf-input cf-textarea"
+        id={id('message')}
+        name="message"
+        rows="4"
+        maxlength={MESSAGE_MAX}
+        autocomplete="off"
+        aria-describedby={`${id('message-count')} ${id('message-error')}`}></textarea>
+      <p class="cf-hint cf-count" id={id('message-count')} data-cf-count>
+        {fill(copy.remaining, { count: MESSAGE_MAX.toLocaleString('en-US') })}
+      </p>
+      <p class="cf-error" id={id('message-error')} data-cf-error hidden></p>
+    </div>
+  </div>
+
+  {UTM_KEYS.map((key) => <input type="hidden" name={key} value="" data-cf-utm={key} />)}
+
+  <div class="cf-actions">
+    <button class={buttonClass} type="submit" data-cf-submit>{submitLabel}</button>
+    <p class="cf-status" role="status" aria-live="polite" tabindex="-1" data-cf-status></p>
+    {afterSubmit && <p class="cf-note" set:html={rich(afterSubmit)} />}
+    {
+      privacyUrl && (
+        <p class="cf-note">
+          <a class="cf-link" href={privacyUrl}>
+            {copy.privacy}
+          </a>
+        </p>
+      )
+    }
+  </div>
+
+  <noscript>
+    <p class="cf-note">Please turn on JavaScript to send a request through this form.</p>
+  </noscript>
+</form>
+
+<div class="cf-success" tabindex="-1" hidden data-cf-success>
+  <p class="cf-preview-result" data-cf-preview-result hidden>{copy.previewResult}</p>
+  <p class="cf-hint" data-cf-preview-label hidden>{copy.previewThanksLabel}</p>
+  <p class="cf-success__text">{success}</p>
+  <button class="cf-link-button" type="button" data-cf-edit hidden>{copy.edit}</button>
+</div>

@@ -1,0 +1,20 @@
+---
+import ContactForm from '../ContactForm.astro';
+import { homeValue as copy } from '../../content/lps/home-value';
+import { homeValueConfig, approvedPhone } from '../../content/lps/home-value/config';
+const c = copy.form;
+const phone = approvedPhone(homeValueConfig.phone);
+---
+<div id="visit-request" class="hv-form-panel">
+  <h3 id="visit-title" tabindex="-1">{c.heading}</h3>
+  <p>{c.intro}</p>
+  <ContactForm
+    lp="home-value"
+    company={homeValueConfig.brand}
+    buttonClass="hv-button hv-button--primary"
+    submitLabel={c.submit}
+    success={c.success}
+    privacyUrl={homeValueConfig.privacyUrl}
+  />
+  {phone && <p class="hv-small">You can also <a href={`tel:${phone.e164}`} data-phone-call>call {homeValueConfig.brand} at {phone.display}</a>.</p>}
+</div>

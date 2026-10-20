@@ -42,7 +42,7 @@ npm run build    # dist/ に静的ファイルを出力
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
 npm run todos    # 未確定の事業情報（TODO）の一覧
-npm run test:home-value # 希望日時フォームと送信境界の機能テスト
+npm test         # 共通フォームの入力チェックと送信処理のテスト
 ```
 
 `/` は `/downsizing` へリダイレクトする（`astro.config.mjs`）。公開ドメインが決まったら `site` を差し替える（canonical と OG 画像の URL に使う）。
@@ -61,8 +61,10 @@ src/
   components/            仕様の section 4 の部品（1部品1ファイル）＋ PhoneButton / CtaGroup / Section
   layouts/BaseLayout.astro  head（meta、OG、LocalBusiness 構造化データ、GTM）
   pages/[slug].astro     content/lps/*.ts の sections を順に描画
-  scripts/               ブラウザ側の処理（計測、フォーム検証、追従バー、FAQ）
-  scripts/submit.ts      submitConsultation()：フォーム送信のスタブ
+  content/contact-form.ts   全LP共通：問い合わせフォームの送信先、英語の共通文言、SMS同意の仮文言
+  components/ContactForm.astro  全LP共通の問い合わせフォーム（スキンはLPごと）
+  lib/contact-form.ts    フォームの入力チェック・整形・送信処理（テスト済み）
+  scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ）
 public/images/           OG 画像（仮）
 ```
 
@@ -73,6 +75,10 @@ public/images/           OG 画像（仮）
 
 1. `src/content/lps/downsizing.ts` をコピーし、`slug`・`scene`（`move` / `sort` / `memory` / `brand`）・コピー・`sections` の並び順を書き換える。
 2. `src/content/lps/index.ts` の `landingPages` に追加する。
+
+### 問い合わせフォーム（全LP共通）
+
+項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信先は `src/content/contact-form.ts` の `endpoint` を1か所変えれば、全LPに反映されます。詳しくは [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
 3. `docs/design/<slug>/DESIGN_SYSTEM.md` を作成し、`docs/design/README.md` に登録する。
 4. 他LPへ影響しない専用スタイルを用意する。既存LPのデザインを自動的に引き継がない。
 
@@ -86,9 +92,9 @@ public/images/           OG 画像（仮）
 |---|---|
 | メインの問い合わせ手段 | 主ボタンはすべて電話（`tel:`）：ヘッダー、ファーストビュー、中間CTA、最後の申込みセクション、スマホの追従バー。ボタンには電話番号を表示し、直後に「Appraisal only is fine…」と受付時間（CT）を置いた。フォームは補助で、ヘッダーの「Book a consultation」とファーストビューの「Request a visit online」から開く |
 | コールトラッキング | ツール未定。電話番号は `site.ts` の1か所から出力し、`data-phone-number` を付けているので、番号差し替え型のツールがそのまま使える。タップは `cta_click`（`method: phone`）で計測 |
-| TCPA 同意 | フォームに電話・SMSでの連絡への同意チェックボックスを追加。初期値はオフ、送信の必須条件にはしていない。文言は法務確認待ちで TODO |
+| TCPA 同意 | フォームに SMS 同意のチェックボックスを置いた。初期値はオフ、送信の必須条件にはしていない。同意の有無・日時・文言を保存する。文言は仮で、法務確認待ち（[共通問い合わせフォーム](docs/forms/contact-form.md)） |
 | 法定表記 | テキサス州の登録番号をヘッダー・会社情報・フッターに表示。フッターに OCCC の連絡先欄と「Do not sell or share my personal information」リンクを追加 |
-| ZIP 判定 | フォームの郵便番号欄を ZIP code（5桁）にし、入力すると対応エリアかどうかを表示。対象の ZIP 一覧（`site.ts` の `zipPrefixes`）が未確定なので、今は TODO を表示 |
+| ZIP | フォームの郵便番号欄を ZIP code（5桁、または ZIP+4）にした。対応エリアの判定は、対象の ZIP 一覧が未確定のため行っていない |
 
 ファーストビューに補助ボタン（フォーム）が並ぶのは、デザインシステムの「ファーストビューのボタンは1つ」から外れている。9/25 要件定義書の「電話CTA（大）＋オンライン予約（副）」を優先した。
 
@@ -108,7 +114,7 @@ public/images/           OG 画像（仮）
 
 ### 仕様にないため追加した文言（下書き）
 
-Request a visit online / Or send us a request online / Calls answered {hours}. / ZIP の説明とエリア判定の文言 / How should we reach you? / エラー文言 / プライバシー同意文 / (optional) / Sending your request… / 送信失敗時の文言 / Don't see your area? Call us and we'll check. / Company information / フッターのリンク名 / Skip to main content。
+Request a visit online / Or send us a request online / Calls answered {hours}. / ZIP の説明 / エラー文言 / (optional) / Sending your request… / 送信失敗時の文言 / Don't see your area? Call us and we'll check. / Company information / フッターのリンク名 / Skip to main content。
 
 ## 計測
 
@@ -129,12 +135,12 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 
 - 会社名、住所、テキサス州の登録番号、営業時間、電話番号
 - OCCC の連絡先と、必要な表記の文言
-- 対応エリア、エリア判定用の ZIP 一覧
+- 対応エリア（エリア判定をするなら、対象の ZIP 一覧も）
 - 出張費・査定料、支払い方法とタイミング、買い取った品の行き先（FAQ）
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
 - 申込み後の連絡までの営業日数
-- TCPA 同意の文言
-- フォームの送信先（`src/scripts/submit.ts` の `submitConsultation()`。今は console に出力して完了画面を表示する）
+- SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
+- フォームの送信先（`src/content/contact-form.ts` の `endpoint`。全LP共通。未設定の間は「Preview only」と表示し、何も送信しない）
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - GTM コンテナ ID、コールトラッキングツール
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ

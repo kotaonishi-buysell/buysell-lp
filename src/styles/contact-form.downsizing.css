@@ -1,0 +1,30 @@
+/* Downsizing skin for the shared contact form. Values come from tokens.css only. */
+[data-lp="downsizing"] :is(.cf, .cf-success) {
+  --cf-text: var(--ink);
+  --cf-muted: var(--ink-muted);
+  --cf-border: var(--line-strong);
+  --cf-border-width: var(--border-control);
+  --cf-border-width-strong: var(--border-error);
+  --cf-input-bg: var(--paper-raised);
+  --cf-radius: var(--radius-sm);
+  --cf-accent: var(--pine);
+  --cf-focus: var(--ink);
+  --cf-error: var(--ink);
+  --cf-surface: var(--paper-sunk);
+  --cf-gap: var(--space-3);
+  --cf-gap-sm: var(--space-1);
+  --cf-tap: var(--tap-min);
+  --cf-pad-x: var(--space-2);
+  --cf-pad-y: var(--space-1);
+  --cf-checkbox: var(--checkbox-size);
+  --cf-focus-width: var(--focus-width);
+  --cf-focus-offset: var(--focus-offset);
+  --cf-weight-strong: var(--weight-semibold);
+}
+
+[data-lp="downsizing"] .cf-success__text {
+  font-family: var(--font-serif);
+  font-size: var(--fs-heading);
+  line-height: var(--lh-heading);
+  font-weight: var(--weight-medium);
+}

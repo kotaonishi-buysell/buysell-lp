@@ -12,16 +12,16 @@ Seven sections in the required order; brand identification; nine categories; ten
 Confirmed copy includes Dallas–Fort Worth and surrounding areas, free appraisal and travel, one-item visits, additional items during the visit, value-only inquiries and bank-account payment within three business days after completed purchase.
 Primary phone actions are explicitly unavailable while the approved number is absent. All request actions lead to the same inline form.
 
-The form requires name, U.S. phone, five-digit ZIP and a non-past preferred date interpreted in America/Chicago. Email, category selection, time preference and brief notes are optional. ZIP validation checks format only.
-Validation errors, sending/duplicate prevention, explicit preview outcome, service-acknowledged receipt, failure and retry are implemented. No invented availability, banking fields, placeholder consent or marketing opt-in.
+The request form is the contact form shared by every LP (see [docs/forms/contact-form.md](../../../../docs/forms/contact-form.md)): first and last name, ZIP code and U.S. phone are required; email, a message and an SMS consent checkbox (off by default, not required) are optional. ZIP validation checks format only. The earlier preferred date/time and item-category fields were removed on October 20, 2026, when the form became common to all LPs; the copy that mentioned a preferred date was updated.
+Validation errors, sending/duplicate prevention, explicit preview outcome, service-acknowledged receipt, failure and retry are implemented. No invented availability or banking fields. The SMS consent wording is provisional and must be replaced with approved copy.
 
 ## Editable files
 - Page copy: index.ts in this directory.
 - Business and integration values: config.ts in this directory. Confirmed values are populated; unavailable values are null.
 - Route: src/pages/home-value.astro.
-- Contact and form components: src/components/home-value/.
-- Validation and delivery boundary: src/lib/home-value-request.ts.
-- Browser behavior and local measurement: src/scripts/home-value.ts.
+- Contact actions and the form panel: src/components/home-value/. The form itself is the shared src/components/ContactForm.astro.
+- Validation and delivery boundary (shared): src/lib/contact-form.ts. Endpoint and form copy (shared): src/content/contact-form.ts.
+- Browser behavior and local measurement: src/scripts/home-value.ts (the shared form logic is src/scripts/contact-form.ts).
 - Design: src/styles/home-value.css.
 - Original SVG samples: public/images/home-value/*-sample.svg. These are labeled illustrations, not actual people or photography. Replace with approved photography and update image paths, dimensions and alt text.
 
@@ -39,10 +39,10 @@ Validation errors, sending/duplicate prevention, explicit preview outcome, servi
 | Canonical/production metadata | No production domain invented; preview is noindex |
 
 ## Delivery adapter contract
-Set deliveryEndpoint only after an approved receiving service and staff review workflow exist. The browser POSTs JSON with lp, name, phone, email, zip, categories, preferredDate, preferredTime, timeZone and notes.
+Set the shared endpoint (contactFormConfig.endpoint in src/content/contact-form.ts) only after an approved receiving service and staff review workflow exist. The browser POSTs JSON with lp, firstName, lastName, zip, phone (digits only), email, message, smsConsent, smsConsentAt, smsConsentText, submittedAt and utm.
 An HTTP 2xx response must contain JSON **{ "accepted": true }** before receipt is displayed or visit_request_submit emitted. Empty responses, malformed JSON, rejected requests and network errors show failure and retain entered values. Requests time out after 15 seconds.
 This is an application adapter contract, not a claim about Jobber's API. Integrate a backend with server-side provider credentials and appropriate server validation when the provider interface is approved.
-Without an endpoint, valid input produces: "Your details pass validation. No request has been sent and no appointment has been booked." No network send, persistent storage or personal-data logging occurs.
+Without an endpoint, valid input shows a clear "Preview only" notice above the thank-you message: nothing was sent and no appointment was booked. No network send, persistent storage or personal-data logging occurs.
 Live success still says the appointment is not confirmed. Do not connect a provider using browser-visible credentials.
 
 ## Measurement
@@ -53,7 +53,7 @@ Phone events represent tap intent; accepted requests are not confirmed appointme
 ## Checks performed
 - Astro check: 43 files, zero errors/warnings/hints.
 - Astro build: /home-value, /downsizing and the existing / redirect generated.
-- npm run test:home-value: ten tests passed for U.S. phone formats, required/optional fields, impossible/past dates, Chicago day boundaries, preview without transmission, receiving-service acknowledgement, failures/retry and dummy phone suppression.
+- npm test: the shared form's validation, normalization, consent data and delivery tests, plus dummy phone suppression.
 - Browser: seven sections, all ten displayed sample assets loaded, no console errors, form navigation, required-field and past-date errors, successful local validation and explicit no-send/no-booking message.
 - Responsive: desktop and narrow single-column layouts checked; no horizontal overflow.
 - Existing /downsizing main HTML compared before/after; content unchanged.
