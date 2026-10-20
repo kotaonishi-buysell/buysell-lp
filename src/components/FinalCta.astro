@@ -23,7 +23,7 @@ const formHeadingId = 'consult-title';
 
     <div id="consult" class="final__panel on-paper">
       <h3 id={formHeadingId} class="t-heading final__form-heading">{section.formHeading}</h3>
-      <ConsultForm lp={lp} />
+      <ConsultForm form={lp.form} lpSlug={lp.slug} />
     </div>
   </div>
 </section>

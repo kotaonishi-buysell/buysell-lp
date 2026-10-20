@@ -4,16 +4,17 @@
  * Behaviour lives in src/scripts/form.ts; the endpoint is stubbed in
  * src/scripts/submit.ts.
  */
-import type { LandingPage } from '../content/types';
+import type { FormContent } from '../content/types';
 import { site } from '../content/site';
 import { fill, rich } from '../lib/text';
 
 interface Props {
-  lp: LandingPage;
+  form: FormContent;
+  /** Reported with the request so leads can be traced to the LP. */
+  lpSlug: string;
 }
 
-const { lp } = Astro.props;
-const form = lp.form;
+const { form, lpSlug } = Astro.props;
 const utmFields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 
 const config = {
@@ -174,7 +175,7 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
     </label>
   </div>
 
-  <input type="hidden" name="lp" value={lp.slug} />
+  <input type="hidden" name="lp" value={lpSlug} />
   {utmFields.map((name) => <input type="hidden" name={name} value="" data-utm={name} />)}
 
   <div class="form__submit">

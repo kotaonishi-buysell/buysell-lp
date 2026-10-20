@@ -232,6 +232,18 @@ export interface LandingPage {
   form: FormContent;
 }
 
+/**
+ * An LP with its own page and stylesheet (e.g. silver) instead of the shared
+ * sections. It still takes its meta and its consultation form from content,
+ * so the form, validation and analytics stay shared. It is not listed in
+ * landingPages: src/pages/<slug>.astro renders it.
+ */
+export interface CustomLandingPage {
+  slug: string;
+  meta: LandingPage['meta'] & { ogImageAlt: string };
+  form: FormContent;
+}
+
 export interface SiteContent {
   company: {
     name: string;

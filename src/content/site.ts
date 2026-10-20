@@ -1,5 +1,6 @@
 /*
- * Company facts and interface copy shared by every LP.
+ * Company facts and interface copy shared by every LP (Downsizing and the other
+ * Home Appraisal LPs, and Silver).
  * Values marked {{TODO: ...}} are business facts the client confirms before launch.
  */
 import type { SiteContent } from './types';

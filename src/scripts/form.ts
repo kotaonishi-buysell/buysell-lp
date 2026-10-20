@@ -4,10 +4,9 @@
  */
 import { track } from './analytics';
 import { submitConsultation, type ConsultationRequest } from './submit';
+import { ZIP_PATTERN, zipAreaMessage, type ZipConfig } from './zip';
 
-interface FormConfig {
-  zipPrefixes: string[];
-  zipMessages: { inArea: string; outOfArea: string; notConfigured: string };
+interface FormConfig extends ZipConfig {
   errors: {
     summaryOne: string;
     summaryMany: string;
@@ -25,7 +24,6 @@ interface FormConfig {
 
 type FieldName = 'name' | 'contact' | 'zip' | 'privacy';
 
-const ZIP_PATTERN = /^\d{5}(-\d{4})?$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** US numbers: 10 digits, optionally with a leading country code 1. */
@@ -150,18 +148,7 @@ export const initForm = (): void => {
 
   // ---------- ZIP service-area check ----------
   const updateZipStatus = () => {
-    if (!zipStatus) return;
-    const zip = zipInput.value.trim();
-    if (!ZIP_PATTERN.test(zip)) {
-      zipStatus.innerHTML = '';
-      return;
-    }
-    if (config.zipPrefixes.length === 0) {
-      zipStatus.innerHTML = config.zipMessages.notConfigured;
-      return;
-    }
-    const inArea = config.zipPrefixes.some((prefix) => zip.startsWith(prefix));
-    zipStatus.innerHTML = inArea ? config.zipMessages.inArea : config.zipMessages.outOfArea;
+    if (zipStatus) zipStatus.innerHTML = zipAreaMessage(zipInput.value, config);
   };
   zipInput.addEventListener('input', updateZipStatus);
 

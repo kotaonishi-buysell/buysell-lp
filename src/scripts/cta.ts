@@ -1,9 +1,15 @@
 import { track } from './analytics';
 
-/** Scrolls to the request form and focuses its first field (or the thank-you message once sent). */
+/**
+ * Opens the request form and focuses its first field (or the thank-you message
+ * once sent): scrolls to the panel on the page, or opens the dialog around it.
+ */
 export const openConsultForm = (): void => {
   const panel = document.getElementById('consult');
   if (!panel) return;
+
+  const dialog = panel.closest('dialog');
+  if (dialog && !dialog.open) dialog.showModal();
 
   const success = panel.querySelector<HTMLElement>('[data-form-success]');
   const target =
@@ -11,7 +17,7 @@ export const openConsultForm = (): void => {
       ? success
       : panel.querySelector<HTMLElement>('input:not([type="hidden"]), select, textarea');
 
-  panel.scrollIntoView({ block: 'start' });
+  if (!dialog) panel.scrollIntoView({ block: 'start' });
   target?.focus({ preventScroll: true });
 };
 
