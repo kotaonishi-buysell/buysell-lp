@@ -1,5 +1,6 @@
 /*
- * Company facts and interface copy shared by every LP.
+ * Company facts and interface copy shared by every LP (Downsizing and the other
+ * Home Appraisal LPs, and Silver).
  * Values marked {{TODO: ...}} are business facts the client confirms before launch.
  */
 import type { SiteContent } from './types';
@@ -25,6 +26,8 @@ export const site: SiteContent = {
   serviceArea: {
     summary: '{{TODO: service area}}',
     places: ['{{TODO: cities we visit}}'],
+    // TODO: ZIP code prefixes of the service area, e.g. ['770', '773'] for parts of Houston.
+    zipPrefixes: [],
     outsideNote: "Don't see your area? Call us and we'll check.",
   },
   regulator: {

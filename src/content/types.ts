@@ -192,6 +192,18 @@ export interface LandingPage {
   form: LpFormCopy;
 }
 
+/**
+ * An LP with its own page and stylesheet (e.g. silver) instead of the shared
+ * sections. It still takes its meta and the copy of the shared contact form from
+ * content, so the form, validation and analytics stay shared. It is not listed in
+ * landingPages: src/pages/<slug>.astro renders it.
+ */
+export interface CustomLandingPage {
+  slug: string;
+  meta: LandingPage['meta'] & { ogImageAlt: string };
+  form: LpFormCopy;
+}
+
 export interface SiteContent {
   company: {
     name: string;
@@ -212,6 +224,8 @@ export interface SiteContent {
   serviceArea: {
     summary: string;
     places: string[];
+    /** ZIP code prefixes we visit, e.g. "770" for Houston. Empty = not configured yet. Used by Silver's ZIP box. */
+    zipPrefixes: string[];
     outsideNote: string;
   };
   regulator: {

@@ -7,6 +7,7 @@
 - For changes affecting multiple LPs, read each affected LP's design system.
 - For home-value, also read src/content/lps/home-value/README.md.
 - For home-value business requirements and behavior, read docs/requirements/home-value.en.md. Its confirmed facts and seven-section sequence supersede earlier draft copy.
+- For /silver, read docs/design/silver/DESIGN_SYSTEM.md. Silver loads silver.css only through SilverLayout; never import silver.css or base.css into the other LPs.
 - Preserve the existing Astro application, /downsizing route, and / redirect.
 - Apply Friendly Discovery styling only to home-value unless migration is explicitly requested.
 - Keep legacy tokens.css, base.css and existing LP content unchanged for this addition.

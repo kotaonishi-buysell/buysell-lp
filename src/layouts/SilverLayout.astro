@@ -1,0 +1,29 @@
+---
+/*
+ * Layout of the Silver LP. Loads tokens.css and form-support.css (the shared form
+ * needs them) and silver.css, but not base.css: silver.css has its own resets and
+ * global element rules, which must not meet base.css.
+ * Keep silver.css last: it overrides some tokens for the form.
+ */
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/form-support.css';
+import '../styles/silver.css';
+import type { CustomLandingPage } from '../content/types';
+import Document from './Document.astro';
+
+interface Props {
+  page: CustomLandingPage;
+}
+
+const { page } = Astro.props;
+---
+
+<Document
+  slug={page.slug}
+  meta={page.meta}
+  bodyAttrs={{ 'data-lp': page.slug }}
+  preloadFonts={['newsreader-latin-opsz-normal.woff2', 'newsreader-latin-opsz-italic.woff2']}
+>
+  <slot />
+</Document>
