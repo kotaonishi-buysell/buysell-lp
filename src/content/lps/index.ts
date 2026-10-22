@@ -6,4 +6,5 @@
 import type { LandingPage } from '../types';
 import { downsizing } from './downsizing';
 
+// /home-value has its own route and request flow in pages/home-value.astro.
 export const landingPages: LandingPage[] = [downsizing];

@@ -1,0 +1,19 @@
+---
+import { homeValueConfig, approvedPhone } from '../../content/lps/home-value/config';
+import { homeValue as copy } from '../../content/lps/home-value';
+const { compact = false } = Astro.props;
+const phone = approvedPhone(homeValueConfig.phone);
+---
+<div class:list={['hv-contact', { 'hv-contact--compact': compact }]}>
+  <div class="hv-phone">
+    {phone ? (
+      <a class="hv-button hv-button--primary" href={`tel:${phone.e164}`} data-phone-call aria-label={`${copy.contact.call} at ${phone.display}`}>
+        <span>{copy.contact.call}</span><span class="hv-phone-number">{phone.display}</span>
+      </a>
+    ) : (
+      <><button class="hv-button hv-button--primary" type="button" disabled aria-describedby="phone-pending">{copy.contact.call}</button><span class="hv-small">{copy.contact.phonePending}</span></>
+    )}
+    {homeValueConfig.hours && <span class="hv-small">{homeValueConfig.hours} (Central Time)</span>}
+  </div>
+  <a class="hv-button hv-button--secondary" href="#visit-request" data-visit-open>{copy.contact.request}</a>
+</div>

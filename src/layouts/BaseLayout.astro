@@ -68,7 +68,7 @@ const gtmScript = gtmId
     <script type="application/ld+json" set:html={structuredDataJson} />
     {gtmId && <script is:inline set:html={gtmScript} />}
   </head>
-  <body data-scene={lp.scene}>
+  <body data-scene={lp.scene} data-lp={lp.slug}>
     {
       gtmId && (
         <noscript>

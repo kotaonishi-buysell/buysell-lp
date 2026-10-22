@@ -11,7 +11,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "todos": "node scripts/list-todos.mjs"
+    "todos": "node scripts/list-todos.mjs",
+    "test:home-value": "node --experimental-transform-types --test tests/home-value.test.mjs"
   },
   "dependencies": {
     "astro": "^7.3.4"

@@ -1,0 +1,64 @@
+---
+import { homeValue as copy } from '../../content/lps/home-value';
+import { homeValueConfig, approvedPhone } from '../../content/lps/home-value/config';
+const c = copy.form;
+const phone = approvedPhone(homeValueConfig.phone);
+const fields = [
+  { name: 'name', label: c.name, type: 'text', autocomplete: 'name', required: true },
+  { name: 'phone', label: c.phone, type: 'tel', autocomplete: 'tel', required: true },
+  { name: 'email', label: c.email, type: 'email', autocomplete: 'email', required: false },
+  { name: 'zip', label: c.zip, type: 'text', autocomplete: 'postal-code', required: true },
+  { name: 'preferredDate', label: c.date, type: 'date', autocomplete: 'off', required: true },
+  { name: 'preferredTime', label: c.time, type: 'time', autocomplete: 'off', required: false },
+] as const;
+const config = JSON.stringify({
+  endpoint: homeValueConfig.deliveryEndpoint,
+  measurementEnabled: homeValueConfig.measurementEnabled,
+  errors: c.errors, summary: c.summary, sending: c.sending,
+  previewValid: c.previewValid, success: c.success, failure: c.failure,
+}).replace(/</g, '\\u003c');
+---
+<div id="visit-request" class="hv-form-panel">
+  <h3 id="visit-title" tabindex="-1">{c.heading}</h3>
+  <p>{c.intro}</p>
+  {!homeValueConfig.deliveryEndpoint && <p class="hv-preview-note">{c.preview}</p>}
+  <p class="hv-small" id="visit-preference">{c.dateHint}</p>
+  <form data-visit-form novalidate autocomplete="off">
+    <script type="application/json" data-visit-config set:html={config} />
+    <div class="hv-fields">
+      {fields.map((field) => (
+        <div class="hv-field">
+          <label for={`visit-${field.name}`}>{field.label}{field.required && <span class="hv-required"> (required)</span>}</label>
+          <input
+            id={`visit-${field.name}`} name={field.name} type={field.type}
+            autocomplete={field.autocomplete} required={field.required}
+            inputmode={field.name === 'zip' ? 'numeric' : undefined}
+            maxlength={field.name === 'zip' ? 5 : field.name === 'name' ? 150 : undefined}
+            aria-describedby={`error-${field.name}${field.name === 'zip' ? ' visit-zip-hint' : field.name.startsWith('preferred') ? ' visit-preference' : ''}`}
+          />
+          {field.name === 'zip' && <p id="visit-zip-hint" class="hv-small">{c.zipHint}</p>}
+          <p id={`error-${field.name}`} data-error={field.name} class="hv-error" hidden />
+        </div>
+      ))}
+    </div>
+    <fieldset>
+      <legend>{c.categories}</legend>
+      <div class="hv-checkboxes">
+        {copy.categories.items.map((item) => item.image === 'other' ? 'Other / Not sure' : item.name).map((name, i) => (
+          <label for={`visit-category-${i}`}><input id={`visit-category-${i}`} type="checkbox" name="categories" value={name} />{name}</label>
+        ))}
+      </div>
+    </fieldset>
+    <div class="hv-field">
+      <label for="visit-notes">{c.notes}</label>
+      <textarea id="visit-notes" name="notes" rows="3" maxlength="1000" aria-describedby="visit-notes-hint error-notes" />
+      <p id="visit-notes-hint" class="hv-small">{c.notesHint}</p>
+      <p id="error-notes" data-error="notes" class="hv-error" hidden />
+    </div>
+    {homeValueConfig.privacyUrl && <p class="hv-small"><a href={homeValueConfig.privacyUrl}>Privacy information</a></p>}
+    <button class="hv-button hv-button--primary" type="submit">{c.submit}</button>
+    <p class="hv-form-status" data-visit-status role="status" aria-live="polite" tabindex="-1" />
+    {phone && <p class="hv-small">You can also <a href={`tel:${phone.e164}`} data-phone-call>call {homeValueConfig.brand} at {phone.display}</a>.</p>}
+    <noscript><p>{homeValueConfig.deliveryEndpoint ? 'Please enable JavaScript to send a visit request.' : 'Preview only. Enable JavaScript to try local form validation. No request will be sent.'}</p></noscript>
+  </form>
+</div>
