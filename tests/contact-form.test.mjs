@@ -157,3 +157,57 @@ test('protocol-relative or insecure destinations are refused before sending', as
   );
   assert.equal(calls, 0);
 });
+
+// ---------- Netlify Forms ----------
+import { toFormBody, deliverToNetlifyForms } from '../src/lib/contact-form.ts';
+
+const nfRequest = (extra = {}) => buildRequest({ ...valid(), firstName: " Zoë ", phone: '(214) 555-0123', zip: '752011234', email: 'zoe@example.com', message: ' hi & bye = 1 ' }, ctx({ utm: { utm_source: 'google', utm_medium: 'cpc' }, honeypot: '', ...extra }));
+const parse = (body) => Object.fromEntries(new URLSearchParams(body));
+
+test('Netlify Forms body: normalised values, the form name and every field the form declares', () => {
+  const f = parse(toFormBody(nfRequest(), 'contact'));
+  assert.deepEqual(f, {
+    'form-name': 'contact', lp: 'downsizing', firstName: 'Zoë', lastName: 'Lopez', zip: '75201-1234', phone: '2145550123',
+    email: 'zoe@example.com', message: 'hi & bye = 1', smsConsent: 'no', smsConsentAt: '', smsConsentText: '',
+    submittedAt: '2026-10-20T15:00:00.000Z', homepage_url: '', utm_source: 'google', utm_medium: 'cpc',
+    utm_campaign: '', utm_term: '', utm_content: '',
+  });
+});
+test('Netlify Forms body: special characters survive the encoding, and consent carries its time and wording', () => {
+  const body = toFormBody(nfRequest({ smsConsent: true, smsConsentAt: '2026-10-20T14:58:00.000Z', smsConsentText: 'I agree & accept = yes.' }), 'contact');
+  assert(!body.includes(' '), 'no raw spaces');
+  const f = parse(body);
+  assert.equal(f.message, 'hi & bye = 1');
+  assert.equal(f.smsConsent, 'yes');
+  assert.equal(f.smsConsentAt, '2026-10-20T14:58:00.000Z');
+  assert.equal(f.smsConsentText, 'I agree & accept = yes.');
+});
+test('Netlify Forms body: the spam trap travels as the honeypot field', () => {
+  assert.equal(parse(toFormBody(nfRequest({ honeypot: 'http://spam.example' }), 'contact')).homepage_url, 'http://spam.example');
+});
+test('delivery to Netlify Forms: POSTs urlencoded to the given path and is accepted on 2xx', async () => {
+  let seen;
+  const result = await deliverToNetlifyForms(nfRequest(), 'contact', '/downsizing', async (url, options) => {
+    seen = { url, options };
+    return new Response('<html>thanks</html>', { status: 200, headers: { 'content-type': 'text/html' } });
+  });
+  assert.equal(result, 'accepted');
+  assert.equal(seen.url, '/downsizing');
+  assert.equal(seen.options.method, 'POST');
+  assert.equal(seen.options.headers['Content-Type'], 'application/x-www-form-urlencoded');
+  assert.equal(parse(seen.options.body)['form-name'], 'contact');
+});
+test('delivery to Netlify Forms: non-2xx and network failures are failures, and the request is unchanged for a retry', async () => {
+  const req = nfRequest();
+  const original = structuredClone(req);
+  for (const status of [404, 500]) await assert.rejects(deliverToNetlifyForms(req, 'contact', '/silver', async () => new Response('x', { status })), (e) => e.category === 'rejected');
+  await assert.rejects(deliverToNetlifyForms(req, 'contact', '/silver', async () => { throw new Error('offline'); }), (e) => e.category === 'network');
+  assert.deepEqual(req, original);
+  assert.equal(await deliverToNetlifyForms(req, 'contact', '/silver', async () => new Response('ok')), 'accepted');
+});
+test('delivery to Netlify Forms: only a path on the same site is accepted', async () => {
+  let calls = 0;
+  for (const path of ['//other.test/x', 'https://other.test/x', 'downsizing', '']) await assert.rejects(
+    deliverToNetlifyForms(nfRequest(), 'contact', path, async () => { calls++; return new Response('ok'); }), (e) => e.category === 'configuration');
+  assert.equal(calls, 0);
+});

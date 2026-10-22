@@ -96,7 +96,7 @@ public/images/           OG 画像（仮）、silver/ は Silver の画像（Web
 
 ### 問い合わせフォーム（全LP共通）
 
-項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信先は全LPで同じ受付サーバー（`/api/contact`、Netlify Functions）で、訪問者の入力はメールでチームに通知されます。公開先は Netlify です。設定手順と環境変数は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
+項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信は全LPで同じ **Netlify Forms**（フォーム名 `contact`）に集まり、通知は Netlify の画面で設定します（メールを関数から送る方式にも切り替えられます）。公開先は Netlify です。設定手順は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
 
 ## Silver LP（`/silver`）
 
@@ -192,7 +192,7 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
 - 申込み後の連絡までの営業日数
 - SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
-- 通知メールの設定（Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL`、Resendの送信元ドメインの認証）。設定するまで、Netlify 上のフォームは「送れませんでした」と表示する
+- Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - GTM コンテナ ID、コールトラッキングツール
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ

@@ -42,11 +42,13 @@ const {
 
 const id = (name: string) => `${idPrefix}-${name}`;
 const consentText = smsConsentText(company);
-const endpoint = contactFormConfig.endpoint;
+const { mode, endpoint, formName } = contactFormConfig;
 
 const config = {
   lp,
+  mode,
   endpoint,
+  formName,
   idPrefix,
   consentText,
   copy: {
@@ -64,10 +66,20 @@ const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
 const mark = (required: boolean) => (required ? copy.required : copy.optional);
 ---
 
-<form class="cf" data-cf data-cf-lp={lp} novalidate autocomplete="on">
+<form
+  class="cf"
+  data-cf
+  data-cf-lp={lp}
+  name={formName}
+  method="post"
+  data-netlify="true"
+  data-netlify-honeypot="homepage_url"
+  novalidate
+  autocomplete="on"
+>
   <script type="application/json" data-cf-config set:html={configJson} />
 
-  {!endpoint && <p class="cf-preview-note">{copy.previewNote}</p>}
+  {mode === 'preview' && <p class="cf-preview-note">{copy.previewNote}</p>}
 
   <div class="cf-grid">
     <div class="cf-field" data-cf-field="firstName">
@@ -185,6 +197,17 @@ const mark = (required: boolean) => (required ? copy.required : copy.optional);
   </div>
 
   {UTM_KEYS.map((key) => <input type="hidden" name={key} value="" data-cf-utm={key} />)}
+
+  <!--
+    Netlify Forms reads this markup at build time to learn the form and its fields. The browser sends
+    the values itself (src/scripts/contact-form.ts), so the hidden fields below only declare the extra
+    data it stores with each submission.
+  -->
+  <input type="hidden" name="form-name" value={formName} />
+  <input type="hidden" name="lp" value={lp} />
+  <input type="hidden" name="smsConsentAt" value="" />
+  <input type="hidden" name="smsConsentText" value="" />
+  <input type="hidden" name="submittedAt" value="" />
 
   <!-- Spam trap: people never see or reach this field; bots tend to fill it in. -->
   <div class="cf-trap" aria-hidden="true">

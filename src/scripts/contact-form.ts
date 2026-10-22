@@ -9,6 +9,7 @@ import {
   FIELD_ORDER,
   buildRequest,
   deliverContactRequest,
+  deliverToNetlifyForms,
   messageRemaining,
   readUtm,
   validate,
@@ -19,7 +20,9 @@ import {
 
 interface FormConfig {
   lp: string;
+  mode: 'preview' | 'netlify-forms' | 'function';
   endpoint: string | null;
+  formName: string;
   idPrefix: string;
   consentText: string;
   copy: {
@@ -172,7 +175,10 @@ function initForm(form: HTMLFormElement): void {
         honeypot: trap?.value ?? '',
         elapsedMs: Date.now() - loadedAt,
       });
-      const result = await deliverContactRequest(request, config.endpoint);
+      const result =
+        config.mode === 'netlify-forms'
+          ? await deliverToNetlifyForms(request, config.formName, window.location.pathname)
+          : await deliverContactRequest(request, config.mode === 'function' ? config.endpoint : null);
 
       form.hidden = true;
       if (result === 'accepted') {

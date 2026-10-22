@@ -18,7 +18,7 @@
 
 ## 送信されるデータ
 
-ブラウザは、共通の送信先へ次のJSONを POST します。
+ブラウザは、共通の送信先へ次の内容を送ります（`function` モードではJSON、Netlify Forms モードでは同じ項目をフォーム形式で送ります）。
 
 ```json
 {
@@ -45,15 +45,45 @@
 - `utm` には `utm_source` `utm_medium` `utm_campaign` `utm_term` `utm_content` だけが入ります（他のパラメータは送りません）。
 - `honeypot` と `elapsedMs` は迷惑メール対策です（下の「受付サーバー」を見てください）。
 
-## 送信先の契約
+## 送信方法（3つのモード）
 
-- 送信先は `src/content/contact-form.ts` の `contactFormConfig.endpoint` **1か所**です（同じオリジンのパス、または `https://` のURL）。全LPがここを使います。値は環境変数 `PUBLIC_CONTACT_ENDPOINT` から読みます。`netlify.toml` が Netlify のビルドにだけ `/api/contact` を設定するので、手元のビルドでは未設定のまま（プレビュー）です。
+送信方法は、環境変数で切り替えます。値は `src/content/contact-form.ts` の `contactFormConfig` が読みます。全LPが同じ設定を使います。
+
+| モード | 設定 | 動き |
+|---|---|---|
+| **Netlify Forms**（Netlify の標準） | `PUBLIC_CONTACT_MODE=netlify-forms`（`netlify.toml` に設定済み） | ブラウザが、開いているページ自身のURLに、フォームの内容を送ります。Netlify が受け取って保管し、通知は Netlify の画面で設定します。 |
+| メール送信の関数 | `PUBLIC_CONTACT_ENDPOINT=/api/contact`（`PUBLIC_CONTACT_MODE` は未設定） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直してメールで通知します。下の「受付サーバー」を見てください。 |
+| プレビュー | どちらも未設定（手元のビルド） | 何も送信せず、「Preview only」と明示します。受付済みとは表示せず、計測の `form_submit` も出しません。 |
+
+### Netlify Forms で受け取る
+
+- フォームの名前は `contact` で、**全LPで同じ**です。そのため、3つのLPの送信が、Netlify の「Forms」の同じ「contact」にまとまります。どのLPからかは、項目 `lp` で区別します。
+- Netlify は、公開のたびに、ページのHTMLの `<form data-netlify="true">` を読んで、フォームと項目を登録します（フォーム検出を有効にしておく必要があります）。項目を足したり変えたりしたときは、公開し直してください。
+- 送られる内容は、上の「送信されるデータ」と同じです（ブラウザが整形した値）。ただし形式は、フォームの送信と同じ `application/x-www-form-urlencoded` で、`smsConsent` は `yes` か `no`、迷惑メール対策の見えない欄は `homepage_url` です。
+- 迷惑メール対策：見えない入力欄（`homepage_url`）は、Netlify のスパム対策（`data-netlify-honeypot`）として働きます。**この方法には、受付サーバーでの確認し直しや、「2秒未満の送信を断る」仕組みはありません。** Netlify 自身のスパムの判定に頼ります。
+- 成功の判定：Netlify が 2xx を返したときに、画面に完了を表示します。Netlify がスパムとして捨てた送信にも 2xx を返すので、「届いた」ではなく「受け取られた」という意味です。2xx 以外や通信の失敗では、「We couldn't send your request」と表示し、入力は残します。
+
+#### 設定と確認の手順
+1. 変更を公開します（`main` へのマージ、またはデプロイプレビュー）。Netlify の「Forms」に、フォーム「contact」が現れます。出ない場合は、「Forms」で、フォーム検出が有効か確認し、公開し直します。
+2. **通知を設定します。** 「Forms」→「Form notifications」→「Add notification」→「Email notification」で、通知先（`ko.onishi@buysell-technologies.com`）と、対象のフォーム「contact」を選びます。
+3. 公開されたサイトのフォームに、ダミーの内容を入力して送信します。画面に完了のメッセージが出て、「Preview only」が出なければ、Netlify が受け取っています。
+4. Netlify の「Forms」→「contact」→「Verified submissions」に、送信が表示されることを確認します。項目 `lp`、`phone`（数字だけ）、`zip`、`smsConsent` などが、正しく入っているか見てください。
+5. 通知のメールが、設定した宛先に届くことを確認します。
+6. Netlify の画面で、迷惑メールと判定されたものは「Spam submissions」に入ります。本物が入っていないかを、ときどき確認してください。
+
+#### 注意
+- 保管される場所と期間、件数の上限（無料の枠）は、Netlify のプランによります。公式の料金のページで確認してください。上限を超えると、受け取りが止まる場合があります。
+- 個人情報が Netlify に保管されます。プライバシーポリシーへの記載の対象です。
+- このモードで、受付サーバーの関数（`/api/contact`）は使いません。デプロイはされますが、呼ばれません。メールを関数から送る方式に戻すときは、`netlify.toml` の `PUBLIC_CONTACT_MODE` を消し、`PUBLIC_CONTACT_ENDPOINT = "/api/contact"` を設定します。
+
+### メール送信の関数の契約（`function` モード）
+
+- 送信先は `PUBLIC_CONTACT_ENDPOINT`（同じオリジンのパス、または `https://` のURL）です。
 - 送信先は、成功時に **2xx と `{ "accepted": true }`** を返してください。それ以外（2xx以外、空の応答、JSONでない応答、`accepted` が `true` でない応答）は失敗として扱い、入力は残します。15秒でタイムアウトします。
-- `endpoint` が `null` の間は**プレビュー**です。何も送信せず、「Preview only」と明示し、受付済みとは表示しません。計測の `form_submit` も出しません。
 
-## 受付サーバー（Netlify Functions）と通知メール
+## 受付サーバー（Netlify Functions）と通知メール（`function` モード）
 
-`POST /api/contact` を受け付けるサーバー側の機能です。受け取った内容を確認し直して、**チームにメールで通知**します。メールが送れたときだけ `{ "accepted": true }` を返します。
+`POST /api/contact` を受け付けるサーバー側の機能です。Netlify Forms モードでは使いません。受け取った内容を確認し直して、**チームにメールで通知**します。メールが送れたときだけ `{ "accepted": true }` を返します。
 
 - 本体は `src/server/contact.ts`、Netlify との接続は `netlify/functions/contact.ts`、Netlify の設定は `netlify.toml` です。
 - ブラウザの入力チェックとは別に、サーバーでも同じルールで確認し直します（`src/lib/contact-form.ts` を共有）。不正な内容は `400` で断ります。
@@ -106,7 +136,7 @@
 
 ```
 src/lib/contact-form.ts            項目のルール、整形、送信データ、送信処理（純粋な関数。テスト済み）
-src/content/contact-form.ts        送信先、英語の共通文言、SMS同意の仮文言
+src/content/contact-form.ts        送信方法（モード）、英語の共通文言、SMS同意の仮文言
 src/components/ContactForm.astro   フォームの部品（共通のマークアップ）
 src/server/contact.ts              受付サーバーの本体（確認し直し、迷惑メール対策、メール通知）
 netlify/functions/contact.ts       Netlify Functions との接続（POST /api/contact）

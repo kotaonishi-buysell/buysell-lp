@@ -229,3 +229,66 @@ export async function deliverContactRequest(
     clearTimeout(timer);
   }
 }
+
+// ---------- delivery to Netlify Forms ----------
+
+/**
+ * The submission as Netlify Forms expects it (application/x-www-form-urlencoded). Values come from the
+ * normalised request, not from the raw inputs: digits-only phone, trimmed text, 'yes'/'no' consent.
+ * The spam trap goes in 'homepage_url', the honeypot field declared in the form's markup, so
+ * Netlify drops submissions that fill it.
+ */
+export function toFormBody(request: ContactRequest, formName: string): string {
+  const fields: Record<string, string> = {
+    'form-name': formName,
+    lp: request.lp,
+    firstName: request.firstName,
+    lastName: request.lastName,
+    zip: request.zip,
+    phone: request.phone,
+    email: request.email,
+    message: request.message,
+    smsConsent: request.smsConsent ? 'yes' : 'no',
+    smsConsentAt: request.smsConsentAt ?? '',
+    smsConsentText: request.smsConsentText ?? '',
+    submittedAt: request.submittedAt,
+    homepage_url: request.honeypot,
+  };
+  for (const key of UTM_KEYS) fields[key] = request.utm[key] ?? '';
+  return new URLSearchParams(fields).toString();
+}
+
+/**
+ * Posts the request to Netlify Forms: a POST to the page's own path, as a plain HTML form would do.
+ * Netlify answers 2xx once it has taken the submission (it cannot answer with our JSON). Any other
+ * outcome is a failure and the visitor's input stays in the form.
+ * Netlify answers 2xx for spam it filters out too, so this is "taken in", not "will be read".
+ */
+export async function deliverToNetlifyForms(
+  request: ContactRequest,
+  formName: string,
+  path: string,
+  transport: typeof fetch = fetch,
+): Promise<'accepted'> {
+  if (!path.startsWith('/') || path.startsWith('//')) throw new DeliveryError('configuration');
+
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), DELIVERY_TIMEOUT_MS);
+  try {
+    let response: Response;
+    try {
+      response = await transport(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: toFormBody(request, formName),
+        signal: abort.signal,
+      });
+    } catch {
+      throw new DeliveryError(abort.signal.aborted ? 'timeout' : 'network');
+    }
+    if (!response.ok) throw new DeliveryError('rejected');
+    return 'accepted';
+  } finally {
+    clearTimeout(timer);
+  }
+}
