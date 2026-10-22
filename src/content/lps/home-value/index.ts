@@ -10,7 +10,7 @@ export const homeValue = {
     call: 'Call BuySell',
     request: 'Request a Visit',
     phonePending: 'Phone number pending.',
-    preference: 'Choose your preferred date. Our team will confirm your appointment.',
+    preference: 'Send a request and our team will contact you to arrange a visit.',
   },
   hero: {
     label: 'Free in-home appraisals in Dallas–Fort Worth',
@@ -66,7 +66,7 @@ export const homeValue = {
   process: {
     heading: 'How a home visit works',
     steps: [
-      { title: 'Tell us what you have.', body: 'Call BuySell or send a visit request with your preferred date. Our team will confirm the appointment.' },
+      { title: 'Tell us what you have.', body: 'Call BuySell or send a visit request. Our team will contact you to arrange a time.' },
       { title: 'Show us your items at home.', body: 'We assess the items you want us to see. You can add other belongings during the visit.' },
       { title: 'Hear the offer and decide.', body: 'We explain the appraisal. You choose which items, if any, you would like to sell.' },
       { title: 'Receive your payment.', body: 'If a purchase is completed, the payment reaches your bank account within three business days.' },
@@ -82,7 +82,7 @@ export const homeValue = {
       { q: 'Can I ask about an older item or one with signs of use?', a: 'Yes. Tell us about its condition so we can assess it and explain whether we can make a purchase offer.' },
       { q: 'When will I receive payment?', a: 'After a completed purchase, funds reach your bank account within three business days.' },
       { q: 'Where do you visit?', a: `We serve ${config.area}. Contact us to confirm your location.` },
-      { q: 'Is my appointment confirmed when I send a request?', a: 'No. Your request tells us your preferred date and time. Our team will contact you to confirm the appointment.' },
+      { q: 'Is my appointment confirmed when I send a request?', a: 'No. Your request tells us how to reach you. Our team will contact you to arrange and confirm the appointment.' },
     ],
   },
   final: {
@@ -92,29 +92,8 @@ export const homeValue = {
   },
   form: {
     heading: 'Request a Visit',
-    intro: "Tell us what you'd like us to assess and when a visit would suit you.",
-    preview: 'Preview only — no visit request will be sent.',
-    previewValid: 'Your details pass validation. No request has been sent and no appointment has been booked.',
-    success: 'Your visit request has been received. Our team will contact you to confirm the date and time. Your appointment is not confirmed yet.',
-    failure: "We couldn't send your request. Please try again.",
-    sending: 'Sending your request…',
+    intro: "Tell us how to reach you and what you'd like us to assess.",
     submit: 'Send Visit Request',
-    name: 'Full name', phone: 'Phone number', email: 'Email (optional)', zip: 'Visit ZIP code',
-    zipHint: 'Our team will confirm whether we can visit your location.',
-    categories: 'Items to ask about (optional)',
-    date: 'Preferred visit date', time: 'Preferred time (optional)',
-    dateHint: 'Your preferred date and time are subject to confirmation by our team. All times are Central Time (America/Chicago).',
-    notes: 'Additional details (optional)',
-    notesHint: 'Briefly describe your items. Please do not include sensitive information.',
-    errors: {
-      name: 'Please enter your full name.',
-      phone: 'Please enter a valid U.S. phone number, including the area code.',
-      email: 'Please enter a valid email address, or leave this field blank.',
-      zip: 'Please enter a five-digit U.S. ZIP code.',
-      preferredDate: 'Please choose today or a future date in Central Time.',
-      preferredTime: 'Please enter a valid time preference.',
-      notes: 'Please keep additional details to 1,000 characters or fewer.',
-    },
-    summary: 'Please correct the highlighted fields.',
+    success: 'Your visit request has been received. Our team will contact you to arrange the visit. Your appointment is not confirmed yet.',
   },
 };

@@ -162,53 +162,13 @@ export type Section =
   | FinalSection
   | CompanySection;
 
-export interface FormContent {
-  name: { label: string };
-  contact: {
-    legend: string;
-    hint: string;
-    phoneLabel: string;
-    emailLabel: string;
-  };
-  zip: {
-    label: string;
-    hint: string;
-    inArea: string;
-    outOfArea: string;
-    /** Shown while the service-area ZIP list is not configured. */
-    notConfigured: string;
-  };
-  items: {
-    legend: string;
-    options: string[];
-    /** Shown under the options while they are a draft. */
-    draftNote?: string;
-  };
-  amount: SelectQuestion;
-  timing: SelectQuestion;
-  notes: { label: string; placeholder: string };
-  privacy: { before: string; linkText: string; after: string };
-  /** Consent to calls and texts (TCPA). Optional to tick. */
-  tcpa: { label: string };
-  /** Added after the label of optional questions. */
-  optionalMark: string;
+/** What an LP adds to the shared contact form (fields, validation and endpoint are shared). */
+export interface LpFormCopy {
   submitLabel: string;
-  sendingLabel: string;
-  afterSubmit: string;
+  /** Note under the submit button. May contain {{TODO: ...}} markers. */
+  afterSubmit?: string;
+  /** Thank-you text after a successful request. */
   success: string;
-  failure: string;
-  errors: {
-    summaryOne: string;
-    /** {count} is replaced with the number of fields to fix. */
-    summaryMany: string;
-    name: string;
-    contactMissing: string;
-    phoneInvalid: string;
-    emailInvalid: string;
-    zipMissing: string;
-    zipInvalid: string;
-    privacy: string;
-  };
 }
 
 export interface LandingPage {
@@ -229,7 +189,7 @@ export interface LandingPage {
     stickyLabel: string;
   };
   sections: Section[];
-  form: FormContent;
+  form: LpFormCopy;
 }
 
 export interface SiteContent {
@@ -252,8 +212,6 @@ export interface SiteContent {
   serviceArea: {
     summary: string;
     places: string[];
-    /** ZIP code prefixes we visit, e.g. "770" for Houston. Empty = not configured yet. */
-    zipPrefixes: string[];
     outsideNote: string;
   };
   regulator: {

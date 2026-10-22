@@ -189,72 +189,9 @@ export const downsizing: LandingPage = {
     },
   ],
   form: {
-    name: { label: 'Your name' },
-    contact: {
-      legend: 'How should we reach you?',
-      hint: 'A phone number, an email address, or both.',
-      phoneLabel: 'Phone',
-      emailLabel: 'Email',
-    },
-    zip: {
-      label: 'ZIP code',
-      hint: 'So we can check that we visit your area.',
-      inArea: 'Good news. We visit homes in your area.',
-      outOfArea: "We may not visit this ZIP code yet. Call us and we'll check.",
-      notConfigured: '{{TODO: service-area ZIP list}}',
-    },
-    items: {
-      legend: 'What would you like us to look at?',
-      options: [
-        'Furniture and antiques',
-        'Tableware and decorative items',
-        'Jewelry and watches',
-        'Bags and clothing',
-        'Art and collectibles',
-        'Other',
-        'Not sure yet',
-      ],
-      draftNote: '{{TODO: align with accepted items.}}',
-    },
-    amount: {
-      label: 'Roughly how many items?',
-      prompt: 'Choose one',
-      options: ['A few', 'A shelf or cabinet', 'A room or more', 'Not sure'],
-    },
-    timing: {
-      label: 'When are you moving?',
-      prompt: 'Choose one',
-      options: ['Within a month', 'In 1–3 months', 'In 3–6 months', 'Not decided yet'],
-    },
-    notes: {
-      label: 'Anything else we should know?',
-      placeholder: "For example: your moving date, or family members who'd like to be there.",
-    },
-    privacy: {
-      before: 'I have read and agree to the ',
-      linkText: 'privacy policy',
-      after: '.',
-    },
-    tcpa: {
-      label: '{{TODO: consent to calls and text messages about this request. Wording to be confirmed by counsel (TCPA).}}',
-    },
-    optionalMark: '(optional)',
     submitLabel: 'Send my request',
-    sendingLabel: 'Sending your request…',
     afterSubmit:
       "We'll call or email within {{TODO: number of}} business days to arrange a time. Nothing is sold unless you say so.",
     success: "Thank you. We've received your request and will be in touch to arrange a time.",
-    failure: "Sorry, we couldn't send your request. Please try again, or call us at {phone}.",
-    errors: {
-      summaryOne: 'Please check 1 answer before sending.',
-      summaryMany: 'Please check {count} answers before sending.',
-      name: 'Please enter your name.',
-      contactMissing: 'Please enter a phone number or an email address.',
-      phoneInvalid: 'Please enter a 10-digit phone number, like (512) 555-0123.',
-      emailInvalid: 'Please enter an email address, like name@example.com.',
-      zipMissing: 'Please enter your ZIP code.',
-      zipInvalid: 'Please enter a 5-digit ZIP code.',
-      privacy: "Please confirm you've read the privacy policy.",
-    },
   },
 };

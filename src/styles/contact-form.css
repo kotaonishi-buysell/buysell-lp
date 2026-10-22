@@ -1,0 +1,200 @@
+/*
+ * Shared structure of the contact form (src/components/ContactForm.astro).
+ * No colours, sizes or radii live here. Every LP supplies a skin that sets
+ * these custom properties on `[data-lp="<slug>"] .cf` and `.cf-success`:
+ *
+ *   --cf-text            text colour
+ *   --cf-muted           hints, counter, "(optional)"
+ *   --cf-border          input and checkbox border colour
+ *   --cf-border-width    normal border width
+ *   --cf-border-width-strong  width for an invalid field
+ *   --cf-input-bg        input background
+ *   --cf-radius          input radius
+ *   --cf-accent          checkbox, links
+ *   --cf-focus           focus ring colour
+ *   --cf-error           invalid border and error text colour
+ *   --cf-surface         status and thank-you background
+ *   --cf-gap             space between fields
+ *   --cf-gap-sm          space inside a field
+ *   --cf-tap             minimum height of inputs and tap targets
+ *   --cf-pad-x           input side padding
+ *   --cf-pad-y           input vertical padding
+ *   --cf-checkbox        checkbox size
+ *   --cf-focus-width     focus ring width
+ *   --cf-focus-offset    focus ring offset
+ *   --cf-weight-strong   weight of labels and errors
+ */
+
+.cf [hidden],
+.cf-success [hidden] {
+  display: none !important;
+}
+
+.cf {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cf-gap);
+  color: var(--cf-text);
+}
+
+.cf-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--cf-gap);
+}
+
+.cf-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--cf-gap-sm);
+  min-width: 0;
+}
+
+.cf-label {
+  font-weight: var(--cf-weight-strong);
+}
+
+.cf-mark {
+  color: var(--cf-muted);
+  font-weight: normal;
+}
+
+.cf-hint,
+.cf-note {
+  color: var(--cf-muted);
+}
+
+.cf-count {
+  align-self: flex-end;
+}
+
+.cf-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: var(--cf-tap);
+  padding: var(--cf-pad-y) var(--cf-pad-x);
+  color: var(--cf-text);
+  background: var(--cf-input-bg);
+  border: var(--cf-border-width) solid var(--cf-border);
+  border-radius: var(--cf-radius);
+  font: inherit;
+}
+
+.cf-textarea {
+  resize: vertical;
+}
+
+.cf-input[aria-invalid='true'] {
+  border-width: var(--cf-border-width-strong);
+  border-color: var(--cf-error);
+}
+
+.cf-error {
+  color: var(--cf-error);
+  font-weight: var(--cf-weight-strong);
+}
+
+.cf :is(input, textarea, button, a):focus-visible,
+.cf-success :is(button, a):focus-visible {
+  outline: var(--cf-focus-width) solid var(--cf-focus);
+  outline-offset: var(--cf-focus-offset);
+}
+
+/* consent checkbox */
+.cf-check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--cf-gap-sm);
+  min-height: var(--cf-tap);
+  cursor: pointer;
+}
+
+.cf-checkbox {
+  flex: none;
+  width: var(--cf-checkbox);
+  height: var(--cf-checkbox);
+  margin: 0;
+  accent-color: var(--cf-accent);
+  cursor: pointer;
+}
+
+.cf-field--consent .cf-check span {
+  color: var(--cf-muted);
+}
+
+/* submit area */
+.cf-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--cf-gap-sm);
+}
+
+.cf-actions > .cf-status {
+  align-self: stretch;
+}
+
+.cf-status:empty {
+  display: none;
+}
+
+.cf-status {
+  padding: var(--cf-pad-y) var(--cf-pad-x);
+  background: var(--cf-surface);
+  border-radius: var(--cf-radius);
+  font-weight: var(--cf-weight-strong);
+}
+
+.cf-link {
+  color: var(--cf-accent);
+  text-underline-offset: var(--cf-focus-offset);
+}
+
+.cf-preview-note,
+.cf-preview-result {
+  padding: var(--cf-pad-y) var(--cf-pad-x);
+  background: var(--cf-surface);
+  border-radius: var(--cf-radius);
+  font-weight: var(--cf-weight-strong);
+}
+
+/* thank-you */
+.cf-success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--cf-gap-sm);
+  color: var(--cf-text);
+}
+
+.cf-success[hidden] {
+  display: none;
+}
+
+.cf-success:focus {
+  outline: none;
+}
+
+.cf-link-button {
+  min-height: var(--cf-tap);
+  padding: 0;
+  color: var(--cf-accent);
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: var(--cf-weight-strong);
+  text-decoration: underline;
+  text-underline-offset: var(--cf-focus-offset);
+  cursor: pointer;
+}
+
+@media (min-width: 720px) {
+  .cf-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cf-field--wide {
+    grid-column: 1 / -1;
+  }
+}

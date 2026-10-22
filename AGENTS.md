@@ -10,7 +10,7 @@
 - Preserve the existing Astro application, /downsizing route, and / redirect.
 - Apply Friendly Discovery styling only to home-value unless migration is explicitly requested.
 - Keep legacy tokens.css, base.css and existing LP content unchanged for this addition.
-- Reuse components where appropriate; keep page copy in src/content. Home Value has its own request behavior and must not load the legacy submit stub or analytics.
+- Reuse components where appropriate; keep page copy in src/content. All LPs share one contact form (src/components/ContactForm.astro, src/lib/contact-form.ts, src/content/contact-form.ts, docs/forms/contact-form.md). Change its fields, validation, delivery or endpoint in the shared files, and give each LP only a skin and its own panel, heading and button. The shared form has no analytics; each LP listens to its `cf:event` events. Home Value must not load the legacy analytics.
 - Never introduce a nested repository, a second package manifest or a new framework for an LP.
 
 ## Design and content
@@ -28,7 +28,8 @@
 
 ## Verify
 - Run npm run check, npm run build and npm run todos.
-- Run npm run test:home-value for changes to its form, contact or delivery behavior.
+- Run npm test for changes to the contact form, its validation or delivery behavior.
 - Confirm both /downsizing and /home-value are generated and / still redirects to /downsizing.
-- The legacy form is a stub. Home Value validates locally when no receiving endpoint is configured and must never report live receipt in that mode.
+- With no receiving endpoint configured (the default), the shared form validates locally, sends nothing, and must never report live receipt or emit a submit measurement event.
+- After changing the shared form, verify both /downsizing and /home-value in the browser.
 - Do not deploy or merge as part of scaffolding.

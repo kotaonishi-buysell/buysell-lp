@@ -5,7 +5,7 @@ export const openConsultForm = (): void => {
   const panel = document.getElementById('consult');
   if (!panel) return;
 
-  const success = panel.querySelector<HTMLElement>('[data-form-success]');
+  const success = panel.querySelector<HTMLElement>('[data-cf-success]');
   const target =
     success && !success.hidden
       ? success

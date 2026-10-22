@@ -294,6 +294,8 @@ The online flow collects a **preferred date and time**. It submits a request for
 
 Do not display invented availability, available-slot counts, urgency messages, or calendar bookings. In the initial implementation, use date/time preference inputs rather than a simulated live scheduling system.
 
+> **Amendment, October 20, 2026:** The request form is now the contact form shared by all LPs (docs/forms/contact-form.md). Its fields replace the list below: first name, last name, ZIP code, phone, optional SMS consent, optional email, optional message. Preferred date/time and item-category fields were removed, and the copy that mentioned a preferred date was updated. The SMS consent wording is provisional and must be replaced with approved copy before launch. The rest of this section (preview behavior, acknowledgement and failure handling) still applies.
+
 ### Form Fields
 
 These are implementation defaults, not claims about Jobber's supported field schema. Map them to the approved integration once its interface is supplied.
