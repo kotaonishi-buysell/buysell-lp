@@ -1,17 +1,34 @@
 /*
- * Shared contact form: one endpoint and one set of copy for every LP.
+ * Shared contact form: one delivery setting and one set of copy for every LP.
  * LPs only choose the heading, submit label, thank-you text and skin.
- * Change the destination here once and every LP follows.
+ * Change the delivery here once and every LP follows.
  */
 
+export type ContactMode = 'preview' | 'netlify-forms' | 'function';
+
+const env = (import.meta as { env?: Record<string, string | undefined> }).env ?? {};
+
+/**
+ * How a request is delivered. netlify.toml sets PUBLIC_CONTACT_MODE for Netlify builds only, so a
+ * local build stays in preview mode: nothing is sent and the form says so.
+ *
+ *   netlify-forms  the browser posts to its own page and Netlify Forms stores the submission
+ *                  (notifications are set in the Netlify dashboard). Default on Netlify.
+ *   function       the browser posts JSON to PUBLIC_CONTACT_ENDPOINT (src/server/contact.ts,
+ *                  e.g. '/api/contact'), which checks it again and emails it. Set the endpoint
+ *                  variable and leave PUBLIC_CONTACT_MODE unset to use it.
+ *   preview        neither is set.
+ */
 export const contactFormConfig = {
-  // Same-origin path (e.g. '/api/contact') or an https:// URL. It must answer 2xx with JSON
-  // { "accepted": true }. netlify.toml sets PUBLIC_CONTACT_ENDPOINT for Netlify builds; with
-  // nothing set (local builds) the form stays in preview mode: no request is sent and the
-  // form says so.
-  endpoint: ((import.meta as { env?: Record<string, string | undefined> }).env?.PUBLIC_CONTACT_ENDPOINT || null) as
-    | string
-    | null,
+  mode: (env.PUBLIC_CONTACT_MODE === 'netlify-forms'
+    ? 'netlify-forms'
+    : env.PUBLIC_CONTACT_ENDPOINT
+      ? 'function'
+      : 'preview') as ContactMode,
+  /** Same-origin path (e.g. '/api/contact') or an https:// URL. Used by the 'function' mode only. */
+  endpoint: (env.PUBLIC_CONTACT_ENDPOINT || null) as string | null,
+  /** Name of the form in Netlify Forms. The same on every LP, so one form collects them all. */
+  formName: 'contact',
 };
 
 export const contactFormCopy = {

@@ -14,6 +14,8 @@
  *   CONTACT_TO_EMAIL          who receives inquiries (comma-separated for several people)
  *   CONTACT_FROM_EMAIL        sender, on a domain verified with the provider, e.g. "BuySell <inquiries@example.com>"
  *   CONTACT_ALLOWED_ORIGINS   optional, comma-separated extra origins allowed to post (the site's own origin is always allowed)
+ *   CONTACT_DRY_RUN           optional, "true" to check the pipeline without email: the request is validated, a redacted
+ *                             summary goes to the function log, nothing is emailed, and the browser is told it was a dry run
  *   EMAIL_API_URL             optional, for testing only: replaces the provider's address (default https://api.resend.com/emails)
  *
  * The email provider is isolated in sendEmail(); replace that one function to change provider.
@@ -26,6 +28,7 @@ export interface ContactEnv {
   CONTACT_FROM_EMAIL?: string;
   CONTACT_ALLOWED_ORIGINS?: string;
   EMAIL_API_URL?: string;
+  CONTACT_DRY_RUN?: string;
 }
 
 export interface ContactDeps {
@@ -108,6 +111,32 @@ function parseRequest(body: unknown, now: Date): ContactRequest | null {
     now,
   });
 }
+
+/**
+ * What the dry run writes to the function log: enough to see that the request arrived and
+ * was normalised correctly, without the visitor's name, phone number, email or message.
+ */
+export function redactedSummary(request: ContactRequest): Record<string, unknown> {
+  const initial = (name: string) => `${[...name][0] ?? ''}… (${[...name].length} letters)`;
+  const email = request.email;
+  return {
+    lp: request.lp,
+    firstName: initial(request.firstName),
+    lastName: initial(request.lastName),
+    zip: request.zip,
+    phone: `${request.phone.length} digits, ends ${request.phone.slice(-4)}`,
+    email: email ? `…@${email.split('@')[1] ?? '?'}` : '(not given)',
+    messageLength: request.message.length,
+    smsConsent: request.smsConsent,
+    smsConsentAt: request.smsConsentAt,
+    smsConsentTextLength: request.smsConsentText?.length ?? 0,
+    utm: request.utm,
+    elapsedMs: request.elapsedMs,
+    submittedAt: request.submittedAt,
+  };
+}
+
+const isOn = (value: string | undefined): boolean => ['1', 'true', 'yes', 'on'].includes((value ?? '').trim().toLowerCase());
 
 /** Plain-text body of the notification email. */
 export function composeEmail(request: ContactRequest, receivedAt: Date): { subject: string; text: string } {
@@ -196,6 +225,12 @@ export async function handleContact(request: Request, env: ContactEnv, deps: Con
   // Submitted faster than a person can: ask the browser to try again.
   if (parsed.elapsedMs < MIN_ELAPSED_MS) return rejected(400, 'too_fast');
   if (parsed.message.length > MESSAGE_MAX) return rejected(400, 'invalid_request');
+
+  // Dry run: everything above was checked for real; only the email is skipped.
+  if (isOn(env.CONTACT_DRY_RUN)) {
+    console.info('contact dry run: request received and valid, no email sent.', JSON.stringify(redactedSummary(parsed)));
+    return json(200, { accepted: true, dryRun: true });
+  }
 
   const { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL } = env;
   if (!RESEND_API_KEY || !CONTACT_TO_EMAIL || !CONTACT_FROM_EMAIL) {

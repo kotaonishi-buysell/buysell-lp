@@ -7,9 +7,11 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  # Turns the contact form on in every Netlify build (production and deploy previews).
-  # Local builds leave it unset, so the form stays in preview mode.
-  PUBLIC_CONTACT_ENDPOINT = "/api/contact"
+  # Turns the contact form on in every Netlify build (production and deploy previews): submissions go
+  # to Netlify Forms (form "contact"). Local builds leave it unset, so the form stays in preview mode.
+  # To use the email function in netlify/functions instead, remove this line and set
+  # PUBLIC_CONTACT_ENDPOINT = "/api/contact" (see docs/forms/contact-form.md).
+  PUBLIC_CONTACT_MODE = "netlify-forms"
 
 [functions]
   directory = "netlify/functions"
