@@ -33,7 +33,9 @@
   "smsConsentAt": "2026-10-20T00:43:42.721Z",
   "smsConsentText": "I agree to receive text messages from ...",
   "submittedAt": "2026-10-20T00:43:42.754Z",
-  "utm": { "utm_source": "google", "utm_medium": "cpc" }
+  "utm": { "utm_source": "google", "utm_medium": "cpc" },
+  "honeypot": "",
+  "elapsedMs": 9000
 }
 ```
 
@@ -41,12 +43,49 @@
 - `smsConsent` が `false` のとき、`smsConsentAt` と `smsConsentText` は `null` です。
 - 日時はブラウザの時計によるUTCです。受け取る側でも、受信日時を記録してください。
 - `utm` には `utm_source` `utm_medium` `utm_campaign` `utm_term` `utm_content` だけが入ります（他のパラメータは送りません）。
+- `honeypot` と `elapsedMs` は迷惑メール対策です（下の「受付サーバー」を見てください）。
 
 ## 送信先の契約
 
-- 送信先は `src/content/contact-form.ts` の `contactFormConfig.endpoint` **1か所**です（同じオリジンのパス、または `https://` のURL）。全LPがここを使います。
+- 送信先は `src/content/contact-form.ts` の `contactFormConfig.endpoint` **1か所**です（同じオリジンのパス、または `https://` のURL）。全LPがここを使います。値は環境変数 `PUBLIC_CONTACT_ENDPOINT` から読みます。`netlify.toml` が Netlify のビルドにだけ `/api/contact` を設定するので、手元のビルドでは未設定のまま（プレビュー）です。
 - 送信先は、成功時に **2xx と `{ "accepted": true }`** を返してください。それ以外（2xx以外、空の応答、JSONでない応答、`accepted` が `true` でない応答）は失敗として扱い、入力は残します。15秒でタイムアウトします。
 - `endpoint` が `null` の間は**プレビュー**です。何も送信せず、「Preview only」と明示し、受付済みとは表示しません。計測の `form_submit` も出しません。
+
+## 受付サーバー（Netlify Functions）と通知メール
+
+`POST /api/contact` を受け付けるサーバー側の機能です。受け取った内容を確認し直して、**チームにメールで通知**します。メールが送れたときだけ `{ "accepted": true }` を返します。
+
+- 本体は `src/server/contact.ts`、Netlify との接続は `netlify/functions/contact.ts`、Netlify の設定は `netlify.toml` です。
+- ブラウザの入力チェックとは別に、サーバーでも同じルールで確認し直します（`src/lib/contact-form.ts` を共有）。不正な内容は `400` で断ります。
+- **迷惑メール対策**：
+  - 見えない入力欄（`honeypot`）に何か入っていたら、ボットとみなします。成功したように応答して、メールは送りません。
+  - ページを開いてから2秒未満で送信されたものは、断ります（`too_fast`）。人が操作すれば2秒以上かかるため、通常は起きません。
+  - 同じオリジン以外からのPOST、JSON以外、大きすぎる内容（10,000文字超）、POST以外のメソッドも断ります。
+  - 回数制限は、このコードには入っていません。必要なら、Netlify の機能（プランによります）か、別のサービスで設けてください。
+- メールの件名には、訪問者が入力した文字を入れません（`New inquiry (<LP名>)`）。本文は日本語ではなく英語のテキストで、訪問者の入力から制御文字を取り除いています。返信先（Reply-To）は、メールアドレスが入力されたときだけ設定されます。
+- メール送信には Resend を使っています。変更するときは `src/server/contact.ts` の `sendEmail()` だけを差し替えます。
+- ログに、訪問者の名前・電話・メールは出しません（失敗の理由だけ）。
+
+### Netlify の設定手順
+
+1. Netlify で「Add new site」→ GitHub のこのリポジトリを選びます。ビルドの設定は `netlify.toml` から読まれます。
+2. Resend で、送信元に使うドメインを認証し（DNSの設定）、APIキーを作ります。
+3. Netlify の「Site configuration → Environment variables」に、次を設定します。値は **Functions** で使えるスコープにしてください。
+
+   | 名前 | 内容 |
+   |---|---|
+   | `RESEND_API_KEY` | ResendのAPIキー（Secret にする） |
+   | `CONTACT_TO_EMAIL` | 通知を受け取るアドレス（複数ならカンマ区切り） |
+   | `CONTACT_FROM_EMAIL` | 送信元。認証済みドメインのアドレス（例：`BuySell <inquiries@example.com>`） |
+   | `CONTACT_ALLOWED_ORIGINS` | 任意。サイト自身以外にPOSTを許すオリジン（カンマ区切り） |
+
+4. デプロイプレビューで、実際にフォームから送信して、メールが届くことを確認します。
+5. 設定が足りないときは、フォームは「送れませんでした」と表示し、受付済みとは表示しません。
+
+### 手元での確認
+
+- `npm test`：入力チェック、サーバーの処理（メール送信は代用品で確認）、Netlify への接続部分をテストします。
+- 実物の関数を動かすには、`npx netlify-cli functions:serve --offline --functions netlify/functions` を使います。環境変数 `EMAIL_API_URL`（テスト専用）にダミーの受け口のURLを入れると、メールの代わりにそこへ送られます。
 
 ## 構成
 
@@ -54,6 +93,10 @@
 src/lib/contact-form.ts            項目のルール、整形、送信データ、送信処理（純粋な関数。テスト済み）
 src/content/contact-form.ts        送信先、英語の共通文言、SMS同意の仮文言
 src/components/ContactForm.astro   フォームの部品（共通のマークアップ）
+src/server/contact.ts              受付サーバーの本体（確認し直し、迷惑メール対策、メール通知）
+netlify/functions/contact.ts       Netlify Functions との接続（POST /api/contact）
+netlify.toml                       Netlify の設定（ビルド、関数、転送）
+tests/contact-api.test.mjs         受付サーバーのテスト
 src/scripts/contact-form.ts        ブラウザ側の動作（分析は含まない）
 src/styles/contact-form.css        共通の構造。色・サイズ・角丸は含まない
 src/styles/contact-form.<lp>.css   LPごとのスキン（Downsizing）。Home Value は home-value.css 内
@@ -81,4 +124,4 @@ LPの側でできるのは、見た目と、少数の文言だけです。
 
 - SMS同意の文言（`contactFormCopy.smsConsent`）は**仮**です。法務確認のあとで差し替えてください。
 - 米国の個人情報・電話・SMSに関する法令は、専門家に確認してください。プライバシーポリシーへのリンク（`privacyUrl`）は、ページができたら設定します。
-- 迷惑メール対策（見えない入力欄、人間かどうかの確認、受付側の回数制限など）は、送信先の実装と一緒に入れます。
+- 迷惑メール対策のうち、回数制限と「人間かどうかの確認」（CAPTCHA）は、まだありません。実際の迷惑メールの状況を見て、追加を判断してください。

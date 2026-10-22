@@ -55,6 +55,9 @@ function initForm(form: HTMLFormElement): void {
   const previewLabel = success?.querySelector<HTMLElement>('[data-cf-preview-label]');
   const editButton = success?.querySelector<HTMLButtonElement>('[data-cf-edit]');
 
+  const loadedAt = Date.now();
+  const trap = form.querySelector<HTMLInputElement>('[data-cf-trap]');
+
   let attempted = false;
   let started = false;
   let sending = false;
@@ -166,6 +169,8 @@ function initForm(form: HTMLFormElement): void {
         smsConsentAt,
         smsConsentText: config.consentText,
         utm,
+        honeypot: trap?.value ?? '',
+        elapsedMs: Date.now() - loadedAt,
       });
       const result = await deliverContactRequest(request, config.endpoint);
 

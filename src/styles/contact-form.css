@@ -101,6 +101,15 @@
   outline-offset: var(--cf-focus-offset);
 }
 
+/* spam trap: off-screen, not display:none, so simple bots still see and fill it */
+.cf-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 /* consent checkbox */
 .cf-check {
   display: flex;

@@ -1,0 +1,23 @@
+# Netlify settings. Secrets (email key and addresses) are set in the Netlify dashboard, not here.
+# See docs/forms/contact-form.md.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Turns the contact form on in every Netlify build (production and deploy previews).
+  # Local builds leave it unset, so the form stays in preview mode.
+  PUBLIC_CONTACT_ENDPOINT = "/api/contact"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# While /downsizing is the only live LP, the bare domain goes there.
+[[redirects]]
+  from = "/"
+  to = "/downsizing"
+  status = 302
+  force = true

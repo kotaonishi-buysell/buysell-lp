@@ -86,7 +86,7 @@ test('the request is normalised: digits-only phone, trimmed values, lp and submi
   assert.deepEqual(request, {
     lp: 'downsizing', firstName: 'Maria', lastName: 'Lopez', zip: '75201-1234', phone: '2145550123',
     email: 'a@b.co', message: '', smsConsent: false, smsConsentAt: null, smsConsentText: null,
-    submittedAt: '2026-10-20T15:00:00.000Z', utm: {},
+    submittedAt: '2026-10-20T15:00:00.000Z', utm: {}, honeypot: '', elapsedMs: 0,
   });
 });
 test('SMS consent is off by default; ticking it stores the choice, the time and the wording', () => {
