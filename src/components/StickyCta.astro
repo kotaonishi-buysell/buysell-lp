@@ -1,0 +1,44 @@
+---
+/*
+ * Mobile-only bar with the phone button. Shown after the hero scrolls out of
+ * view, hidden again once the final CTA section is reached (src/scripts/sticky.ts).
+ */
+import type { LandingPage } from '../content/types';
+import PhoneButton from './PhoneButton.astro';
+
+interface Props {
+  lp: LandingPage;
+}
+
+const { lp } = Astro.props;
+---
+
+<div class="sticky-cta" data-sticky-cta data-visible="false">
+  <PhoneButton location="sticky" compactLabel={lp.cta.stickyLabel} />
+</div>
+
+<style>
+  .sticky-cta {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: var(--z-sticky);
+    padding: var(--space-1) var(--space-2) calc(var(--space-1) + env(safe-area-inset-bottom));
+    background: var(--paper-raised);
+    border-top: var(--hairline) solid var(--line);
+    box-shadow: var(--shadow-card);
+    transition:
+      opacity var(--motion-fast) ease,
+      visibility var(--motion-fast) allow-discrete;
+  }
+
+  .sticky-cta[data-visible='false'] {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media (min-width: 720px) {
+    .sticky-cta {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+import type { Band } from '../content/types';
+
+interface Props {
+  id: string;
+  band: Band;
+  labelledby?: string;
+}
+
+const { id, band, labelledby } = Astro.props;
+---
+
+<section id={id} class:list={['section', `band--${band}`]} aria-labelledby={labelledby}>
+  <div class="container">
+    <slot />
+  </div>
+</section>

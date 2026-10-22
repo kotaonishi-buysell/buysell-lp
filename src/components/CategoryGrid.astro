@@ -1,0 +1,89 @@
+---
+import type { Category } from '../content/types';
+import { rich } from '../lib/text';
+
+interface Props {
+  categories: Category[];
+  notAcceptedTitle: string;
+  notAccepted: string[];
+  note?: string;
+  draftNote?: string;
+}
+
+const { categories, notAcceptedTitle, notAccepted, note, draftNote } = Astro.props;
+---
+
+{draftNote && <p class="categories__draft" set:html={rich(draftNote)} />}
+
+<ul class="categories" role="list">
+  {
+    categories.map((category) => (
+      <li class="category">
+        <h3 class="t-heading">{category.name}</h3>
+        <p class="muted" set:html={rich(category.examples)} />
+      </li>
+    ))
+  }
+</ul>
+
+<div class="not-accepted">
+  <h3 class="t-heading">{notAcceptedTitle}</h3>
+  <ul class="not-accepted__list">
+    {notAccepted.map((item) => <li set:html={rich(item)} />)}
+  </ul>
+</div>
+
+{note && <p class="categories__note measure">{note}</p>}
+
+<style>
+  .categories__draft {
+    margin-bottom: var(--space-3);
+  }
+
+  .categories {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .category {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background: var(--paper-raised);
+    border: var(--hairline) solid var(--line);
+    border-radius: var(--radius-md);
+  }
+
+  .not-accepted {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: var(--measure);
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: var(--hairline) solid var(--line);
+  }
+
+  .not-accepted__list {
+    padding-left: var(--space-3);
+  }
+
+  .categories__note {
+    margin-top: var(--space-3);
+    font-weight: var(--weight-semibold);
+  }
+
+  @media (min-width: 720px) {
+    .categories {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .categories {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

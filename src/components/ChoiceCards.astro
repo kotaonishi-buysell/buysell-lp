@@ -1,0 +1,62 @@
+---
+import type { ChoiceCard } from '../content/types';
+
+interface Props {
+  cards: ChoiceCard[];
+}
+
+const { cards } = Astro.props;
+---
+
+<ul class="choices" role="list">
+  {
+    cards.map((card) => (
+      <li class="choice">
+        <p class="choice__mark">{card.mark}</p>
+        <h3 class="t-heading">{card.title}</h3>
+        <p class="muted">{card.body}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .choices {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+
+  .choice {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background: var(--paper-raised);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+  }
+
+  .choice__mark {
+    margin-bottom: var(--space-1);
+    padding-bottom: var(--space-1);
+    border-bottom: var(--hairline) solid var(--line);
+    color: var(--brass);
+    font-family: var(--font-serif);
+    font-size: var(--fs-mark);
+    line-height: var(--lh-mark);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 1024px) {
+    .choices {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .choice {
+      padding: var(--space-5) var(--space-3);
+    }
+  }
+</style>

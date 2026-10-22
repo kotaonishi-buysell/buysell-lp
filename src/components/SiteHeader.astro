@@ -1,0 +1,88 @@
+---
+import { site } from '../content/site';
+import { rich } from '../lib/text';
+---
+
+<header class="site-header scene">
+  <div class="container site-header__inner">
+    <div class="site-header__brand">
+      <p class="t-heading site-header__name">{site.company.name}</p>
+      <p class="t-meta muted">
+        {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
+      </p>
+    </div>
+    <div class="site-header__actions">
+      <div class="site-header__phone">
+        <a class="link t-button site-header__phone-link" href={`tel:${site.phone.e164}`} data-cta="header" data-cta-method="phone">
+          <span><span class="site-header__call">{`${site.phone.callPrefix} `}</span><span data-phone-number>{site.phone.display}</span></span>
+        </a>
+        <p class="t-meta muted site-header__hours" set:html={rich(site.company.hours)} />
+      </div>
+      <a class="btn btn--secondary site-header__booking" href="#consult" data-booking data-cta="header" data-cta-method="form">
+        {site.ui.headerBooking}
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-1) var(--space-3);
+    min-height: var(--header-min-height);
+    padding-block: var(--space-1);
+  }
+
+  .site-header__brand {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .site-header__phone {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .site-header__phone-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .site-header__hours {
+    margin-top: calc(-1 * var(--space-1));
+  }
+
+  .site-header__call,
+  .site-header__hours,
+  .site-header__booking {
+    display: none;
+  }
+
+  @media (min-width: 720px) {
+    .site-header__call {
+      display: inline;
+    }
+
+    .site-header__hours {
+      display: block;
+    }
+
+    .site-header__booking {
+      display: inline-flex;
+    }
+  }
+</style>

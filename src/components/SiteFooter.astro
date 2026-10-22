@@ -1,0 +1,69 @@
+---
+import { site } from '../content/site';
+import { fill, rich } from '../lib/text';
+
+const footer = site.ui.footer;
+const copyright = fill(footer.copyright, { year: new Date().getFullYear(), company: site.company.name });
+const links = [
+  { label: footer.privacy, href: site.links.privacy },
+  { label: footer.terms, href: site.links.terms },
+  { label: footer.doNotSell, href: site.links.doNotSell },
+  { label: footer.companyInfo, href: '#company' },
+];
+---
+
+<footer class="site-footer band--sunk">
+  <div class="container site-footer__inner">
+    <nav aria-label={footer.navLabel}>
+      <ul class="site-footer__links" role="list">
+        {
+          links.map((link) => (
+            <li>
+              <a class="link site-footer__link" href={link.href}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="site-footer__legal muted">
+      <p>
+        {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
+      </p>
+      <p>
+        {`${site.regulator.label}: `}<Fragment set:html={rich(site.regulator.value)} />
+      </p>
+      <p>{copyright}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding-block: var(--space-5) var(--space-8);
+  }
+
+  .site-footer__links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-3);
+  }
+
+  .site-footer__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-min);
+  }
+
+  .site-footer__legal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: var(--measure);
+  }
+</style>

@@ -1,0 +1,348 @@
+---
+/*
+ * Online consultation request (the secondary conversion after the phone).
+ * Behaviour lives in src/scripts/form.ts; the endpoint is stubbed in
+ * src/scripts/submit.ts.
+ */
+import type { LandingPage } from '../content/types';
+import { site } from '../content/site';
+import { fill, rich } from '../lib/text';
+
+interface Props {
+  lp: LandingPage;
+}
+
+const { lp } = Astro.props;
+const form = lp.form;
+const utmFields = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+
+const config = {
+  zipPrefixes: site.serviceArea.zipPrefixes,
+  zipMessages: {
+    inArea: rich(form.zip.inArea),
+    outOfArea: rich(form.zip.outOfArea),
+    notConfigured: rich(form.zip.notConfigured),
+  },
+  errors: form.errors,
+  sendingLabel: form.sendingLabel,
+  failure: rich(fill(form.failure, { phone: site.phone.display })),
+};
+const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
+---
+
+<form class="form" action="#" method="post" novalidate data-consult-form>
+  <script type="application/json" data-consult-config set:html={configJson} />
+
+  <div class="form__summary" role="alert" data-error-summary></div>
+
+  <div class="field" data-field="name">
+    <label class="field__label" for="consult-name">{form.name.label}</label>
+    <p class="field__error" id="consult-name-error" data-error hidden></p>
+    <input
+      class="input"
+      id="consult-name"
+      name="name"
+      type="text"
+      autocomplete="name"
+      required
+      aria-describedby="consult-name-error"
+    />
+  </div>
+
+  <fieldset class="field" data-field="contact" aria-describedby="consult-contact-hint consult-contact-error">
+    <legend class="field__label">{form.contact.legend}</legend>
+    <p class="field__hint muted" id="consult-contact-hint">{form.contact.hint}</p>
+    <p class="field__error" id="consult-contact-error" data-error hidden></p>
+    <div class="field__pair">
+      <div class="subfield">
+        <label class="subfield__label" for="consult-phone">{form.contact.phoneLabel}</label>
+        <input
+          class="input"
+          id="consult-phone"
+          name="phone"
+          type="tel"
+          autocomplete="tel-national"
+          inputmode="tel"
+        />
+      </div>
+      <div class="subfield">
+        <label class="subfield__label" for="consult-email">{form.contact.emailLabel}</label>
+        <input
+          class="input"
+          id="consult-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          inputmode="email"
+          spellcheck="false"
+        />
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="field" data-field="zip">
+    <label class="field__label" for="consult-zip">{form.zip.label}</label>
+    <p class="field__hint muted" id="consult-zip-hint">{form.zip.hint}</p>
+    <p class="field__error" id="consult-zip-error" data-error hidden></p>
+    <input
+      class="input input--short"
+      id="consult-zip"
+      name="zip"
+      type="text"
+      inputmode="numeric"
+      autocomplete="postal-code"
+      maxlength="10"
+      required
+      aria-describedby="consult-zip-hint consult-zip-error consult-zip-status"
+    />
+    <p class="field__status" id="consult-zip-status" aria-live="polite" data-zip-status></p>
+  </div>
+
+  <fieldset class="field">
+    <legend class="field__label">
+      {form.items.legend} <span class="field__optional">{form.optionalMark}</span>
+    </legend>
+    <div class="checks">
+      {
+        form.items.options.map((option, index) => (
+          <label class="check" for={`consult-items-${index}`}>
+            <input class="check__input" id={`consult-items-${index}`} type="checkbox" name="items" value={option} />
+            <span>{option}</span>
+          </label>
+        ))
+      }
+    </div>
+    {form.items.draftNote && <p class="field__hint" set:html={rich(form.items.draftNote)} />}
+  </fieldset>
+
+  <div class="field">
+    <label class="field__label" for="consult-amount">
+      {form.amount.label} <span class="field__optional">{form.optionalMark}</span>
+    </label>
+    <div class="select">
+      <select class="input select__control" id="consult-amount" name="amount">
+        <option value="">{form.amount.prompt}</option>
+        {form.amount.options.map((option) => <option value={option}>{option}</option>)}
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="consult-timing">
+      {form.timing.label} <span class="field__optional">{form.optionalMark}</span>
+    </label>
+    <div class="select">
+      <select class="input select__control" id="consult-timing" name="timing">
+        <option value="">{form.timing.prompt}</option>
+        {form.timing.options.map((option) => <option value={option}>{option}</option>)}
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="consult-notes">
+      {form.notes.label} <span class="field__optional">{form.optionalMark}</span>
+    </label>
+    <textarea class="input textarea" id="consult-notes" name="notes" rows="4" placeholder={form.notes.placeholder}
+    ></textarea>
+  </div>
+
+  <div class="field" data-field="privacy">
+    <p class="field__error" id="consult-privacy-error" data-error hidden></p>
+    <label class="check" for="consult-privacy">
+      <input
+        class="check__input"
+        id="consult-privacy"
+        type="checkbox"
+        name="privacy"
+        value="yes"
+        required
+        aria-describedby="consult-privacy-error"
+      />
+      <span>
+        {form.privacy.before}<a class="link" href={site.links.privacy} target="_blank" rel="noopener"
+          >{form.privacy.linkText}<span class="visually-hidden"> {site.ui.newTab}</span></a
+        >{form.privacy.after}
+      </span>
+    </label>
+  </div>
+
+  <div class="field">
+    <label class="check" for="consult-tcpa">
+      <input class="check__input" id="consult-tcpa" type="checkbox" name="tcpa_consent" value="yes" />
+      <span set:html={rich(form.tcpa.label)} />
+    </label>
+  </div>
+
+  <input type="hidden" name="lp" value={lp.slug} />
+  {utmFields.map((name) => <input type="hidden" name={name} value="" data-utm={name} />)}
+
+  <div class="form__submit">
+    <button class="btn btn--primary btn--block-mobile" type="submit" data-submit>
+      {form.submitLabel}
+    </button>
+    <p class="muted" set:html={rich(form.afterSubmit)} />
+  </div>
+</form>
+
+<div class="form__success" tabindex="-1" hidden data-form-success>
+  <p class="t-lead">{form.success}</p>
+</div>
+
+<style>
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .form__summary:empty {
+    display: none;
+  }
+
+  .form__summary {
+    padding: var(--space-2) var(--space-3);
+    border: var(--border-error) solid var(--ink);
+    border-radius: var(--radius-sm);
+    background: var(--paper-raised);
+    font-weight: var(--weight-semibold);
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .field__label {
+    padding: 0;
+    font-weight: var(--weight-semibold);
+  }
+
+  /* A legend is not a flex item, so give it the gap the other labels get. */
+  legend.field__label {
+    margin-bottom: var(--space-1);
+  }
+
+  .field__optional {
+    color: var(--on-scene-muted);
+    font-weight: var(--weight-regular);
+  }
+
+  .field__error {
+    font-weight: var(--weight-semibold);
+  }
+
+  .field__status:empty {
+    display: none;
+  }
+
+  .field__pair {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .subfield {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input {
+    width: 100%;
+    min-height: var(--tap-min);
+    padding: var(--space-1) var(--space-2);
+    border: var(--border-control) solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--paper-raised);
+    color: var(--ink);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+
+  .input::placeholder {
+    color: var(--ink-muted);
+  }
+
+  .input[aria-invalid='true'] {
+    border-width: var(--border-error);
+    border-color: var(--ink);
+  }
+
+  .input--short {
+    max-width: calc(var(--space-13) + var(--space-8));
+  }
+
+  .textarea {
+    resize: vertical;
+  }
+
+  .select {
+    position: relative;
+  }
+
+  .select__control {
+    appearance: none;
+    padding-right: var(--space-8);
+    cursor: pointer;
+  }
+
+  .select::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: var(--space-3);
+    width: var(--space-1);
+    height: var(--space-1);
+    border-right: var(--border-error) solid var(--ink);
+    border-bottom: var(--border-error) solid var(--ink);
+    transform: translateY(-75%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .checks {
+    display: grid;
+  }
+
+  .check {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-min);
+    cursor: pointer;
+  }
+
+  .check__input {
+    flex: none;
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    margin: 0;
+    accent-color: var(--pine);
+    cursor: pointer;
+  }
+
+  .form__submit {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+
+  .form__submit .btn {
+    align-self: flex-start;
+  }
+
+  .form__success:focus {
+    outline: none;
+  }
+
+  @media (min-width: 720px) {
+    .field__pair {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .checks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-3);
+    }
+  }
+</style>
