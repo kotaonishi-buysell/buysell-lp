@@ -126,3 +126,61 @@ test('control characters in visitor text cannot break the email layout', () => {
 test('the function is served at /api/contact', () => {
   assert.equal(functionConfig.path, '/api/contact');
 });
+
+// ---------- dry run (CONTACT_DRY_RUN) ----------
+import { redactedSummary } from '../src/server/contact.ts';
+import { deliverContactRequest } from '../src/lib/contact-form.ts';
+
+test('dry run: a valid request is checked, nothing is emailed, and the answer says it was a dry run', async () => {
+  for (const flag of ['true', '1', 'TRUE', ' yes ']) {
+    const p = provider();
+    const logs = [];
+    const saved = console.info; console.info = (...a) => logs.push(a.join(' '));
+    try {
+      // email settings are not needed in a dry run
+      const res = await handleContact(post(payload()), { CONTACT_DRY_RUN: flag }, { fetch: p.fetch, now });
+      assert.equal(res.status, 200);
+      assert.deepEqual(await res.json(), { accepted: true, dryRun: true });
+    } finally { console.info = saved; }
+    assert.equal(p.calls.length, 0, 'no email was sent');
+    assert.equal(logs.length, 1);
+  }
+});
+
+test('dry run still refuses invalid data, bots and too-fast submissions', async () => {
+  const env = { CONTACT_DRY_RUN: 'true' };
+  const p = provider(); const d = { fetch: p.fetch, now };
+  assert.equal((await handleContact(post(payload({ phone: '1' })), env, d)).status, 400);
+  assert.equal((await handleContact(post(payload({ elapsedMs: 10 })), env, d)).status, 400);
+  assert.deepEqual(await (await handleContact(post(payload({ honeypot: 'x' })), env, d)).json(), { accepted: true });
+  assert.equal((await handleContact(post(payload(), { origin: 'https://evil.example' }), env, d)).status, 403);
+});
+
+test('dry run is off unless set: without it and without email settings the answer is still a failure', async () => {
+  for (const env of [{}, { CONTACT_DRY_RUN: 'false' }, { CONTACT_DRY_RUN: '' }, { CONTACT_DRY_RUN: '0' }]) {
+    const res = await handleContact(post(payload()), env, { fetch: provider().fetch, now });
+    assert.equal(res.status, 500);
+    assert.equal((await res.json()).accepted, false);
+  }
+});
+
+test('the dry-run log shows what arrived without the visitor\'s name, phone, email or message', async () => {
+  const logs = [];
+  const saved = console.info; console.info = (...a) => logs.push(a.join(' '));
+  try {
+    await handleContact(post(payload({ firstName: 'Zoë', lastName: "O'Brien", phone: '(214) 555-0123', email: 'zoe@secret-company.example', message: 'my private note', smsConsent: true, smsConsentAt: '2026-10-20T14:58:00.000Z', smsConsentText: 'I agree.' })), { CONTACT_DRY_RUN: 'true' }, { fetch: provider().fetch, now });
+  } finally { console.info = saved; }
+  const line = logs[0];
+  for (const secret of ['Zoë', "O'Brien", '2145550123', '555-0123', 'zoe@', 'my private note']) assert(!line.includes(secret), `log must not contain ${secret}`);
+  for (const shown of ['"lp":"downsizing"', '"zip":"75201"', '10 digits, ends 0123', '…@secret-company.example', '"messageLength":15', '"smsConsent":true', '"utm_source":"google"']) assert(line.includes(shown), `log shows ${shown}`);
+  const summary = redactedSummary({ ...payload(), email: '' });
+  assert.equal(summary.email, '(not given)');
+});
+
+test('the browser treats a dry-run answer as a preview, never as a received request', async () => {
+  const req = { lp: 'downsizing' };
+  const dry = await deliverContactRequest(req, '/api/contact', async () => new Response('{"accepted":true,"dryRun":true}'));
+  assert.equal(dry, 'preview');
+  const real = await deliverContactRequest(req, '/api/contact', async () => new Response('{"accepted":true}'));
+  assert.equal(real, 'accepted');
+});

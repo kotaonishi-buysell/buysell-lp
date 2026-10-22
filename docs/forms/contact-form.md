@@ -78,13 +78,28 @@
    | `CONTACT_TO_EMAIL` | 通知を受け取るアドレス（複数ならカンマ区切り） |
    | `CONTACT_FROM_EMAIL` | 送信元。認証済みドメインのアドレス（例：`BuySell <inquiries@example.com>`） |
    | `CONTACT_ALLOWED_ORIGINS` | 任意。サイト自身以外にPOSTを許すオリジン（カンマ区切り） |
+   | `CONTACT_DRY_RUN` | 任意。`true` にすると「確認モード」になる（下の「メールなしで受信だけ確認する」）。**本番では必ず外す** |
 
 4. デプロイプレビューで、実際にフォームから送信して、メールが届くことを確認します。
 5. 設定が足りないときは、フォームは「送れませんでした」と表示し、受付済みとは表示しません。
 
+### メールなしで受信だけ確認する（確認モード）
+
+メールの設定（Resend）の前に、「フォームの内容が受付サーバーに正しく届くか」だけを確認できます。
+
+1. Netlify の環境変数に、`CONTACT_DRY_RUN` ＝ `true` を追加します（`RESEND_API_KEY` などは不要です）。追加したら、公開し直します。
+2. 公開されたサイトのフォームに、**テスト用のダミーの内容**を入力し、**ページを開いて2秒以上たってから**送信します。
+3. 画面に「Preview only. Your details are valid, but nothing was sent…」と表示されれば、受付サーバーは、リクエストを受け取って、サーバー側のチェックも通しています。メールは送られず、計測の `form_submit` も記録されません。
+4. 受け取った内容は、Netlify の「Logs & metrics」→「Functions」→ `contact` で、「contact dry run: request received and valid」という行を探して見ます。ログには、名前・電話・メール・メッセージの本文は出ません。次のものだけが出ます。
+   - LP名、ZIP（整形後）、名前の頭文字と文字数、電話の桁数と末尾4桁、メールのドメイン、メッセージの文字数
+   - SMS同意の有無・日時・文言の長さ、UTM、ページを開いてから送信までの時間
+5. 確認が済んだら、`CONTACT_DRY_RUN` を**削除**（または `false`）して、メールの設定に進みます。**確認モードのままだと、本物の問い合わせにも、メールが送られません**（画面には「Preview only」と出るので、気づけます）。
+
+画面が「We couldn't send your request」になる場合は、サーバーがリクエストを断っています。ログに出る理由で、原因を判断できます（`invalid_request`＝入力の不備、`too_fast`＝2秒未満の送信、`origin_not_allowed`＝別のサイトからの送信）。
+
 ### 手元での確認
 
-- `npm test`：入力チェック、サーバーの処理（メール送信は代用品で確認）、Netlify への接続部分をテストします。
+- `npm test`：入力チェック、サーバーの処理（メール送信は代用品で確認）、確認モード、Netlify への接続部分をテストします。
 - 実物の関数を動かすには、`npx netlify-cli functions:serve --offline --functions netlify/functions` を使います。環境変数 `EMAIL_API_URL`（テスト専用）にダミーの受け口のURLを入れると、メールの代わりにそこへ送られます。
 
 ## 構成
