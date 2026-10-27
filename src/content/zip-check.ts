@@ -12,4 +12,6 @@ export const zipCheckCopy = {
   inArea: 'Good news. We visit homes in your area.',
   outOfArea: "We may not visit this ZIP code yet. Call us and we'll check.",
   notConfigured: '{{TODO: service-area ZIP list}}',
+  /** Button under the "in your area" answer. It opens the contact form with the ZIP code filled in. */
+  requestButton: 'Request a visit',
 };

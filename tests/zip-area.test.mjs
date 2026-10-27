@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { zipAreaMessage } from '../src/lib/zip-area.ts';
+import { zipAreaMessage, zipAreaStatus } from '../src/lib/zip-area.ts';
 import { zipCheckCopy } from '../src/content/zip-check.ts';
 import { normalizeZip } from '../src/lib/contact-form.ts';
 
@@ -27,5 +27,18 @@ test('the box and the contact form agree on what a ZIP code is', () => {
   }
 });
 test('the shared copy has every answer the box can give', () => {
-  for (const key of ['label', 'placeholder', 'button', 'prompt', 'inArea', 'outOfArea', 'notConfigured']) assert(zipCheckCopy[key].length > 0, key);
+  for (const key of ['label', 'placeholder', 'button', 'prompt', 'inArea', 'outOfArea', 'notConfigured', 'requestButton']) assert(zipCheckCopy[key].length > 0, key);
+});
+test('the status says whether the request button may appear: only for a valid ZIP code in the area', () => {
+  assert.equal(zipAreaStatus('77002', houston), 'inArea');
+  assert.equal(zipAreaStatus('77002-1234', houston), 'inArea');
+  assert.equal(zipAreaStatus('75201', houston), 'outOfArea');
+  assert.equal(zipAreaStatus('7520', houston), 'invalid');
+  assert.equal(zipAreaStatus('77002', unset), 'notConfigured');
+});
+test('the message is the answer of the status', () => {
+  for (const value of ['77002', '75201', '7520']) {
+    const status = zipAreaStatus(value, houston);
+    assert.equal(zipAreaMessage(value, houston), status === 'invalid' ? '' : { inArea: 'IN', outOfArea: 'OUT' }[status]);
+  }
 });
