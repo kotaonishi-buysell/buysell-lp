@@ -76,7 +76,8 @@ src/
   lib/contact-form.ts    フォームの入力チェック・整形・送信処理（テスト済み）
   pages/silver.astro     Silver のページ本体（Codex のマークアップ）
   scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ、ZIP判定）
-  scripts/silver.ts      Silver 専用の動き（カテゴリのリボン、スクロール演出、FAQ の開閉、ZIP 欄）
+  scripts/silver.ts      Silver 専用の動き（カテゴリのリボン、スクロール演出、FAQ の開閉）
+  components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）
   server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、メール通知）
 netlify/functions/       Netlify Functions（POST /api/contact）。設定は netlify.toml
 public/images/           OG 画像（仮）、silver/ は Silver の画像（WebP）
@@ -106,7 +107,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 
 | | |
 |---|---|
-| 共通 | 問い合わせフォーム（`ContactForm`、入力チェック、UTM、送信、迷惑メール対策、SMS同意。[docs/forms/contact-form.md](docs/forms/contact-form.md)）、計測（`cta_click` / `faq_open` / `form_start` / `form_submit`）、会社名・電話・営業時間・登録番号・OCCC・法定リンク（`site.ts`）、`<head>`・GTM・構造化データ（`Document.astro`） |
+| 共通 | 問い合わせフォーム（`ContactForm`、入力チェック、UTM、送信、迷惑メール対策、SMS同意。[docs/forms/contact-form.md](docs/forms/contact-form.md)）、ZIP確認の欄（`ZipCheck`、対象ZIPは `site.ts`）、計測（`cta_click` / `faq_open` / `form_start` / `form_submit`）、会社名・電話・営業時間・登録番号・OCCC・法定リンク（`site.ts`）、`<head>`・GTM・構造化データ（`Document.astro`） |
 | 別 | ページのマークアップ（`pages/silver.astro`）、CSS（`styles/silver.css`）、画像、スクロール演出などの動き（`scripts/silver.ts`） |
 | 文言の置き場所 | meta・フォームの送信ボタンなど少数の文言・ZIP欄・FAQ は `content/lps/silver.ts`。それ以外の見出し・本文は `silver.astro` に直接書いてある（専用レイアウトで、他LPに流用しないため） |
 

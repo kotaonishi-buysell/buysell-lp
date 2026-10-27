@@ -158,6 +158,16 @@ LPの側でできるのは、見た目と、少数の文言だけです。
 
 項目、入力チェック、送信先、エラーメッセージ、SMS同意の文言は、LPごとには変えられません。変えるときは共通のファイルを直し、全LPで確認してください。
 
+## ZIP確認の欄（`ZipCheck`）
+
+「お住まいのZIPコードは、訪問の対象エリアですか」を確かめる小さな欄です。**問い合わせフォームとは別の部品**で、何も送信せず、ページの上で答えを出すだけです。Netlify の「Forms」にも集まりません（`data-netlify` を付けていません）。全LPで同じ部品を使えます。
+
+- 部品：`src/components/ZipCheck.astro`。動作：`src/scripts/zip-check.ts`。判定：`src/lib/zip-area.ts`。答えの文言：`src/content/zip-check.ts`。
+- **対象の ZIP の一覧は、`src/content/site.ts` の `serviceArea.zipPrefixes`（ZIPの先頭の数字）1か所**です。空の間は、有効なZIPを入れても、「はい／いいえ」ではなく、`{{TODO: service-area ZIP list}}` の仮の表示を出します。
+- 「ZIPとして正しいか」は、問い合わせフォームと**同じルール**です（`normalizeZip`：5桁、`12345-6789`、ハイフンなしの9桁）。正しくない入力には、「Enter a 5-digit ZIP code.」を表示し、入力欄に戻します。
+- 見た目は、LPのCSSで決めます（`.zip-row`、`.zip-result`、`#zip-form` など）。部品には、ボタンのクラス、見出し、ボタンの文言、矢印などを渡せます。同じページに2つ置くときは、`id` を変えてください。
+- Silver は、この部品を使っています（見た目は、共通化の前と同一であることを確認済み）。
+
 ## 計測
 
 フォームは `cf:event`（`document` 上のカスタムイベント）で、`start` / `submit` / `error` を知らせるだけです。各LPが、それをどう扱うかを決めます。
