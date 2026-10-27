@@ -20,8 +20,8 @@
 - Add docs/design/<slug>/DESIGN_SYSTEM.md and register it in docs/design/README.md for every new LP.
 - Shared components and form/analytics code may be reused. Scope visual changes to the target LP; verify both LPs if shared CSS or markup changes.
 - Scope new CSS to body[data-lp="home-value"] in src/styles/home-value.css.
-- Keep legacy business facts in src/content/site.ts and Home Value configuration in src/content/lps/home-value/config.ts. Do not change legacy facts when updating Home Value.
-- Do not invent fees, service areas, accepted items, phone numbers or customer testimonials. Missing Home Value integrations must use explicit preview states, not visible legacy TODO copy.
+- Company facts shared by every LP (brand, registered name, group name, address, reception phone, hours, OCCC registration number and notice) live only in src/content/company.ts. Never type them into an LP's content or page. src/content/site.ts (Downsizing, Silver) and src/content/lps/home-value/config.ts derive from it. Keep the other legacy facts in site.ts and Home Value's own configuration in config.ts.
+- Do not invent fees, service areas, accepted items, phone numbers or customer testimonials. A company fact that is null in company.ts shows as a {{TODO}} placeholder in Downsizing and Silver; Home Value must use an explicit preview state or omit it, never visible legacy TODO copy or a dummy value.
 - Mark unconfirmed business facts using the existing {{TODO: ...}} convention.
 - Consultation examples are hypothetical situations, not reviews.
 - Use owned/licensed assets; do not copy Pestie assets or layouts.

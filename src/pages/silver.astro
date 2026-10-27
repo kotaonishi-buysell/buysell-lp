@@ -12,6 +12,7 @@ import SilverLayout from '../layouts/SilverLayout.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { silver, silverFaq, silverZipBox } from '../content/lps/silver';
 import { site } from '../content/site';
+import { company } from '../content/company';
 import { fill, plain, rich } from '../lib/text';
 
 const telHref = `tel:${site.phone.e164}`;
@@ -113,8 +114,8 @@ const zipConfigJson = JSON.stringify({
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© {year} BuySell. All rights reserved.</span>
-        <span>A company of BuySell Technologies Inc.</span>
+        <span>© {year} {company.brand}. All rights reserved.</span>
+        <span>A company of {company.group.name}</span>
       </div>
       {
         showPreviewStrip && (

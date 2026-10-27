@@ -61,7 +61,8 @@ src/
   styles/form-support.css  フォームが使う部品（ボタン、リンク、.muted、.todo、[hidden] など）。base.css から分離（理由は Silver LP の節）
   styles/fonts.css       自前ホストのフォント（public/fonts/、OFL）
   styles/silver.css      Silver LP 専用。/silver だけが読み込む
-  content/site.ts        4LP共通：会社情報、電話、営業時間、対応エリア、法定表記、共通UI文言、GTM
+  content/company.ts     全LP共通の会社情報（唯一の入力元）：ブランド名、会社名、グループ名、住所、受付電話、営業時間、OCCC登録番号・表記。未確定は null
+  content/site.ts        Downsizing / Silver 用：company.ts から組み立てた会社情報に、対応エリア、法定リンク、共通UI文言、GTM を加えたもの。company.ts が null の項目は {{TODO}} 表示
   content/lps/*.ts       LPごと：meta、ボタン文言、セクションの並び順と全コピー、FAQ、フォームの選択肢
   content/lps/index.ts   LPの一覧（1件 = 1ページ /<slug>）。Silver は専用ページなのでここには入れない
   content/lps/silver.ts  Silver：meta、フォーム文言、FAQ
@@ -106,7 +107,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 
 | | |
 |---|---|
-| 共通 | 問い合わせフォーム（`ContactForm`、入力チェック、UTM、送信、迷惑メール対策、SMS同意。[docs/forms/contact-form.md](docs/forms/contact-form.md)）、計測（`cta_click` / `faq_open` / `form_start` / `form_submit`）、会社名・電話・営業時間・登録番号・OCCC・法定リンク（`site.ts`）、`<head>`・GTM・構造化データ（`Document.astro`） |
+| 共通 | 問い合わせフォーム（`ContactForm`、入力チェック、UTM、送信、迷惑メール対策、SMS同意。[docs/forms/contact-form.md](docs/forms/contact-form.md)）、計測（`cta_click` / `faq_open` / `form_start` / `form_submit`）、会社名・電話・営業時間・住所・登録番号・OCCC（`company.ts`）、法定リンク（`site.ts`）、`<head>`・GTM・構造化データ（`Document.astro`） |
 | 別 | ページのマークアップ（`pages/silver.astro`）、CSS（`styles/silver.css`）、画像、スクロール演出などの動き（`scripts/silver.ts`） |
 | 文言の置き場所 | meta・フォームの送信ボタンなど少数の文言・ZIP欄・FAQ は `content/lps/silver.ts`。それ以外の見出し・本文は `silver.astro` に直接書いてある（専用レイアウトで、他LPに流用しないため） |
 
@@ -120,9 +121,9 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 
 ### 取り込み時の変更点
 
-- 電話ボタンはモックの `<button data-phone>`（押すと「番号は未確定」のモーダル）から、`tel:` リンク（`data-cta`）にした。番号は `site.ts` の1か所。
+- 電話ボタンはモックの `<button data-phone>`（押すと「番号は未確定」のモーダル）から、`tel:` リンク（`data-cta`）にした。番号は `company.ts` の1か所。
 - 予約ボタンは `data-booking`。押すとダイアログ（`#booking-dialog`）が開き、中に共通フォームが入っている（`cta.ts` が `<dialog>` を検出して `showModal()` する）。
-- モック独自の予約フォーム、情報ダイアログ（ポリシー用）、`[...]` のダミー値は外し、`{{TODO}}` で表示される `site.ts` の値に置き換えた。
+- モック独自の予約フォーム、情報ダイアログ（ポリシー用）、`[...]` のダミー値は外し、`{{TODO}}` で表示される `company.ts` / `site.ts` の値に置き換えた。
 - Google Fonts をやめ、Newsreader（イタリック追加）を自前ホストにした。
 - 画像はPNG（合計約10MB）から WebP（約1MB）に変換して `public/images/silver/` に置いた。元のPNGはリポジトリに入れていない。OG 画像 `public/images/og-silver.jpg` は hero 画像から切り出した仮のもの。
 - 追従バー（モバイル下部の「Call us / Book a free appraisal」）は、Downsizing と同じく、ヒーローを過ぎたら出て、最後の申込みセクションで隠れる（`scripts/sticky.ts` を共用。モックは常時表示）。
@@ -143,7 +144,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 | 項目 | 実装 |
 |---|---|
 | メインの問い合わせ手段 | 主ボタンはすべて電話（`tel:`）：ヘッダー、ファーストビュー、中間CTA、最後の申込みセクション、スマホの追従バー。ボタンには電話番号を表示し、直後に「Appraisal only is fine…」と受付時間（CT）を置いた。フォームは補助で、ヘッダーの「Book a consultation」とファーストビューの「Request a visit online」から開く |
-| コールトラッキング | ツール未定。電話番号は `site.ts` の1か所から出力し、`data-phone-number` を付けているので、番号差し替え型のツールがそのまま使える。タップは `cta_click`（`method: phone`）で計測 |
+| コールトラッキング | ツール未定。電話番号は `company.ts` の1か所から出力し、`data-phone-number` を付けているので、番号差し替え型のツールがそのまま使える。タップは `cta_click`（`method: phone`）で計測 |
 | TCPA 同意 | フォームに SMS 同意のチェックボックスを置いた。初期値はオフ、送信の必須条件にはしていない。同意の有無・日時・文言を保存する。文言は仮で、法務確認待ち（[共通問い合わせフォーム](docs/forms/contact-form.md)） |
 | 法定表記 | テキサス州の登録番号をヘッダー・会社情報・フッターに表示。フッターに OCCC の連絡先欄と「Do not sell or share my personal information」リンクを追加 |
 | ZIP | フォームの郵便番号欄を ZIP code（5桁、または ZIP+4）にした。対応エリアの判定は、対象の ZIP 一覧が未確定のため行っていない |
@@ -185,8 +186,7 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 
 `npm run todos` で一覧を出せる。画面上では点線の枠で表示される。主なもの：
 
-- 会社名、住所、テキサス州の登録番号、営業時間、電話番号
-- OCCC の連絡先と、必要な表記の文言
+- 会社名、住所、OCCC の登録番号、営業時間、電話番号、OCCC の連絡先と必要な表記の文言（すべて `src/content/company.ts` に入力する。全LPに反映される）
 - 対応エリア（エリア判定をするなら、対象の ZIP 一覧も）
 - 出張費・査定料、支払い方法とタイミング、買い取った品の行き先（FAQ）
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）

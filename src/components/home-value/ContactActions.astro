@@ -13,7 +13,7 @@ const phone = approvedPhone(homeValueConfig.phone);
     ) : (
       <><button class="hv-button hv-button--primary" type="button" disabled aria-describedby="phone-pending">{copy.contact.call}</button><span class="hv-small">{copy.contact.phonePending}</span></>
     )}
-    {homeValueConfig.hours && <span class="hv-small">{homeValueConfig.hours} (Central Time)</span>}
+    {homeValueConfig.hours && <span class="hv-small">{homeValueConfig.hours}</span>}
   </div>
   <a class="hv-button hv-button--secondary" href="#visit-request" data-visit-open>{copy.contact.request}</a>
 </div>
