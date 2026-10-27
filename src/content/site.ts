@@ -22,7 +22,8 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
       label: 'Texas registration No.',
       value: facts.occc.registrationNumber ?? pending('state registration number'),
     },
-    hours: `${facts.hours ?? pending('days and hours')}, ${facts.timeZone}`,
+    // null = hours are not published (company.showHours). Pages then leave the hours out.
+    hours: facts.showHours ? `${facts.hours ?? pending('days and hours')}, ${facts.timeZone}` : null,
   },
   phone: {
     ...(isCallablePhone(facts.phone) ? facts.phone : placeholderPhone),

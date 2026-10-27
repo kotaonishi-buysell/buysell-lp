@@ -11,6 +11,7 @@ const confirmed = {
   address: '100 Main St, Dallas, TX 75201',
   phone: { display: '(214) 555-0123', e164: '+12145550123' },
   hours: 'Mon–Fri, 9 a.m.–5 p.m.',
+  showHours: true,
   timeZone: 'Central Time',
   occc: { registrationNumber: 'OCCC-12345', regulatorNotice: 'OCCC notice text' },
 };
@@ -44,6 +45,21 @@ test('confirmed company facts reach Downsizing/Silver and Home Value from the on
   assert.equal(hv.phone.display, legacy.phone.display);
   assert.equal(hv.hours, 'Mon–Fri, 9 a.m.–5 p.m. (Central Time)');
   assert.deepEqual(hv.localOperator, { name: 'BuySell Texas LLC', address: '100 Main St, Dallas, TX 75201', contact: '(214) 555-0123' });
+});
+
+test('hours that are recorded but not published appear on no LP', () => {
+  const legacy = buildSite({ ...confirmed, showHours: false });
+  const hv = buildHomeValueConfig({ ...confirmed, showHours: false });
+  assert.equal(legacy.company.hours, null);
+  assert.equal(hv.hours, null);
+  assert.equal(buildSite({ ...confirmed, showHours: true, hours: null }).company.hours, '{{TODO: days and hours}}, Central Time');
+});
+
+test('the checked-in company facts are the ones supplied for BuySell America', () => {
+  assert.equal(company.legalName, 'BuySell America, Inc.');
+  assert.equal(company.address, '5717 Legacy Drive, Suite 250, Plano, TX 75024');
+  assert.deepEqual(company.phone, { display: '(469) 668-2619', e164: '+14696682619' });
+  assert.equal(company.occc.registrationNumber, null);
 });
 
 test('unconfirmed facts: legacy LPs show TODO placeholders, Home Value shows nothing and no dummy number', () => {

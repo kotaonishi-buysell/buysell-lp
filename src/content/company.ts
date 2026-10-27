@@ -18,8 +18,10 @@ export interface CompanyFacts {
   address: string | null;
   /** The reception number. Every phone button and link uses it. */
   phone: { display: string; e164: string } | null;
-  /** Days and hours the phone is answered, without the time zone, e.g. "Mon–Fri, 9 a.m.–5 p.m.". */
+  /** Hours the phone is answered, without the time zone, e.g. "9:00 a.m.–midnight". */
   hours: string | null;
+  /** false = no LP prints hours (they are recorded above for later). true = show them everywhere. */
+  showHours: boolean;
   /** Appended to the hours wherever they are shown. */
   timeZone: string;
   /** Texas Office of Consumer Credit Commissioner (OCCC). */
@@ -33,16 +35,14 @@ export interface CompanyFacts {
 
 export const company: CompanyFacts = {
   brand: 'BuySell',
-  // TODO: company name (the registered entity in Texas)
-  legalName: null,
+  legalName: 'BuySell America, Inc.',
   // TODO: confirm the official English group name. Home Value's requirements say "Co. Ltd."; the Silver mock-up said "Inc."
   group: { name: 'BuySell Technologies Co. Ltd.' },
-  // TODO: street address, city, TX ZIP
-  address: null,
-  // TODO: reception phone number. Both values from the same number, e.g. { display: '(214) 555-0123', e164: '+12145550123' }
-  phone: null,
-  // TODO: days and hours the phone is answered
-  hours: null,
+  address: '5717 Legacy Drive, Suite 250, Plano, TX 75024',
+  phone: { display: '(469) 668-2619', e164: '+14696682619' },
+  // TODO: confirm which days the phone is answered, then set showHours to true to publish the hours
+  hours: '9:00 a.m.–midnight',
+  showHours: false,
   timeZone: 'Central Time',
   occc: {
     // TODO: OCCC registration number

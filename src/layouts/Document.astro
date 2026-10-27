@@ -36,7 +36,7 @@ const structuredData = {
     addressCountry: 'US',
   },
   areaServed: plain(site.serviceArea.summary),
-  openingHours: plain(site.company.hours),
+  ...(site.company.hours ? { openingHours: plain(site.company.hours) } : {}),
   identifier: plain(`${site.company.registration.label} ${site.company.registration.value}`),
 };
 const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');

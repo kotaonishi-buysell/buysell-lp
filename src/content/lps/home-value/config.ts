@@ -25,7 +25,7 @@ export const buildHomeValueConfig = (facts: CompanyFacts): HomeValueConfig => ({
   brand: facts.brand,
   area: 'Dallas–Fort Worth and surrounding areas',
   phone: approvedPhone(facts.phone),
-  hours: facts.hours?.trim() ? `${facts.hours.trim()} (${facts.timeZone})` : null,
+  hours: facts.showHours && facts.hours?.trim() ? `${facts.hours.trim()} (${facts.timeZone})` : null,
   // Shown only once both the operating entity and its address are confirmed.
   localOperator:
     facts.legalName && facts.address
