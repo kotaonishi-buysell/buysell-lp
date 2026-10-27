@@ -1,0 +1,66 @@
+---
+/*
+ * Service-area ZIP box: "do you come to my ZIP code?". It sends nothing; it only answers on
+ * the page (src/scripts/zip-check.ts). The list of ZIP codes is site.serviceArea.zipPrefixes and
+ * the answers are in src/content/zip-check.ts, so every LP says the same thing.
+ * This is not the contact form: it has no name or data-netlify, so Netlify does not collect it.
+ * The look comes from the LP's own CSS (.zip-row, .zip-result and the ids below).
+ */
+import { site } from '../content/site';
+import { zipCheckCopy as copy } from '../content/zip-check';
+import { rich } from '../lib/text';
+
+interface Props {
+  /** The input gets this id, the form `<id>-form` and the answer `<id>-result`. */
+  id?: string;
+  label?: string;
+  placeholder?: string;
+  buttonLabel?: string;
+  /** Class names of the LP's own button style. */
+  buttonClass?: string;
+  /** Decorative text after the button label, e.g. an arrow. Hidden from screen readers. */
+  buttonSuffix?: string;
+}
+
+const {
+  id = 'zip',
+  label = copy.label,
+  placeholder = copy.placeholder,
+  buttonLabel = copy.button,
+  buttonClass = '',
+  buttonSuffix,
+} = Astro.props;
+
+const config = {
+  zipPrefixes: site.serviceArea.zipPrefixes,
+  zipMessages: {
+    inArea: rich(copy.inArea),
+    outOfArea: rich(copy.outOfArea),
+    notConfigured: rich(copy.notConfigured),
+  },
+  prompt: copy.prompt,
+};
+const configJson = JSON.stringify(config).replace(/</g, '\\u003c');
+---
+
+<form id={`${id}-form`} data-zip-form novalidate>
+  <script type="application/json" data-zip-config set:html={configJson} />
+  <label for={id}>{label}</label>
+  <div class="zip-row">
+    <input
+      id={id}
+      name="zip"
+      type="text"
+      inputmode="numeric"
+      autocomplete="postal-code"
+      maxlength="10"
+      placeholder={placeholder}
+      required
+      aria-describedby={`${id}-result`}
+    />
+    <button class={buttonClass} type="submit">
+      {buttonLabel}{buttonSuffix && <> <span aria-hidden="true">{buttonSuffix}</span></>}
+    </button>
+  </div>
+  <p id={`${id}-result`} class="zip-result" role="status">{copy.prompt}</p>
+</form>

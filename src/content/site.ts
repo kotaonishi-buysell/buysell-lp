@@ -3,7 +3,8 @@
  * Home Appraisal LPs, and Silver).
  * Values marked {{TODO: ...}} are business facts the client confirms before launch.
  */
-import type { SiteContent } from './types';
+import type { SiteContent } from './types.ts';
+import { serviceAreaZips } from './service-area-zips.ts';
 
 export const site: SiteContent = {
   company: {
@@ -26,8 +27,8 @@ export const site: SiteContent = {
   serviceArea: {
     summary: '{{TODO: service area}}',
     places: ['{{TODO: cities we visit}}'],
-    // TODO: ZIP code prefixes of the service area, e.g. ['770', '773'] for parts of Houston.
-    zipPrefixes: [],
+    // Every ZIP code of the Dallas–Fort Worth and Houston metropolitan areas (generated, see service-area-zips.ts).
+    zipPrefixes: serviceAreaZips,
     outsideNote: "Don't see your area? Call us and we'll check.",
   },
   regulator: {

@@ -3,7 +3,7 @@
  * has its own page, src/pages/silver.astro, with its own stylesheet, because its
  * design differs from the Home Appraisal design system. This file holds what is
  * shared with the other LPs' machinery: meta, the copy of the shared contact form and
- * the FAQ (which analytics tracks). The rest of the copy is in the page.
+ * the FAQ (which analytics tracks). The ZIP box copy is shared too (content/zip-check.ts). The rest of the copy is in the page.
  * Company facts (phone, hours, registration) come from ../site.ts.
  */
 import type { CustomLandingPage, FaqItem } from '../types';
@@ -24,14 +24,6 @@ export const silver: CustomLandingPage = {
       "We'll call or email within {{TODO: number of}} business days to arrange a time. Nothing is sold unless you say so.",
     success: "Thank you. We've received your request and will be in touch to arrange a time.",
   },
-};
-
-/** Messages of the page's service-area ZIP box. */
-export const silverZipBox = {
-  prompt: 'Enter a 5-digit ZIP code.',
-  inArea: 'Good news. We visit homes in your area.',
-  outOfArea: "We may not visit this ZIP code yet. Call us and we'll check.",
-  notConfigured: '{{TODO: service-area ZIP list}}',
 };
 
 /** Shown in the page's FAQ. Bracketed placeholders from the mock-up are {{TODO}} markers here. */

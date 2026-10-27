@@ -1,11 +1,9 @@
 /*
  * Silver LP behaviour: the category ribbon, scroll reveals, FAQ animation, appraiser
- * arrows, dialog closing and the service-area ZIP box. Ported from the Codex mock-up's
- * app.js (logic unchanged). What the mock-up did for calls, booking, the form and the
- * policy links is shared now: scripts/cta.ts, form.ts and real links.
+ * arrows and dialog closing. Ported from the Codex mock-up's app.js (logic unchanged).
+ * What the mock-up did for calls, booking, the form, the ZIP box and the policy links is
+ * shared now: scripts/cta.ts, contact-form.ts, zip-check.ts and real links.
  */
-import { zipAreaMessage, type ZipConfig } from './zip';
-
 const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 // ---------- dialogs ----------
@@ -27,21 +25,6 @@ const initDialogs = (): void => {
         dialog.close();
       }
     });
-  });
-};
-
-// ---------- service-area ZIP box ----------
-const initZipBox = (): void => {
-  const form = document.querySelector<HTMLFormElement>('[data-zip-form]');
-  const configElement = form?.querySelector('[data-zip-config]');
-  const input = form?.querySelector<HTMLInputElement>('input[name="zip"]');
-  const result = form?.querySelector<HTMLElement>('.zip-result');
-  if (!form || !configElement?.textContent || !input || !result) return;
-
-  const config = JSON.parse(configElement.textContent) as ZipConfig & { prompt: string };
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    result.innerHTML = zipAreaMessage(input.value, config) || config.prompt;
   });
 };
 
@@ -394,7 +377,6 @@ const initAppraiserArrows = (): void => {
 };
 
 initDialogs();
-initZipBox();
 initCategoryRibbon();
 initReveals();
 initMotion();
