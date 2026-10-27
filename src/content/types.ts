@@ -224,7 +224,7 @@ export interface SiteContent {
   serviceArea: {
     summary: string;
     places: string[];
-    /** ZIP code prefixes we visit, e.g. "770" for Houston. Empty = not configured yet. Used by Silver's ZIP box. */
+    /** ZIP codes (or prefixes of them) we visit. A full 5-digit ZIP code is a prefix of itself. Empty = not configured yet. Used by the ZIP box. */
     zipPrefixes: string[];
     outsideNote: string;
   };

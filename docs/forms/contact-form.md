@@ -163,7 +163,13 @@ LPの側でできるのは、見た目と、少数の文言だけです。
 「お住まいのZIPコードは、訪問の対象エリアですか」を確かめる小さな欄です。**問い合わせフォームとは別の部品**で、何も送信せず、ページの上で答えを出すだけです。Netlify の「Forms」にも集まりません（`data-netlify` を付けていません）。全LPで同じ部品を使えます。
 
 - 部品：`src/components/ZipCheck.astro`。動作：`src/scripts/zip-check.ts`。判定：`src/lib/zip-area.ts`。答えの文言：`src/content/zip-check.ts`。
-- **対象の ZIP の一覧は、`src/content/site.ts` の `serviceArea.zipPrefixes`（ZIPの先頭の数字）1か所**です。空の間は、有効なZIPを入れても、「はい／いいえ」ではなく、`{{TODO: service-area ZIP list}}` の仮の表示を出します。
+- **対象の ZIP の一覧は、`src/content/site.ts` の `serviceArea.zipPrefixes` 1か所**です（ZIPの先頭の数字、または5桁のZIP。5桁のZIPは、それ自身の先頭です）。空の間は、有効なZIPを入れても、「はい／いいえ」ではなく、`{{TODO: service-area ZIP list}}` の仮の表示を出します。
+- **今の一覧**：ダラス・フォートワース都市圏（11郡）とヒューストン都市圏（9郡）の、すべてのZIP（756件）。`src/content/service-area-zips.ts` で、**自動で生成したファイルなので、手で直さない**でください。
+  - 郡：DFW＝Collin、Dallas、Denton、Ellis、Hunt、Johnson、Kaufman、Parker、Rockwall、Tarrant、Wise。ヒューストン＝Austin、Brazoria、Chambers、Fort Bend、Galveston、Harris、Liberty、Montgomery、Waller（米国国勢調査局の都市圏の定義、OMB 2023）。
+  - 出典：GeoNames の米国の郵便番号データ（CC BY 4.0、<https://www.geonames.org>）。npm の `zipcodes-us@1.2.0` に含まれるものです。
+  - **ZIPコードは、ときどき追加・変更されます。** 公開の前と、定期的に、USPS または HUD の最新データと照らして確認してください。
+  - 対象を変えるとき（郡を増やす・減らす、郡でなく都市で決める、など）：`scripts/build-service-area-zips.mjs` の `COUNTIES` を直し、元データ（`npm pack zipcodes-us@1.2.0` で取得した `data/US.txt`）を渡して、`node scripts/build-service-area-zips.mjs <US.txt のパス>` を実行します。
+  - 郡で決めているので、都市圏の端（Austin 郡の農村部、Galveston 島など）まで含みます。実際の訪問の範囲より広い場合は、郡を減らしてください。
 - 「ZIPとして正しいか」は、問い合わせフォームと**同じルール**です（`normalizeZip`：5桁、`12345-6789`、ハイフンなしの9桁）。正しくない入力には、「Enter a 5-digit ZIP code.」を表示し、入力欄に戻します。
 - 見た目は、LPのCSSで決めます（`.zip-row`、`.zip-result`、`#zip-form` など）。部品には、ボタンのクラス、見出し、ボタンの文言、矢印などを渡せます。同じページに2つ置くときは、`id` を変えてください。
 - Silver は、この部品を使っています（見た目は、共通化の前と同一であることを確認済み）。
