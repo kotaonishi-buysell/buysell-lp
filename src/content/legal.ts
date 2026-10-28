@@ -90,7 +90,7 @@ export const privacyPolicy: LegalPageContent = {
             'Basic technical data (IP address, browser and device type, pages requested) that our hosting provider logs to run and secure the site.',
           ],
         },
-        'Our pages do not currently use advertising or cross-site tracking cookies. {{TODO: update this sentence if analytics or advertising tags are added, and list them.}}',
+        'Some of our landing pages use Google Tag Manager, which loads measurement tags. Those tags may set cookies or similar technologies and receive data such as your IP address, browser and device, the pages you view, and the actions you take (for example, tapping a call or request button, opening a question, or starting or sending the form). They do not receive what you type into the form. {{TODO: list the tags in the container (for example Google Analytics or advertising tags) and the cookies they set.}} This policy and our other legal pages do not load Google Tag Manager.',
       ],
     },
     {
@@ -126,7 +126,7 @@ export const privacyPolicy: LegalPageContent = {
         'We give information to others only as follows:',
         {
           list: [
-            'Service providers that work for us under contract: Netlify, Inc. (hosts our websites and stores the requests sent through our form), and providers of email, text messaging and scheduling. {{TODO: list every other provider that receives personal information, for example scheduling or CRM tools.}}',
+            'Service providers that work for us under contract: Netlify, Inc. (hosts our websites and stores the requests sent through our form), Google (Google Tag Manager and the measurement tags it loads), and providers of email, text messaging and scheduling. {{TODO: list every other provider that receives personal information, for example scheduling or CRM tools.}}',
             'Other companies in the BuySell group, to help run the service. {{TODO: confirm whether and under what terms data goes to BuySell Technologies group companies.}}',
             'Police, regulators (including the Texas Office of Consumer Credit Commissioner) and others, when the law requires it or a lawful request is made, including the purchase records described above.',
             'A buyer or successor, if our business is sold or reorganized.',
@@ -318,10 +318,10 @@ export const doNotSell: LegalPageContent = {
             'Contact details: your name, ZIP code, phone number and email address.',
             'Your message and your text-message consent record.',
             'At a visit, when you sell: ID details, item records and photographs, and payment details.',
-            'Technical data: campaign details in the link you used, and basic logs kept by our hosting provider.',
+            'Technical and measurement data: campaign details in the link you used, which buttons you tap and pages you view (through Google Tag Manager), and basic logs kept by our hosting provider.',
           ],
         },
-        '{{TODO: confirm with the business that no advertising or analytics tag that sends data to advertisers or data brokers is, or will be, added to any LP. If one is added, this page and the Privacy Policy must change first.}}',
+        '{{TODO: Google Tag Manager (container GTM-PQQFZ723) is now live on some LPs. Before launch, confirm that no tag in it (for example Google Ads or Meta remarketing) shares data for advertising. If one does, this page and the Privacy Policy must change first, and opt-out must be offered.}}',
       ],
     },
     {
@@ -335,7 +335,7 @@ export const doNotSell: LegalPageContent = {
       id: 'signals',
       heading: 'Browser opt-out signals',
       blocks: [
-        'If your browser sends an opt-out preference signal such as Global Privacy Control, we treat it as a request not to sell or share. Because we do not sell or share, it does not change anything.',
+        'If your browser sends an opt-out preference signal such as Global Privacy Control, we treat it as a request not to sell or share. Because we do not sell or share, it does not change anything. {{TODO: if an advertising tag is ever added, it must respect this signal.}}',
       ],
     },
     {

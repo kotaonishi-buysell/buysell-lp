@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { legalPages, privacyPolicy, termsOfUse, doNotSell } from '../src/content/legal.ts';
 import { site } from '../src/content/site.ts';
 
@@ -51,4 +51,14 @@ test('the three pages agree with the rules of the business', () => {
 test('the draft notice and the unconfirmed facts stay visible as TODO markers', () => {
   assert.match(text(privacyPolicy), /\{\{TODO/);
   assert.match(site.legal.privacyEmail, /\{\{TODO/);
+});
+
+test('while Google Tag Manager is on the LPs, the policy says so and the legal pages do not load it', () => {
+  assert(site.analytics.gtmId, 'gtmId is set');
+  assert.match(text(privacyPolicy), /Google Tag Manager/);
+  assert.match(text(doNotSell), /Google Tag Manager/);
+  assert.doesNotMatch(text(privacyPolicy), /do not currently use advertising or cross-site tracking cookies/);
+  // LegalLayout is its own document: it must not render the GTM snippet or the shared scripts.
+  const layout = readFileSync(new URL('../src/layouts/LegalLayout.astro', import.meta.url), 'utf8');
+  assert.doesNotMatch(layout, /gtm|Document\.astro|scripts\/main/i);
 });
