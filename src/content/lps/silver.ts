@@ -73,7 +73,7 @@ export const silverFaq: FaqItem[] = [
   {
     id: 'id',
     q: 'What ID will I need?',
-    a: "We'll tell you the identification and recordkeeping requirements before your appointment. {{TODO: Texas-specific ID requirements and approved wording, pending legal review.}}",
+    a: "Please have a valid government-issued photo ID, such as a driver license or state ID card, ready at your appointment. Texas law requires us to record details from it, and to keep a record of each purchase that includes photographs of the items we buy. We'll tell you what we need before your visit.",
   },
   {
     id: 'family',
