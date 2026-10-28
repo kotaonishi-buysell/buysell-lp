@@ -139,6 +139,14 @@ function initForm(form: HTMLFormElement): void {
     }
   });
 
+  // Another part of the page (the ZIP box) asks to start the form with a ZIP code filled in.
+  form.addEventListener('cf:prefill', (event) => {
+    const { zip } = (event as CustomEvent<{ zip?: string }>).detail ?? {};
+    if (typeof zip !== 'string') return;
+    field('zip').value = zip;
+    if (attempted && !sending) render();
+  });
+
   editButton?.addEventListener('click', () => {
     if (!success) return;
     success.hidden = true;

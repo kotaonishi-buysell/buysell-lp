@@ -7,6 +7,7 @@
  */
 import { company as companyFacts, isCallablePhone, type CompanyFacts } from './company.ts';
 import type { SiteContent } from './types.ts';
+import { serviceAreaZips } from './service-area-zips.ts';
 
 // Written as a concatenation so `npm run todos` lists the open item once, in company.ts.
 const pending = (what: string): string => '{{' + `TODO: ${what}` + '}}';
@@ -33,8 +34,8 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
   serviceArea: {
     summary: '{{TODO: service area}}',
     places: ['{{TODO: cities we visit}}'],
-    // TODO: ZIP code prefixes of the service area, e.g. ['770', '773'] for parts of Houston.
-    zipPrefixes: [],
+    // Every ZIP code of the Dallas–Fort Worth and Houston metropolitan areas (generated, see service-area-zips.ts).
+    zipPrefixes: serviceAreaZips,
     outsideNote: "Don't see your area? Call us and we'll check.",
   },
   regulator: {
@@ -70,8 +71,8 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     },
   },
   analytics: {
-    // TODO: Google Tag Manager container ID, e.g. 'GTM-ABC1234'.
-    gtmId: null,
+    // Google Tag Manager container. Loaded by layouts/Document.astro (/downsizing and /silver; /home-value has its own page).
+    gtmId: 'GTM-PQQFZ723',
   },
 });
 

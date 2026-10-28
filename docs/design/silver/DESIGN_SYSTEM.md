@@ -25,7 +25,10 @@
 - 全LP共通の `ContactForm` を、予約ダイアログ（`#booking-dialog`）の中に入れています。項目・入力チェック・送信先は共通で、変えません（[docs/forms/contact-form.md](../../forms/contact-form.md)）。
 - 見た目は `silver.css` 末尾の `[data-lp='silver']` ブロック（`--cf-*` 変数）で、アイボリー・緑・角なしに合わせています。送信ボタンはモックの `.button` を使います。
 
+## ZIP確認の欄
+- ページ中ほどの「See if we come to your neighborhood」は、全LP共通の `ZipCheck` 部品です（[docs/forms/contact-form.md](../../forms/contact-form.md)）。見た目は `silver.css` の `#zip-form`、`.zip-row`、`.zip-result` で決まります。文言の変更は、見出しだけ `silver.astro` で、答えの文言は共通の `src/content/zip-check.ts` で行います。「対象」の答えの下には、予約ダイアログを、ZIP入力済みで開くボタン（`.zip-request`、`button button-cream`）が出ます。
+
 ## 編集のルール
 - Silver の見た目の変更は、`silver.css` と `silver.astro` の中だけで行い、他のLPのスタイルに影響させない。
 - 共通のCSS（`tokens.css`、`form-support.css`、`contact-form.css`）を変えたときは、Silver、Downsizing、Home Value の3つを確認する。
-- 公開前に確認が必要な内容（スタッフの名前と写真、お客様の声、価格帯、「Paid same day」など）は、README の「Silver LP」の節を見てください。
+- 公開前に確認が必要な内容（スタッフの名前と写真、お客様の声、価格帯、「Paid next day」など）は、README の「Silver LP」の節を見てください。

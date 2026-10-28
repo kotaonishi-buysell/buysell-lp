@@ -92,10 +92,10 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
       <section class="hv-section hv-mint" id="how-it-works" aria-labelledby="process-title">
         <div class="hv-container">
           <p class="hv-eyebrow">From the first conversation</p><h2 id="process-title">{c.process.heading}</h2>
-          <ol class="hv-process" role="list">{c.process.steps.map((step, i) => <li class="hv-card"><span class="hv-number">{String(i + 1).padStart(2, '0')}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol>
+          <ol class="hv-process" role="list">{c.process.steps.map((step, i) => <li class="hv-card"><span class="hv-number">{String(i + 1).padStart(2, '0')}</span><h3>{step.title}</h3><p>{step.body}</p>{step.note && <p class="hv-note">{step.note}</p>}</li>)}</ol>
           <div class="hv-faq" id="questions">
             <h3>{c.process.faqHeading}</h3>
-            {c.process.faqs.map((faq) => <details><summary>{faq.q}</summary><p>{faq.a}</p></details>)}
+            {c.process.faqs.map((faq) => <details><summary>{faq.q}</summary><p>{faq.a}</p>{faq.note && <p class="hv-note">{faq.note}</p>}</details>)}
           </div>
         </div>
       </section>
