@@ -98,6 +98,11 @@
 弊社の方針で、次を守ってください。
 - **料金、対応エリア、買取できる品目、電話番号、お客様の声、実績の数字を、作り話で書かないでください。** 確定していない事項は `{{TODO: 何が必要か}}` と書いてください。
 - お客様の声や価格の例を載せたい場合は、「架空の例」と画面に明記し、`NOTES.md` に書いてください（弊社で可否を確認します）。
+- **支払いと写真の表現は、全LP共通のルールに従ってください**（法務の指摘によるもので、`AGENTS.md` にも定めています）。
+  - 書いてよい支払いの説明は、「金額は訪問先で伝える。売ることに同意したら、翌日中に銀行振込で支払う」だけです。例：`Your offer on the spot. Paid next day.`
+  - **「Paid same day」「帰る前に支払い」など、当日払いに読める表現は書かないでください。**
+  - **「写真を撮らない」「何も共有しない」といった表現は書かないでください。** テキサス州の買取業規制で、取引ごとに本人確認書類の記録と買取品の写真が必要なためです。
+  - 支払いの約束の下には、小さな注釈を置いてください。注釈の文言は弊社の共通文言を使うので、`{{PAYMENT_NOTE}}` と書いてください（下の表）。
 - 電話番号と会社情報は、次の差し込み記号で書いてください。弊社が実際の値に置き換えます。
 
 | 記号 | 内容 |
@@ -109,6 +114,7 @@
 | `{{HOURS}}` | 営業時間 |
 | `{{REGISTRATION_LABEL}}` `{{REGISTRATION_VALUE}}` | テキサス州の登録番号 |
 | `{{PRIVACY_URL}}` `{{TERMS_URL}}` `{{DO_NOT_SELL_URL}}` | 法定リンク |
+| `{{PAYMENT_NOTE}}` | 支払いの約束の下に置く注釈（`src/content/payment-note.ts`） |
 
 - ページは英語（米国向け）です。綴りは米国式にしてください（`jewelry`、`afterward` など）。
 - 画像は、制作会社が権利を持つもの、またはライセンスが確認できるものだけを使ってください。**他社のLPの画像やレイアウトの流用はできません。** 生成画像を使う場合は、画面に「Illustrative」と分かる表記を入れてください。
@@ -126,7 +132,7 @@
 
 ## 7. 弊社の側の取り込み手順（社内用メモ）
 Silver LP と同じ方法です。詳しくは README の「Silver LP」を参照してください。
-1. `src/pages/<slug>.astro`：`index.html` の本文を移す。`<!-- CONTACT_FORM -->` を `<ContactForm lp="<slug>" company={...} buttonClass="button" ... />` に置き換える。差し込み記号を `site.ts` の値に置き換える。
+1. `src/pages/<slug>.astro`：`index.html` の本文を移す。`<!-- CONTACT_FORM -->` を `<ContactForm lp="<slug>" company={...} buttonClass="button" ... />` に置き換える。差し込み記号を `site.ts` と `payment-note.ts` の値に置き換える。支払い・写真の表現が上のルールに合っているかも確認する。
 2. `src/layouts/<Name>Layout.astro`：`SilverLayout.astro` を元に作る。`tokens.css`、`form-support.css`、LP専用CSS を読み込み、**`base.css` は読まない**。`Document` に `bodyAttrs={{ 'data-lp': slug }}` を渡す。
 3. `src/styles/<slug>.css`：`styles.css` と `form-skin.css`。`script.js` は `src/scripts/<slug>.ts` へ。
 4. `src/content/lps/<slug>.ts`：meta とフォームの文言（送信ボタン、ボタン下の一文、送信後のメッセージ）。
