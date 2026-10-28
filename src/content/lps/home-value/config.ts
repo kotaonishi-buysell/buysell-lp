@@ -20,8 +20,12 @@ export const homeValueConfig: HomeValueConfig = {
   phone: null,
   hours: null,
   localOperator: null,
-  privacyUrl: null,
-  legalLinks: [],
+  // The shared legal pages (the same on every LP); the text is in src/content/legal.ts.
+  privacyUrl: '/privacy',
+  legalLinks: [
+    { label: 'Terms of use', href: '/terms' },
+    { label: 'Do not sell or share my personal information', href: '/do-not-sell' },
+  ],
   productionOrigin: null,
   deliveryEndpoint: null,
   measurementEnabled: false,

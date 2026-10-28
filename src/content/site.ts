@@ -35,8 +35,12 @@ export const site: SiteContent = {
     label: 'Texas Office of Consumer Credit Commissioner (OCCC)',
     value: '{{TODO: OCCC address, phone and the notice wording required for our registration}}',
   },
+  legal: {
+    effectiveDate: '{{TODO: effective date}}',
+    privacyEmail: '{{TODO: privacy contact email}}',
+  },
   links: {
-    // TODO: confirm the URLs once the policy pages exist.
+    // The shared legal pages (src/pages/privacy.astro, terms.astro, do-not-sell.astro), the same on every LP.
     privacy: '/privacy',
     terms: '/terms',
     doNotSell: '/do-not-sell',

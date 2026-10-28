@@ -23,6 +23,7 @@
 - Keep legacy business facts in src/content/site.ts and Home Value configuration in src/content/lps/home-value/config.ts. Do not change legacy facts when updating Home Value.
 - Do not invent fees, service areas, accepted items, phone numbers or customer testimonials. Missing Home Value integrations must use explicit preview states, not visible legacy TODO copy.
 - Payment rule, the same on every LP: the amount is told at the visit; if the customer agrees to sell, we pay by bank transfer by the end of the next calendar day. Never claim same-day payment or payment "before we leave". Never say we take no photos or share nothing: Texas dealer rules require ID and item records.
+- Privacy Policy, Terms and Do Not Sell or Share are one set of pages for every LP (src/content/legal.ts; docs/design/legal/DESIGN_SYSTEM.md). Link to them through site.links; do not write a separate policy per LP. Keep their text true to what the code does (data collected, no sale/sharing, analytics); if a change adds a tracker, a vendor or a new use of personal data, update legal.ts in the same change. They load no LP stylesheet and no analytics.
 - Mark unconfirmed business facts using the existing {{TODO: ...}} convention.
 - Consultation examples are hypothetical situations, not reviews.
 - Use owned/licensed assets; do not copy Pestie assets or layouts.
