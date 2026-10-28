@@ -156,12 +156,12 @@ export const downsizing: LandingPage = {
         {
           id: 'fee',
           q: 'Is there a charge for the visit or the appraisal?',
-          a: '{{TODO: confirm visit and appraisal fees.}}',
+          a: 'No. The visit and the appraisal are free, and you are never obliged to sell.',
         },
         {
           id: 'area',
           q: 'Which areas do you cover?',
-          a: '{{TODO: service area.}}',
+          a: `We visit homes in the ${site.serviceArea.places.join(' and ')} metropolitan areas. Enter your ZIP code on this page, or call us, and we'll tell you if we come to your area.`,
         },
         {
           id: 'payment',

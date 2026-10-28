@@ -33,8 +33,8 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     hoursLine: 'Calls answered {hours}.',
   },
   serviceArea: {
-    summary: '{{TODO: service area}}',
-    places: ['{{TODO: cities we visit}}'],
+    summary: 'Dallas–Fort Worth and Houston metropolitan areas, Texas',
+    places: ['Dallas–Fort Worth', 'Houston'],
     // Every ZIP code of the Dallas–Fort Worth and Houston metropolitan areas (generated, see service-area-zips.ts).
     zipPrefixes: serviceAreaZips,
     outsideNote: "Don't see your area? Call us and we'll check.",

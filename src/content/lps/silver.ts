@@ -27,7 +27,7 @@ export const silver: CustomLandingPage = {
   },
 };
 
-/** Shown in the page's FAQ. Bracketed placeholders from the mock-up are {{TODO}} markers here. */
+/** Shown in the page's FAQ. Bracketed placeholders from the mock-up are TODO markers here. */
 export const silverFaq: FaqItem[] = [
   {
     id: 'is-it-real-silver',
@@ -67,13 +67,13 @@ export const silverFaq: FaqItem[] = [
   {
     id: 'payment',
     q: 'When and how will I be paid?',
-    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day. {{TODO: any processing conditions.}}',
+    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day.',
     note: paymentNote,
   },
   {
     id: 'id',
     q: 'What ID will I need?',
-    a: "We'll tell you the identification and recordkeeping requirements before your appointment. {{TODO: Texas-specific ID requirements and approved wording, pending legal review.}}",
+    a: "Please have a valid government-issued photo ID, such as a driver license or state ID card, ready at your appointment. Texas law requires us to record details from it, and to keep a record of each purchase that includes photographs of the items we buy. We'll tell you what we need before your visit.",
   },
   {
     id: 'family',
