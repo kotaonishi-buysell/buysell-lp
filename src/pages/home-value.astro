@@ -3,6 +3,7 @@ import '../styles/home-value.css';
 import { homeValue as c } from '../content/lps/home-value';
 import { homeValueConfig as config } from '../content/lps/home-value/config';
 import BrandLogo from '../components/BrandLogo.astro';
+import Favicon from '../components/Favicon.astro';
 import ContactActions from '../components/home-value/ContactActions.astro';
 import VisitRequestPanel from '../components/home-value/VisitRequestPanel.astro';
 const canonical = config.productionOrigin ? new URL('/home-value', config.productionOrigin).href : null;
@@ -21,7 +22,7 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
     <meta property="og:title" content={c.meta.title} />
     <meta property="og:description" content={c.meta.description} />
     {canonical && <meta property="og:url" content={canonical} />}
-    <link rel="icon" href="data:," />
+    <Favicon />
   </head>
   <body data-lp="home-value">
     <a class="hv-skip" href="#main">Skip to main content</a>

@@ -34,3 +34,12 @@ test('no LP prints the old brand "BuySell"; only the company and the group keep 
     assert.doesNotMatch(text, /buysell/i, file);
   }
 });
+
+test('the favicon files exist and every page head uses the shared favicon', () => {
+  for (const file of Object.values(company.icon)) assert(existsSync(new URL(`../public${file}`, import.meta.url)), file);
+  for (const file of ['src/layouts/Document.astro', 'src/layouts/LegalLayout.astro', 'src/pages/home-value.astro']) {
+    const text = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.match(text, /<Favicon \/>/, file);
+    assert.doesNotMatch(text, /rel="icon" href="data:,"/, file);
+  }
+});

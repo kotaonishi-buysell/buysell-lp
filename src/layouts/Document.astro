@@ -6,6 +6,7 @@
  */
 import { site } from '../content/site';
 import { plain } from '../lib/text';
+import Favicon from '../components/Favicon.astro';
 
 interface Props {
   slug: string;
@@ -55,7 +56,7 @@ const gtmScript = gtmId
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="data:," />
+    <Favicon />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />

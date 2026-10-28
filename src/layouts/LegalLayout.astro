@@ -10,6 +10,7 @@ import { site } from '../content/site';
 import { legalCopy, legalPages } from '../content/legal';
 import { fill, plain } from '../lib/text';
 import BrandLogo from '../components/BrandLogo.astro';
+import Favicon from '../components/Favicon.astro';
 
 interface Props {
   slug: string;
@@ -32,7 +33,7 @@ const pages = legalPages.map((page) => ({ slug: page.slug, label: page.title, hr
     <title>{pageTitle}</title>
     <meta name="description" content={fill(plain(description), { company, brand: site.brand.name })} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="data:," />
+    <Favicon />
     <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body data-page="legal">

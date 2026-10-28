@@ -12,6 +12,8 @@ export interface CompanyFacts {
   brand: string;
   /** The brand logo, the same on every LP. */
   logo: { src: string; srcLight: string; width: number; height: number };
+  /** The favicon (RW monogram), the same on every page. */
+  icon: { svg: string; png: string; apple: string };
   /** Registered name of the company that operates in Texas. */
   legalName: string | null;
   /** The parent group, as named in the "About the BuySell group" copy. */
@@ -39,6 +41,11 @@ export const company: CompanyFacts = {
   brand: 'REWORTH',
   // public/images/brand/. The light file is for dark backgrounds.
   logo: { src: '/images/brand/reworth-logo.png', srcLight: '/images/brand/reworth-logo-light.png', width: 800, height: 322 },
+  icon: {
+    svg: '/images/brand/reworth-monogram-icon.svg',
+    png: '/images/brand/reworth-icon-32.png',
+    apple: '/images/brand/reworth-apple-touch-icon.png',
+  },
   legalName: 'BuySell America, Inc.',
   // TODO: confirm the official English group name. Home Value's requirements say "Co. Ltd."; the Silver mock-up said "Inc."
   group: { name: 'BuySell Technologies Co. Ltd.' },
