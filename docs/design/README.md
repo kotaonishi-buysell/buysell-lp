@@ -7,6 +7,7 @@
 | /downsizing | [Downsizing DESIGN_SYSTEM.md](downsizing/DESIGN_SYSTEM.md) | src/styles/tokens.css、base.css、fonts.css と既存部品 |
 | /home-value | [Home Value DESIGN_SYSTEM.md](home-value/DESIGN_SYSTEM.md) | src/styles/home-value.css と src/components/home-value/ の専用部品 |
 | /silver | [Silver DESIGN_SYSTEM.md](silver/DESIGN_SYSTEM.md) | src/styles/silver.css、src/pages/silver.astro、src/layouts/SilverLayout.astro |
+| /privacy /terms /do-not-sell（共通の法務ページ） | [Legal DESIGN_SYSTEM.md](legal/DESIGN_SYSTEM.md) | src/content/legal.ts、src/components/LegalPage.astro、src/layouts/LegalLayout.astro、src/styles/legal.css |
 
 ## 編集ルール
 - 対象LPの仕様だけを適用し、別のLPの色・フォント・写真・形状・レイアウトを自動的に揃えない。

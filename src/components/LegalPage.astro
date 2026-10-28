@@ -1,0 +1,60 @@
+---
+/* Renders one of the shared legal pages from src/content/legal.ts. */
+import { site } from '../content/site';
+import { legalCopy, legalDraftNotice, type LegalPageContent } from '../content/legal';
+import { fill, plain, rich } from '../lib/text';
+import LegalLayout from '../layouts/LegalLayout.astro';
+
+interface Props {
+  page: LegalPageContent;
+}
+
+const { page } = Astro.props;
+
+// {company}, {address} ... come from site.ts. Values may hold TODO markers, which stay visible.
+const tokens = {
+  company: plain(site.company.name),
+  address: site.company.address,
+  phone: site.phone.display,
+  // Hours are printed only when the company publishes them (company.showHours); then " (hours)" follows the phone.
+  hoursSuffix: site.company.hours ? ` (${site.company.hours})` : '',
+  email: site.legal.privacyEmail,
+  effective: site.legal.effectiveDate,
+  registration: `${site.company.registration.label}: ${site.company.registration.value}`,
+  regulator: `${site.regulator.label}: ${site.regulator.value}`,
+};
+const html = (text: string) => rich(fill(text, tokens));
+const description = fill(page.description, { company: tokens.company });
+---
+
+<LegalLayout slug={page.slug} title={page.title} description={description}>
+  <article class="lg-article">
+    <h1>{page.title}</h1>
+    <p class="lg-meta" set:html={html(legalCopy.effective)} />
+    <p class="lg-draft" set:html={html(legalDraftNotice)} />
+    <p class="lg-intro" set:html={html(page.intro)} />
+
+    <nav class="lg-toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">{legalCopy.contents}</h2>
+      <ol>
+        {page.sections.map((section) => <li><a href={`#${section.id}`}>{section.heading}</a></li>)}
+      </ol>
+    </nav>
+
+    {
+      page.sections.map((section) => (
+        <section id={section.id} aria-labelledby={`${section.id}-title`}>
+          <h2 id={`${section.id}-title`}>{section.heading}</h2>
+          {section.blocks.map((block) =>
+            typeof block === 'string' ? (
+              <p set:html={html(block)} />
+            ) : (
+              <ul>{block.list.map((item) => <li set:html={html(item)} />)}</ul>
+            ),
+          )}
+        </section>
+      ))
+    }
+    <p class="lg-top"><a href="#main">{legalCopy.back}</a></p>
+  </article>
+</LegalLayout>

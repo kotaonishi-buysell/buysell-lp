@@ -235,6 +235,13 @@ export interface SiteContent {
     label: string;
     value: string;
   };
+  /** Facts the shared legal pages (privacy, terms, do not sell) print. */
+  legal: {
+    /** May contain {{TODO: ...}} markers. */
+    effectiveDate: string;
+    /** Where people send privacy requests and questions. May contain {{TODO: ...}} markers. */
+    privacyEmail: string;
+  };
   links: {
     privacy: string;
     terms: string;

@@ -113,7 +113,7 @@
 | `{{ADDRESS}}` | 住所 |
 | `{{HOURS}}` | 営業時間 |
 | `{{REGISTRATION_LABEL}}` `{{REGISTRATION_VALUE}}` | テキサス州の登録番号 |
-| `{{PRIVACY_URL}}` `{{TERMS_URL}}` `{{DO_NOT_SELL_URL}}` | 法定リンク |
+| `{{PRIVACY_URL}}` `{{TERMS_URL}}` `{{DO_NOT_SELL_URL}}` | 法定リンク（`/privacy` `/terms` `/do-not-sell`。全LP共通のページが実在します。業者は作らず、リンクだけ置く） |
 | `{{PAYMENT_NOTE}}` | 支払いの約束の下に置く注釈（`src/content/payment-note.ts`） |
 
 - ページは英語（米国向け）です。綴りは米国式にしてください（`jewelry`、`afterward` など）。
