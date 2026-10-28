@@ -47,8 +47,8 @@ export const company: CompanyFacts = {
     apple: '/images/brand/reworth-apple-touch-icon.png',
   },
   legalName: 'BuySell America, Inc.',
-  // TODO: confirm the official English group name. Home Value's requirements say "Co. Ltd."; the Silver mock-up said "Inc."
-  group: { name: 'BuySell Technologies Co. Ltd.' },
+  // The parent group's official English name (Tokyo Stock Exchange Growth Market, code 7685).
+  group: { name: 'BuySell Technologies Co., Ltd.' },
   address: '5717 Legacy Drive, Suite 250, Plano, TX 75024',
   phone: { display: '(469) 668-2619', e164: '+14696682619' },
   // TODO: confirm which days the phone is answered, then set showHours to true to publish the hours

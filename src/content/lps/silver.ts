@@ -27,7 +27,7 @@ export const silver: CustomLandingPage = {
   },
 };
 
-/** Shown in the page's FAQ. Bracketed placeholders from the mock-up are {{TODO}} markers here. */
+/** Shown in the page's FAQ. Bracketed placeholders from the mock-up are TODO markers here. */
 export const silverFaq: FaqItem[] = [
   {
     id: 'is-it-real-silver',
@@ -67,7 +67,7 @@ export const silverFaq: FaqItem[] = [
   {
     id: 'payment',
     q: 'When and how will I be paid?',
-    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day. {{TODO: any processing conditions.}}',
+    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day.',
     note: paymentNote,
   },
   {

@@ -132,7 +132,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 ### 公開前に確認が必要なもの（ダミーのまま取り込み済み）
 
 - スタッフ3名（名前・顔写真）：モックの生成画像。実在のスタッフ名に見えるため、使ってよいか確認する
-- お客様の声3件、「25 years」「A company of BuySell Technologies Co. Ltd.」「Paid next day」
+- お客様の声3件、「Paid next day」（「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
 - 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。公開前に法務の確認が必要（画面に TODO が出ます）
 - Google の評価（★）と価格帯（$3,300–$4,400）は削除済み。価格・評価の数字は載せない
 - 画像はすべて生成画像（「Illustrative photography」と表示）

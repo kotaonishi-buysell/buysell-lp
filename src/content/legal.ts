@@ -73,7 +73,7 @@ export const privacyPolicy: LegalPageContent = {
             'Whether you agreed to receive text messages, the time you agreed, and the exact wording you saw.',
           ],
         },
-        'Information we must record if you sell us something. Texas law and the rules that apply to our registration require us to keep a record of each purchase. That record can include:',
+        'Information we must record if you sell us something. Texas law requires a dealer that buys crafted precious metal, such as silver, gold and jewelry, to register with the Texas Office of Consumer Credit Commissioner (OCCC) and to keep a transaction report for each purchase. That report can include:',
         {
           list: [
             'Your name, address, date of birth and physical description, and the number and a copy of your driver license or other government ID.',
@@ -128,7 +128,7 @@ export const privacyPolicy: LegalPageContent = {
           list: [
             'Service providers that work for us under contract: Netlify, Inc. (hosts our websites and stores the requests sent through our form), Google (Google Tag Manager and the measurement tags it loads), and providers of email, text messaging and scheduling. {{TODO: list every other provider that receives personal information, for example scheduling or CRM tools.}}',
             'Other companies in the BuySell group, to help run the service. {{TODO: confirm whether and under what terms data goes to BuySell Technologies group companies.}}',
-            'Police, regulators (including the Texas Office of Consumer Credit Commissioner) and others, when the law requires it or a lawful request is made, including the purchase records described above.',
+            'Police and regulators. We send a report of each purchase to local law enforcement within 48 hours, as Texas rules require, and we give purchase records to the OCCC and others when the law requires it or a lawful request is made.',
             'A buyer or successor, if our business is sold or reorganized.',
           ],
         },
@@ -138,7 +138,7 @@ export const privacyPolicy: LegalPageContent = {
       id: 'retention',
       heading: 'How long we keep it',
       blocks: [
-        'We keep requests that did not lead to a purchase for {{TODO: retention period for requests}}. Purchase records are kept for as long as Texas law requires {{TODO: confirm the period}}, and then deleted.',
+        'We keep requests that did not lead to a purchase for {{TODO: retention period for requests}}. Purchase records are kept for at least three years, which is the period the OCCC requires for transaction reports, and are then deleted when we no longer need them.',
       ],
     },
     {
@@ -220,7 +220,7 @@ export const termsOfUse: LegalPageContent = {
             'The appraisal is free, and you are never obliged to sell. Decide after you hear the offer.',
             'An appraisal is not a promise that we will buy an item, and prices or ranges on our pages are illustrations, not offers. An offer is the amount we tell you at your home.',
             'We may decline an item, for example if we cannot confirm what it is or who owns it.',
-            'You must be 18 or older, and you must own the item or have the right to sell it. {{TODO: confirm the minimum age and any other seller requirements.}}',
+            'You must own the item or have the right to sell it. Texas has special rules for sellers under 18, so please tell us if you are; we may need a parent\'s or guardian\'s written consent, or we may not be able to buy.',
             'If you agree to sell, Texas law requires us to record your ID details and to keep photographs and a description of what we buy. See our Privacy Policy.',
             'The sale itself is governed by the written purchase record you receive at the visit.',
           ],
@@ -289,7 +289,7 @@ export const termsOfUse: LegalPageContent = {
       id: 'law',
       heading: 'Governing law',
       blocks: [
-        'These terms are governed by the laws of the State of Texas, without regard to its conflict-of-law rules. {{TODO: confirm governing law and venue with counsel.}}',
+        'These terms are governed by the laws of the State of Texas, without regard to its conflict-of-law rules. {{TODO: confirm the venue (for example, the courts of Collin County, Texas) with counsel.}}',
       ],
     },
     {
