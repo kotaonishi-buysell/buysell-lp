@@ -64,7 +64,7 @@ export const site: SiteContent = {
     },
   },
   analytics: {
-    // TODO: Google Tag Manager container ID, e.g. 'GTM-ABC1234'.
-    gtmId: null,
+    // Google Tag Manager container. Loaded by layouts/Document.astro (/downsizing and /silver; /home-value has its own page).
+    gtmId: 'GTM-PQQFZ723',
   },
 };
