@@ -13,7 +13,7 @@ import { paymentNote } from '../payment-note';
 export const silver: CustomLandingPage = {
   slug: 'silver',
   meta: {
-    title: `Silver appraisals, right at your kitchen table | ${site.company.name}`,
+    title: `Silver appraisals, right at your kitchen table | ${site.brand.name}`,
     description:
       "Keep the silver at home. We'll handle the rest. Explore free, no-obligation silver appraisals by house call in Texas.",
     ogImage: '/images/og-silver.jpg',

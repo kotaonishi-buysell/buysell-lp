@@ -10,7 +10,7 @@ const phone = approvedPhone(homeValueConfig.phone);
   <p>{c.intro}</p>
   <ContactForm
     lp="home-value"
-    company={homeValueConfig.brand}
+    company={homeValueConfig.localOperator?.name ?? homeValueConfig.brand}
     buttonClass="hv-button hv-button--primary"
     submitLabel={c.submit}
     success={c.success}

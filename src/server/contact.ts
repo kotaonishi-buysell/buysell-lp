@@ -12,7 +12,7 @@
  * Environment variables (set in the hosting dashboard, never in the repo):
  *   RESEND_API_KEY            API key of the email provider
  *   CONTACT_TO_EMAIL          who receives inquiries (comma-separated for several people)
- *   CONTACT_FROM_EMAIL        sender, on a domain verified with the provider, e.g. "BuySell <inquiries@example.com>"
+ *   CONTACT_FROM_EMAIL        sender, on a domain verified with the provider, e.g. "REWORTH <inquiries@example.com>"
  *   CONTACT_ALLOWED_ORIGINS   optional, comma-separated extra origins allowed to post (the site's own origin is always allowed)
  *   CONTACT_DRY_RUN           optional, "true" to check the pipeline without email: the request is validated, a redacted
  *                             summary goes to the function log, nothing is emailed, and the browser is told it was a dry run

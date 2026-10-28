@@ -16,6 +16,7 @@ const pending = (what: string): string => '{{' + `TODO: ${what}` + '}}';
 const placeholderPhone = { display: '(800) 000-0000', e164: '+18000000000' };
 
 export const buildSite = (facts: CompanyFacts): SiteContent => ({
+  brand: { name: facts.brand },
   company: {
     name: facts.legalName ?? 'Company name',
     address: facts.address ?? pending('street address, city, TX ZIP'),

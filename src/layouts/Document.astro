@@ -26,7 +26,8 @@ const gtmId = site.analytics.gtmId;
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
-  name: plain(site.company.name),
+  name: site.brand.name,
+  legalName: plain(site.company.name),
   url: canonical.href,
   telephone: site.phone.e164,
   address: {

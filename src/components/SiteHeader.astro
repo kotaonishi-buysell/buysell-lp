@@ -1,12 +1,13 @@
 ---
 import { site } from '../content/site';
+import BrandLogo from './BrandLogo.astro';
 import { rich } from '../lib/text';
 ---
 
 <header class="site-header scene">
   <div class="container site-header__inner">
     <div class="site-header__brand">
-      <p class="t-heading site-header__name">{site.company.name}</p>
+      <BrandLogo class="site-header__logo" />
       <p class="t-meta muted">
         {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
       </p>
@@ -39,6 +40,14 @@ import { rich } from '../lib/text';
   .site-header__brand {
     display: flex;
     flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .site-header__brand :global(.site-header__logo) {
+    display: block;
+    align-self: flex-start;
+    width: auto;
+    height: 44px;
   }
 
   .site-header__actions {

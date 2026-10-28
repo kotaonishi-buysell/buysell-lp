@@ -1476,3 +1476,14 @@ a.final-phone {
 /* Small print under the payment promise: small and light, inheriting the text colour of its block. */
 .pay-note{display:block;margin-top:8px;font-size:11px;line-height:1.55;color:inherit;opacity:.82}
 .faq-list details p.pay-note{font-size:12px;margin-top:-4px;color:var(--muted)}
+
+/* The REWORTH logo replaces the old text mark; the line "SILVER SPECIALISTS · TEXAS" stays beside it. */
+.brand{display:flex;align-items:center;gap:16px;font-size:inherit;letter-spacing:0}
+.brand-logo{display:block;width:auto;height:52px}
+.brand span{margin-top:0;padding-left:16px;border-left:1px solid currentColor;max-width:190px;white-space:normal;line-height:1.7}
+.footer-top .brand span{border-left-color:rgba(245,242,233,.45)}
+@media (max-width:760px){
+  .brand{gap:10px}
+  .brand-logo{height:40px}
+  .brand span{padding-left:10px;font-size:7px;letter-spacing:1.5px;max-width:92px}
+}

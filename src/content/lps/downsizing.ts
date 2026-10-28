@@ -11,7 +11,7 @@ export const downsizing: LandingPage = {
   slug: 'downsizing',
   scene: 'move',
   meta: {
-    title: `Home appraisal for your move | ${site.company.name}`,
+    title: `Home appraisal for your move | ${site.brand.name}`,
     description:
       'Moving somewhere smaller? We appraise your belongings at home, so you can choose what comes with you and what to pass on.',
     // TODO: replace the plain placeholder with the hero photo cropped to 1200×630.

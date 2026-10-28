@@ -27,7 +27,7 @@ test('each page has unique section ids and no empty text', () => {
 });
 
 test('only known tokens are used', () => {
-  const known = new Set(['company', 'address', 'phone', 'hoursSuffix', 'email', 'effective', 'registration', 'regulator']);
+  const known = new Set(['company', 'brand', 'address', 'phone', 'hoursSuffix', 'email', 'effective', 'registration', 'regulator']);
   for (const page of legalPages) {
     const stripped = `${text(page)} ${page.description}`.replace(/\{\{[^}]*\}\}/g, '');
     for (const [, token] of stripped.matchAll(/\{(\w+)\}/g)) assert(known.has(token), `${page.slug}: {${token}}`);

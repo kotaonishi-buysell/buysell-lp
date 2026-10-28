@@ -135,3 +135,8 @@ body[data-lp="home-value"] {
 
 /* Small print under the payment promise. */
 [data-lp="home-value"] .hv-note { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--hv-muted); }
+
+/* The REWORTH logo. */
+[data-lp="home-value"] .hv-logo { display: block; width: auto; height: 52px; }
+[data-lp="home-value"] .hv-logo--footer { height: 44px; }
+@media (max-width: 720px) { [data-lp="home-value"] .hv-header .hv-logo { height: 44px; } }

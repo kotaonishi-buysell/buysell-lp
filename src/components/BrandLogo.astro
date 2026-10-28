@@ -1,0 +1,28 @@
+---
+/*
+ * The REWORTH logo, the same on every LP. Dark green for light backgrounds, ivory ("light")
+ * for dark ones. Files: public/images/brand/. The LP sizes it with its own CSS (give it a class).
+ * Source of the name and the files: src/content/company.ts, so it is not typed anywhere else.
+ */
+import { company } from '../content/company';
+
+interface Props {
+  /** "light" = the ivory logo, for dark backgrounds. */
+  variant?: 'dark' | 'light';
+  class?: string;
+  /** The logo is the link's only content when it sits in a link; then the link carries the label. */
+  decorative?: boolean;
+}
+
+const { variant = 'dark', class: className, decorative = false } = Astro.props;
+const { src, srcLight, width, height } = company.logo;
+---
+
+<img
+  class={className}
+  src={variant === 'light' ? srcLight : src}
+  width={width}
+  height={height}
+  alt={decorative ? '' : company.brand}
+  decoding="async"
+/>

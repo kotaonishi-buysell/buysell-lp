@@ -4,11 +4,11 @@ import { paymentNote } from '../../payment-note';
 export const homeValue = {
   slug: 'home-value',
   meta: {
-    title: 'Free In-Home Appraisals in Dallas–Fort Worth | BuySell',
-    description: 'Decluttering your home? BuySell assesses bags, watches, jewelry, tableware, and hobby items at home. Free appraisal and travel. One item is enough.',
+    title: `Free In-Home Appraisals in Dallas–Fort Worth | ${config.brand}`,
+    description: `Decluttering your home? ${config.brand} assesses bags, watches, jewelry, tableware, and hobby items at home. Free appraisal and travel. One item is enough.`,
   },
   contact: {
-    call: 'Call BuySell',
+    call: `Call ${config.brand}`,
     request: 'Request a Visit',
     phonePending: 'Phone number pending.',
     preference: 'Send a request and our team will contact you to arrange a visit.',
@@ -16,7 +16,7 @@ export const homeValue = {
   hero: {
     label: 'Free in-home appraisals in Dallas–Fort Worth',
     headline: "Before you clear it out, find out what it's worth.",
-    body: 'Bags you no longer use. Tableware tucked away. Things from an old hobby. BuySell comes to your home to assess them together, so you can decide what to keep and what to sell.',
+    body: `Bags you no longer use. Tableware tucked away. Things from an old hobby. ${config.brand} comes to your home to assess them together, so you can decide what to keep and what to sell.`,
     reassurances: ['Free appraisal and travel.', 'One item is enough.', "Just curious about the value? That's welcome, too."],
     image: '/images/home-value/hero-sample.svg',
     imageAlt: 'Sample illustration of bags, a watch, jewelry, tableware and hobby belongings on shelves at home.',
@@ -67,7 +67,7 @@ export const homeValue = {
   process: {
     heading: 'How a home visit works',
     steps: [
-      { title: 'Tell us what you have.', body: 'Call BuySell or send a visit request. Our team will contact you to arrange a time.' },
+      { title: 'Tell us what you have.', body: `Call ${config.brand} or send a visit request. Our team will contact you to arrange a time.` },
       { title: 'Show us your items at home.', body: 'We assess the items you want us to see. You can add other belongings during the visit.' },
       { title: 'Hear the offer and decide.', body: 'We explain the appraisal. You choose which items, if any, you would like to sell.' },
       { title: 'Receive your payment.', body: 'If a purchase is completed, we transfer the payment to your bank account by the end of the next day.', note: paymentNote },
@@ -88,7 +88,7 @@ export const homeValue = {
   },
   final: {
     heading: 'Make some room. Start by finding out what you have.',
-    body: 'One item or several. Ready to sell or just curious. Talk to BuySell about a free in-home appraisal in Dallas–Fort Worth.',
+    body: `One item or several. Ready to sell or just curious. Talk to ${config.brand} about a free in-home appraisal in Dallas–Fort Worth.`,
     clarification: 'Submitting a request does not confirm an appointment. Our team will confirm the date and time with you.',
   },
   form: {
