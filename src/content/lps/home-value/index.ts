@@ -1,4 +1,5 @@
 import { homeValueConfig as config } from './config';
+import { paymentNote } from '../../payment-note';
 
 export const homeValue = {
   slug: 'home-value',
@@ -69,7 +70,7 @@ export const homeValue = {
       { title: 'Tell us what you have.', body: 'Call BuySell or send a visit request. Our team will contact you to arrange a time.' },
       { title: 'Show us your items at home.', body: 'We assess the items you want us to see. You can add other belongings during the visit.' },
       { title: 'Hear the offer and decide.', body: 'We explain the appraisal. You choose which items, if any, you would like to sell.' },
-      { title: 'Receive your payment.', body: 'If a purchase is completed, we transfer the payment to your bank account by the end of the next day.' },
+      { title: 'Receive your payment.', body: 'If a purchase is completed, we transfer the payment to your bank account by the end of the next day.', note: paymentNote },
     ],
     faqHeading: 'A few things you may be wondering.',
     faqs: [
@@ -80,7 +81,7 @@ export const homeValue = {
       { q: 'How much does the visit cost?', a: 'Appraisal and travel are free.' },
       { q: "What if I don't know what the item is?", a: 'Tell us what you can. You do not need to identify the item or estimate its value before contacting us.' },
       { q: 'Can I ask about an older item or one with signs of use?', a: 'Yes. Tell us about its condition so we can assess it and explain whether we can make a purchase offer.' },
-      { q: 'When will I receive payment?', a: 'After a completed purchase, we transfer the funds to your bank account by the end of the next day.' },
+      { q: 'When will I receive payment?', a: 'After a completed purchase, we transfer the funds to your bank account by the end of the next day.', note: paymentNote },
       { q: 'Where do you visit?', a: `We serve ${config.area}. Contact us to confirm your location.` },
       { q: 'Is my appointment confirmed when I send a request?', a: 'No. Your request tells us how to reach you. Our team will contact you to arrange and confirm the appointment.' },
     ],

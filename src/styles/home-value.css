@@ -132,3 +132,6 @@ body[data-lp="home-value"] {
 @media (prefers-reduced-motion: reduce) {
   [data-lp="home-value"] * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* Small print under the payment promise. */
+[data-lp="home-value"] .hv-note { margin-top: 8px; font-size: 14px; line-height: 1.5; color: var(--hv-muted); }

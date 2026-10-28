@@ -17,6 +17,7 @@ const { items } = Astro.props;
           <span class="t-heading">{item.q}</span>
         </summary>
         <p class="faq__answer muted" set:html={rich(item.a)} />
+        {item.note && <p class="faq__note">{item.note}</p>}
       </details>
     ))
   }
@@ -68,6 +69,15 @@ const { items } = Astro.props;
   .faq__answer {
     max-width: var(--measure);
     padding-bottom: var(--space-3);
+  }
+
+  .faq__note {
+    max-width: var(--measure);
+    margin-top: calc(-1 * var(--space-2));
+    padding-bottom: var(--space-3);
+    font-size: var(--fs-label);
+    line-height: var(--lh-label);
+    color: var(--ink-muted);
   }
 
   @media (prefers-reduced-motion: no-preference) {

@@ -5,6 +5,7 @@
  */
 import type { LandingPage } from '../types';
 import { site } from '../site';
+import { paymentNote } from '../payment-note';
 
 export const downsizing: LandingPage = {
   slug: 'downsizing',
@@ -166,6 +167,7 @@ export const downsizing: LandingPage = {
           id: 'payment',
           q: 'If I decide to sell, how am I paid?',
           a: 'We tell you the amount at your home. If you agree to sell, we pay you by bank transfer by the end of the next day.',
+          note: paymentNote,
         },
         {
           id: 'resale',
