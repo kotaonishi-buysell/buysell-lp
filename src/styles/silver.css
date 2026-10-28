@@ -76,8 +76,6 @@ h1 em{display:block;font-size:.77em;line-height:1.18;margin-top:6px;white-space:
 .trust p+p{margin-top:8px}
 .trust-label{font:italic 20px/1.3 var(--serif);display:block;margin-bottom:9px}
 .trust small{font-size:10px;color:var(--muted)}
-.stars{color:var(--gold);letter-spacing:3px;font-size:14px}
-.rating strong{font-size:21px;font-family:var(--serif);margin-left:7px}
 .section-top{display:flex;justify-content:space-between;align-items:start;gap:30px;margin-bottom:43px}
 .section-aside{font-size:14px;line-height:1.65;color:var(--muted)}
 .buy-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:94px;align-items:center}
@@ -110,9 +108,6 @@ h1 em{display:block;font-size:.77em;line-height:1.18;margin-top:6px;white-space:
 .value h2{font-size:43px;letter-spacing:-1.5px;margin:25px 0}
 .value h2 em{color:#cad1ba}
 .value-copy>p:not(.eyebrow):not(.fine){font-size:13px}
-.price{font:52px/1.2 var(--serif);letter-spacing:-1.7px;margin-top:20px;white-space:nowrap}
-.price>span:not(.asterisk){font-size:32px;color:#9daf91}
-.price .asterisk{font-size:20px;vertical-align:top}
 .formula{margin-top:28px;padding-block:16px;border-block:1px solid #537059}
 .formula span{font-size:9px;letter-spacing:1.5px;color:#c7d0be}
 .formula p{font:19px var(--serif);margin-top:9px}
@@ -260,7 +255,6 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
   .silver-photo{height:570px}
   .value-copy{padding:36px 30px}
   .value h2{font-size:36px}
-  .price{font-size:40px}
   .benefits{gap:65px}
   .areas-grid{gap:50px}
   .cities{padding-left:35px}
@@ -308,7 +302,6 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
   .trust>div:first-child{grid-column:auto}
   .trust p+p{margin-top:7px}
   .trust small{font-size:9px}
-  .stars{font-size:12px}
   .section-top{margin-bottom:28px;gap:20px}
   .section-top>.section-aside{display:none}
   .eyebrow{font-size:10px;letter-spacing:1.4px}
@@ -339,7 +332,6 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
   .value-panel{grid-template-columns:1fr}
   .value-copy{padding:50px 22px 35px}
   .value h2{font-size:38px}
-  .price{font-size:45px}
   .value-image{height:320px;min-height:0}
   .value-image img{object-position:50% 55%}
   .value .fine{max-width:450px}
@@ -495,7 +487,6 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
   .header-contact .phone-text{font-size:11px}
   .hero-actions{flex-wrap:wrap}
   .hero-chips li{font-size:10px}
-  .price{font-size:39px}
   .zip-row{flex-direction:column}
   .appraisers{grid-template-columns:1fr}
   .appraisers article{display:grid;grid-template-columns:90px 1fr;gap:0 16px}
@@ -557,7 +548,6 @@ html, body{overflow-x:hidden}
   .trust>div:nth-child(2){justify-self:stretch;min-width:0;padding-left:14px;border-left:1px solid var(--line)}
   .trust-label{font-size:16px}
   .trust small{font-size:9px}
-  .rating strong{font-size:18px}
   .section-top{margin-bottom:23px}
   .eyebrow{font-size:9px}
   h2, .category-heading h2{font-size:38px;letter-spacing:-1.4px}
@@ -582,7 +572,6 @@ html, body{overflow-x:hidden}
   .duration-note{font-size:9px;margin-top:15px}
   .value-copy{padding:40px 18px 29px}
   .value h2{font-size:34px}
-  .price{font-size:40px}
   .value-image{height:280px}
   .benefits{gap:28px}
   .benefits h2{font-size:40px}
@@ -957,7 +946,7 @@ body::before {
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
 }
-h1, h2, h3, .brand, .phone-text, .price, .final-phone, .trust-label, .serif, .formula p, .cities ul, .voices blockquote {
+h1, h2, h3, .brand, .phone-text, .final-phone, .trust-label, .serif, .formula p, .cities ul, .voices blockquote {
   font-family: var(--serif);
   font-optical-sizing: auto;
 }
@@ -1486,4 +1475,31 @@ a.final-phone {
   .brand{gap:10px}
   .brand-logo{height:40px}
   .brand span{padding-left:10px;font-size:7px;letter-spacing:1.5px;max-width:92px}
+}
+
+/* "And more than silver": the other things we buy, under the silver categories. */
+.also-buy{display:flex;align-items:center;gap:34px;margin-top:48px;padding:26px 0;border-top:1px solid var(--line)}
+.also-buy>.serif{font-size:25px;line-height:1.3;max-width:150px;flex-shrink:0}
+.also-buy strong{font-size:15px;font-weight:500}
+.also-buy p{font-size:13px;color:var(--muted);margin-top:3px}
+.also-buy + .polish{margin-top:0}
+@media (max-width:760px){
+  .also-buy{gap:19px;margin-top:30px;padding-block:22px;align-items:start}
+  .also-buy>.serif{font-size:23px;max-width:85px}
+  .also-buy strong{font-size:13px}
+  .also-buy p{font-size:11px;margin-top:6px}
+}
+
+/* Comparison: short text answers instead of check marks, and our view under the table. */
+.comparison td .table-check{margin-inline:auto}
+.comparison td .cell-text{display:block;margin-top:8px;font-size:13px;line-height:1.45}
+.comparison td:not(:nth-child(2)){line-height:1.45}
+.compare-view{margin-top:40px;padding-top:28px;border-top:1px solid var(--line)}
+.compare-view h3{font-size:25px;margin-bottom:16px}
+.compare-view ul{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:20px 48px}
+.compare-view li{font-size:14px;line-height:1.7;color:var(--muted)}
+.compare-view strong{display:block;color:var(--ink);font-weight:500;margin-bottom:2px}
+@media (max-width:760px){
+  .compare-view ul{grid-template-columns:1fr;gap:16px}
+  .compare-view li{font-size:13px}
 }
