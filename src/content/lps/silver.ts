@@ -66,7 +66,7 @@ export const silverFaq: FaqItem[] = [
   {
     id: 'payment',
     q: 'When and how will I be paid?',
-    a: 'If you accept an offer, we tell you the amount at your home, and payment is made by the end of the next day. {{TODO: approved payment methods and any processing conditions.}}',
+    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day. {{TODO: any processing conditions.}}',
   },
   {
     id: 'id',

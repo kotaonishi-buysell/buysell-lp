@@ -22,6 +22,7 @@
 - Scope new CSS to body[data-lp="home-value"] in src/styles/home-value.css.
 - Keep legacy business facts in src/content/site.ts and Home Value configuration in src/content/lps/home-value/config.ts. Do not change legacy facts when updating Home Value.
 - Do not invent fees, service areas, accepted items, phone numbers or customer testimonials. Missing Home Value integrations must use explicit preview states, not visible legacy TODO copy.
+- Payment rule, the same on every LP: the amount is told at the visit; if the customer agrees to sell, we pay by bank transfer by the end of the next calendar day. Never claim same-day payment or payment "before we leave". Never say we take no photos or share nothing: Texas dealer rules require ID and item records.
 - Mark unconfirmed business facts using the existing {{TODO: ...}} convention.
 - Consultation examples are hypothetical situations, not reviews.
 - Use owned/licensed assets; do not copy Pestie assets or layouts.

@@ -165,7 +165,7 @@ export const downsizing: LandingPage = {
         {
           id: 'payment',
           q: 'If I decide to sell, how am I paid?',
-          a: '{{TODO: payment method and timing.}}',
+          a: 'We tell you the amount at your home. If you agree to sell, we pay you by bank transfer by the end of the next day.',
         },
         {
           id: 'resale',

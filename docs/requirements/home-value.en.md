@@ -69,7 +69,7 @@ The following information was supplied by the client and takes precedence over o
 | Additional items | Customers can show additional belongings for appraisal during the visit |
 | Selling intent | Customers may use the service just to find out value; a decision to sell is not required before requesting a visit |
 | Purchase | Items can be purchased during the visit when the customer accepts an offer |
-| Payment | Funds reach the customer's bank account within three business days of the completed purchase |
+| Payment | The amount is told at the visit; once the customer agrees to sell, we transfer the funds to the customer's bank account by the end of the next calendar day (changed from three business days; applies to every LP) |
 | Group background | A publicly listed company in Japan |
 | Group purchase history | 400,000 purchases across the group, including Japan and the United States |
 | Information handling | The client states that the group maintains personal-information management, security, and governance practices |
@@ -225,7 +225,7 @@ Do not invent exchange details, ticker symbols, registration numbers, certificat
 1. **“Tell us what you have.”** Call BuySell or send a visit request with your preferred date. Our team will confirm the appointment.
 2. **“Show us your items at home.”** We assess the items you want us to see. You can add other belongings during the visit.
 3. **“Hear the offer and decide.”** We explain the appraisal. You choose which items, if any, you would like to sell.
-4. **“Receive your payment.”** If a purchase is completed, the payment reaches your bank account within three business days.
+4. **“Receive your payment.”** If a purchase is completed, we transfer the payment to your bank account by the end of the next day.
 
 Do not supply a visit duration, response-time promise, collection timeline, payout provider, or banking holiday definition that has not been confirmed.
 
@@ -240,7 +240,7 @@ Do not supply a visit duration, response-time promise, collection timeline, payo
 | “How much does the visit cost?” | “Appraisal and travel are free.” |
 | “What if I don't know what the item is?” | “Tell us what you can. You do not need to identify the item or estimate its value before contacting us.” |
 | “Can I ask about an older item or one with signs of use?” | “Yes. Tell us about its condition so we can assess it and explain whether we can make a purchase offer.” |
-| “When will I receive payment?” | “After a completed purchase, funds reach your bank account within three business days.” |
+| “When will I receive payment?” | “After a completed purchase, we transfer the funds to your bank account by the end of the next day.” |
 | “Where do you visit?” | “We serve Dallas–Fort Worth and surrounding areas. Contact us to confirm your location.” |
 | “Is my appointment confirmed when I send a request?” | “No. Your request tells us your preferred date and time. Our team will contact you to confirm the appointment.” |
 
@@ -358,7 +358,7 @@ Public launch requires an approved receiving destination, end-to-end validation,
 
 Keep business and integration values separate from page behavior so they can be updated without editing multiple sections.
 
-**Confirmed configuration:** brand, service area wording, categories, free appraisal/travel, one-item visits, additional assessments, value-only inquiries, and three-business-day payment.
+**Confirmed configuration:** brand, service area wording, categories, free appraisal/travel, one-item visits, additional assessments, value-only inquiries, and bank-transfer payment by the end of the next day.
 
 **Not yet supplied:**
 
@@ -409,7 +409,7 @@ Tracking integrations and account IDs are not supplied. Do not automatically ins
 - The new page targets general home decluttering and mixed-category appraisal, rather than silver alone.
 - All seven sections and both contact paths are present.
 - Dallas–Fort Worth coverage, free appraisal/travel, one-item visits, additional items, and value-only inquiries are clear.
-- Payment is consistently described as reaching the customer's bank account within three business days after purchase.
+- Payment is consistently described as a bank transfer by the end of the next calendar day after the customer agrees to sell.
 - There are no same-day-payment claims, fabricated prices, review scores, customer stories, or unsupported company credentials.
 - Group history is attributed to the group and includes Japan and the United States.
 - The page does not imply junk removal, universal purchase acceptance, or confirmed online appointments.

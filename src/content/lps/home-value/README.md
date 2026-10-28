@@ -9,7 +9,7 @@
 
 ## Implemented
 Seven sections in the required order; brand identification; nine categories; ten FAQs; examples labeled as illustrative; group-wide purchase history labeled client-supplied draft.
-Confirmed copy includes Dallas–Fort Worth and surrounding areas, free appraisal and travel, one-item visits, additional items during the visit, value-only inquiries and bank-account payment within three business days after completed purchase.
+Confirmed copy includes Dallas–Fort Worth and surrounding areas, free appraisal and travel, one-item visits, additional items during the visit, value-only inquiries and bank-transfer payment by the end of the next calendar day after the customer agrees to sell.
 Primary phone actions are explicitly unavailable while the approved number is absent. All request actions lead to the same inline form.
 
 The request form is the contact form shared by every LP (see [docs/forms/contact-form.md](../../../../docs/forms/contact-form.md)): first and last name, ZIP code and U.S. phone are required; email, a message and an SMS consent checkbox (off by default, not required) are optional. ZIP validation checks format only. The earlier preferred date/time and item-category fields were removed on October 20, 2026, when the form became common to all LPs; the copy that mentioned a preferred date was updated.
