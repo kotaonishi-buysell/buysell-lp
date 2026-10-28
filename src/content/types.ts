@@ -211,7 +211,8 @@ export interface SiteContent {
     name: string;
     address: string;
     registration: { label: string; value: string };
-    hours: string;
+    /** null = hours are not published; render nothing. */
+    hours: string | null;
   };
   phone: {
     /** As printed on the page. Call-tracking number swaps should target this exact string. */

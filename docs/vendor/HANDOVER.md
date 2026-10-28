@@ -23,7 +23,7 @@
 
 - `<head>`（title、description、OG、canonical、構造化データ、GTM）は弊社の共通レイアウトが出力します。**`<head>` の内容はこちらで差し替える**ので、`index.html` に計測タグや meta を入れないでください（title と description の案は `NOTES.md` に書いてください）。
 - フォーム（`ContactForm`）を、指定の位置に差し込みます。
-- 電話番号・会社名・住所・営業時間・登録番号・法定リンク（プライバシー等）は `src/content/site.ts` の共通の値を使います。
+- 電話番号・会社名・住所・営業時間・登録番号・法定リンク（プライバシー等）は `src/content/company.ts` の共通の値（法定リンクは `src/content/site.ts`）を使います。
 - フォームの送信先は Netlify Forms（`docs/forms/contact-form.md`）。制作側のサーバーや外部フォームサービスは使いません。
 
 ## 3. フォームについて

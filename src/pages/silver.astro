@@ -14,11 +14,12 @@ import ContactForm from '../components/ContactForm.astro';
 import ZipCheck from '../components/ZipCheck.astro';
 import { silver, silverFaq } from '../content/lps/silver';
 import { site } from '../content/site';
+import { company } from '../content/company';
 import { paymentNote } from '../content/payment-note';
 import { fill, plain, rich } from '../lib/text';
 
 const telHref = `tel:${site.phone.e164}`;
-const hoursLine = rich(fill(site.phone.hoursLine, { hours: site.company.hours }));
+const hoursLine = site.company.hours ? rich(fill(site.phone.hoursLine, { hours: site.company.hours })) : null;
 const year = new Date().getFullYear();
 
 // Mock-up banner. Set to false at launch, together with the "Design preview" note in the footer.
@@ -36,7 +37,7 @@ const showPreviewStrip = true;
   <header class="header wrap">
 <a class="brand" href="#" aria-label="BuySell home">BUYSELL<span>SILVER SPECIALISTS · TEXAS</span></a>
 <nav class="desktop-nav" aria-label="Main navigation"><a href="#silver">What we buy</a><a href="#how">How it works</a><a href="#questions">Your questions</a></nav>
-<div class="header-contact"><p class="call-hours" set:html={hoursLine} /><a class="phone-text" href={telHref} data-cta="header" data-cta-method="phone">{site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span></a><div><span>{site.company.registration.label} <Fragment set:html={rich(site.company.registration.value)} /></span><button class="text-link" type="button" data-booking data-cta="header" data-cta-method="form">Book online <span aria-hidden="true">↗</span></button></div></div>
+<div class="header-contact">{hoursLine && <p class="call-hours" set:html={hoursLine} />}<a class="phone-text" href={telHref} data-cta="header" data-cta-method="phone">{site.phone.callPrefix} <span data-phone-number>{site.phone.display}</span></a><div><span>{site.company.registration.label} <Fragment set:html={rich(site.company.registration.value)} /></span><button class="text-link" type="button" data-booking data-cta="header" data-cta-method="form">Book online <span aria-hidden="true">↗</span></button></div></div>
 </header>
 <main id="main">
 <section class="hero wrap" aria-labelledby="hero-title" data-hero>
@@ -106,8 +107,8 @@ const showPreviewStrip = true;
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© {year} BuySell. All rights reserved.</span>
-        <span>A company of BuySell Technologies Inc.</span>
+        <span>© {year} {company.brand}. All rights reserved.</span>
+        <span>A company of {company.group.name}</span>
       </div>
       {
         showPreviewStrip && (

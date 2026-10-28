@@ -16,7 +16,7 @@ import { rich } from '../lib/text';
         <a class="link t-button site-header__phone-link" href={`tel:${site.phone.e164}`} data-cta="header" data-cta-method="phone">
           <span><span class="site-header__call">{`${site.phone.callPrefix} `}</span><span data-phone-number>{site.phone.display}</span></span>
         </a>
-        <p class="t-meta muted site-header__hours" set:html={rich(site.company.hours)} />
+        {site.company.hours && <p class="t-meta muted site-header__hours" set:html={rich(site.company.hours)} />}
       </div>
       <a class="btn btn--secondary site-header__booking" href="#consult" data-booking data-cta="header" data-cta-method="form">
         {site.ui.headerBooking}
