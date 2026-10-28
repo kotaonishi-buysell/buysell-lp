@@ -8,6 +8,7 @@
  */
 import type { CustomLandingPage, FaqItem } from '../types';
 import { site } from '../site';
+import { paymentNote } from '../payment-note';
 
 export const silver: CustomLandingPage = {
   slug: 'silver',
@@ -66,7 +67,8 @@ export const silverFaq: FaqItem[] = [
   {
     id: 'payment',
     q: 'When and how will I be paid?',
-    a: 'If you accept an offer, payment is made before we leave. {{TODO: approved payment methods and any processing conditions.}}',
+    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day. {{TODO: any processing conditions.}}',
+    note: paymentNote,
   },
   {
     id: 'id',

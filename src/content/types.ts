@@ -52,6 +52,8 @@ export interface FaqItem {
   id: string;
   q: string;
   a: string;
+  /** Small print under the answer. */
+  note?: string;
 }
 
 export interface SelectQuestion {

@@ -131,7 +131,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 ### 公開前に確認が必要なもの（ダミーのまま取り込み済み）
 
 - スタッフ3名（名前・顔写真）：モックの生成画像。実在のスタッフ名に見えるため、使ってよいか確認する
-- お客様の声3件、★5.0、「25 years」「A company of BuySell Technologies Inc.」「Paid same day」、競合比較の表
+- お客様の声3件、★5.0、「25 years」「A company of BuySell Technologies Inc.」「Paid next day」、競合比較の表
 - 価格帯「$3,300 – $4,400」（「illustrative」と注記あり）
 - 画像はすべて生成画像（「Illustrative photography」と表示）
 - 画面上部と下部の「DESIGN PREVIEW」帯は `silver.astro` の `showPreviewStrip` で消せる

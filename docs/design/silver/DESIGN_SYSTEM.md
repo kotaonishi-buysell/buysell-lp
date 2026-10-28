@@ -31,4 +31,4 @@
 ## 編集のルール
 - Silver の見た目の変更は、`silver.css` と `silver.astro` の中だけで行い、他のLPのスタイルに影響させない。
 - 共通のCSS（`tokens.css`、`form-support.css`、`contact-form.css`）を変えたときは、Silver、Downsizing、Home Value の3つを確認する。
-- 公開前に確認が必要な内容（スタッフの名前と写真、お客様の声、価格帯、「Paid same day」など）は、README の「Silver LP」の節を見てください。
+- 公開前に確認が必要な内容（スタッフの名前と写真、お客様の声、価格帯、「Paid next day」など）は、README の「Silver LP」の節を見てください。
