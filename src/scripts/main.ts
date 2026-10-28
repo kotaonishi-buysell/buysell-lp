@@ -3,11 +3,13 @@ import { initContactForms } from './contact-form';
 import { initCtas } from './cta';
 import { initFaq } from './faq';
 import { initSticky } from './sticky';
+import { initZipChecks } from './zip-check';
 
 initCtas();
 initFaq();
 initSticky();
 initContactForms();
+initZipChecks();
 
 // The shared contact form announces what happened; this LP reports it to the dataLayer.
 document.addEventListener('cf:event', (event) => {
