@@ -1,6 +1,6 @@
 /*
- * Silver LP behaviour: the category ribbon, scroll reveals, FAQ animation, appraiser
- * arrows and dialog closing. Ported from the Codex mock-up's app.js (logic unchanged).
+ * Silver LP behaviour: the category ribbon, scroll reveals, hero drift, compact header bar,
+ * FAQ animation, appraiser arrows and dialog closing. Ported from the Codex mock-up's app.js (logic unchanged).
  * What the mock-up did for calls, booking, the form, the ZIP box and the policy links is
  * shared now: scripts/cta.ts, contact-form.ts, zip-check.ts and real links.
  */
@@ -250,7 +250,8 @@ const initMotion = (): void => {
 
   stage(document.querySelector<HTMLElement>('.comparison table'), 80, 'table');
 
-  // A restrained vertical drift gives the hero photograph depth while it is in view.
+  // A vertical drift gives the hero photograph depth while it is in view. The photograph is
+  // scaled up in CSS (.motion-ready .hero-photo img) so the drift never shows an edge.
   if (heroPhoto) {
     let frame = 0;
     const update = () => {
@@ -258,7 +259,7 @@ const initMotion = (): void => {
       const rect = heroPhoto.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
       const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-      const range = window.innerWidth <= 760 ? 5 : 10;
+      const range = window.innerWidth <= 760 ? 10 : 24; // the photo is scaled up in CSS to cover this
       const shift = Math.max(-range, Math.min(range, (progress - 0.5) * range * 2));
       heroPhoto.style.setProperty('--hero-shift', `${shift.toFixed(2)}px`);
     };
@@ -269,6 +270,18 @@ const initMotion = (): void => {
     update();
     window.addEventListener('scroll', requestUpdate, { passive: true });
     window.addEventListener('resize', requestUpdate, { passive: true });
+  }
+
+  // Once the full header has scrolled out of view, a slim bar of the same links slides in.
+  // It stays inert (and hidden by CSS) until then, and is not used on phones.
+  const compactBar = document.querySelector<HTMLElement>('[data-compact-bar]');
+  const header = document.querySelector('.header');
+  if (compactBar && header) {
+    new IntersectionObserver(([entry]) => {
+      const show = !entry.isIntersecting && entry.boundingClientRect.bottom < 0;
+      compactBar.dataset.visible = String(show);
+      compactBar.inert = !show;
+    }).observe(header);
   }
 
   // One gentle scroll cue on mobile says that more content sits off-canvas.

@@ -8,6 +8,13 @@
 - 動き：`src/scripts/silver.ts`（スクロール演出、カテゴリのリボン、FAQの開閉、ZIP欄、ダイアログの閉じ方）。
 - 画像：`public/images/silver/`（生成画像。「Illustrative photography」と表示）。
 
+## 動き
+動きは `silver.css` 末尾の「Motion, second layer」と `silver.ts`（`initMotion`）にあります。すべて追加の演出で、`prefers-reduced-motion` の人、JavaScript が使えない場合は、静止した完全な表示のままです。
+- **スクロール連動の奥行き**：ヒーロー写真（`silver.ts` が `--hero-shift` を更新、CSS で拡大して端を見せない）、value 画像、手順のイラスト、人物写真（761px以上）。後ろ3つは CSS の `animation-timeline: view()`（`@supports` の中）。`transform` と衝突しないよう `translate` / `scale` を使い、ビルドで短縮形にまとめられないよう `animation-*` は個別に書く。
+- **銀の光**：ヒーロー見出しの「silver」（`.glint`）に、読み込み後に光が1回走る。ボタン（`.button`）はホバー・フォーカスで光が通る。自動で繰り返す動きは増やさない。
+- **操作時**：予約ダイアログの開閉（`@starting-style`）、モバイル下部バーが下から滑り込む、ヘッダーが見えなくなったらデスクトップだけ細いバー（`.compact-bar`、`silver.ts` が `data-visible` と `inert` を切り替える）が上から出る。
+- 新しい動きを足すときは、遅く滑らかに（落ち着いた雰囲気を保つ）、スクロールの乗っ取りはしない。
+
 ## 色・書体（`silver.css` の `:root`）
 | 変数 | 値 | 用途 |
 |---|---|---|
