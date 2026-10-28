@@ -14,6 +14,7 @@ const { page } = Astro.props;
 // {company}, {address} ... come from site.ts. Values may hold TODO markers, which stay visible.
 const tokens = {
   company: plain(site.company.name),
+  brand: site.brand.name,
   address: site.company.address,
   phone: site.phone.display,
   // Hours are printed only when the company publishes them (company.showHours); then " (hours)" follows the phone.
@@ -24,7 +25,7 @@ const tokens = {
   regulator: `${site.regulator.label}: ${site.regulator.value}`,
 };
 const html = (text: string) => rich(fill(text, tokens));
-const description = fill(page.description, { company: tokens.company });
+const description = fill(page.description, { company: tokens.company, brand: tokens.brand });
 ---
 
 <LegalLayout slug={page.slug} title={page.title} description={description}>

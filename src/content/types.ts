@@ -207,6 +207,8 @@ export interface CustomLandingPage {
 }
 
 export interface SiteContent {
+  /** The public brand (REWORTH). company.name is the company that operates it. */
+  brand: { name: string };
   company: {
     name: string;
     address: string;

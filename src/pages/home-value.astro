@@ -2,6 +2,8 @@
 import '../styles/home-value.css';
 import { homeValue as c } from '../content/lps/home-value';
 import { homeValueConfig as config } from '../content/lps/home-value/config';
+import BrandLogo from '../components/BrandLogo.astro';
+import Favicon from '../components/Favicon.astro';
 import ContactActions from '../components/home-value/ContactActions.astro';
 import VisitRequestPanel from '../components/home-value/VisitRequestPanel.astro';
 const canonical = config.productionOrigin ? new URL('/home-value', config.productionOrigin).href : null;
@@ -20,12 +22,12 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
     <meta property="og:title" content={c.meta.title} />
     <meta property="og:description" content={c.meta.description} />
     {canonical && <meta property="og:url" content={canonical} />}
-    <link rel="icon" href="data:," />
+    <Favicon />
   </head>
   <body data-lp="home-value">
     <a class="hv-skip" href="#main">Skip to main content</a>
     <header class="hv-header hv-container">
-      <a class="hv-brand" href="#top" aria-label="BuySell home">{config.brand}<span class="hv-small">In-home appraisals</span></a>
+      <a class="hv-brand" href="#top" aria-label={`${config.brand} home`}><BrandLogo class="hv-logo" decorative /><span class="hv-small">In-home appraisals</span></a>
       <nav aria-label="Page navigation"><a href="#what-we-appraise">Items</a><a href="#how-it-works">How it works</a><a href="#questions">FAQ</a></nav>
       <ContactActions compact />
     </header>
@@ -109,13 +111,13 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
       </section>
     </main>
     <footer class="hv-footer hv-container">
-      <div><span class="hv-brand">{config.brand}</span><p>{config.area}</p>
+      <div><BrandLogo class="hv-logo hv-logo--footer" /><p>{config.area}</p>
       {config.localOperator && <address>{config.localOperator.name}<br />{config.localOperator.address}{config.localOperator.contact && <><br />{config.localOperator.contact}</>}</address>}</div>
       <nav aria-label="Legal information">
         {config.privacyUrl && <a href={config.privacyUrl}>Privacy information</a>}
         {config.legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}
       </nav>
-      <p class="hv-small">© {new Date().getFullYear()} {config.brand}</p>
+      <p class="hv-small">© {new Date().getFullYear()} {config.localOperator?.name ?? config.brand}</p>
     </footer>
     <script type="application/json" data-hv-config set:html={JSON.stringify({ measurementEnabled: config.measurementEnabled })} />
     <script>import '../scripts/home-value';</script>

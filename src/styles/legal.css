@@ -162,3 +162,5 @@ body[data-page="legal"] .lg-footer {
 body[data-page="legal"] .lg-footer p {
   margin: 0;
 }
+
+body[data-page="legal"] .lg-logo { display: block; width: auto; height: 40px; }

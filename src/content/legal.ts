@@ -7,7 +7,7 @@
  * The whole text needs a lawyer's review before launch; the draft notice below says so and is a
  * TODO marker too, so `npm run todos` lists it until it is removed.
  *
- * Tokens filled in by the page: {company} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
+ * Tokens filled in by the page: {company} {brand} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
  */
 
 export type LegalBlock = string | { list: string[] };
@@ -56,9 +56,9 @@ const contact: LegalSection = {
 export const privacyPolicy: LegalPageContent = {
   slug: 'privacy',
   title: 'Privacy Policy',
-  description: 'What personal information {company} collects when you ask about an in-home appraisal, how we use it, and your choices.',
+  description: 'What personal information {company} collects for {brand} when you ask about an in-home appraisal, how we use it, and your choices.',
   intro:
-    '{company} ("we", "us") offers free in-home appraisals and buys items such as silver, jewelry and watches from people in Texas. This policy explains what personal information we collect on our websites, by phone and at your home, how we use and share it, and the choices you have.',
+    '{company} ("we", "us") operates {brand}, which offers free in-home appraisals and buys items such as silver, jewelry and watches from people in Texas. This policy explains what personal information we collect on our websites, by phone and at your home, how we use and share it, and the choices you have.',
   sections: [
     {
       id: 'collect',
@@ -199,9 +199,9 @@ export const privacyPolicy: LegalPageContent = {
 export const termsOfUse: LegalPageContent = {
   slug: 'terms',
   title: 'Terms of Use',
-  description: 'The terms for using the {company} websites, asking for a free appraisal and receiving text messages.',
+  description: 'The terms for using the {brand} websites, asking for a free appraisal and receiving text messages.',
   intro:
-    'These terms apply when you use the websites of {company} ("we", "us") or ask us for an appraisal. By using our websites you agree to them. If you do not agree, please do not use the websites; you can still call us.',
+    'These terms apply when you use the {brand} websites operated by {company} ("we", "us") or ask us for an appraisal. By using our websites you agree to them. If you do not agree, please do not use the websites; you can still call us.',
   sections: [
     {
       id: 'site',

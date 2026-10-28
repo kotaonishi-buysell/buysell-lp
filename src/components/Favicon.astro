@@ -1,0 +1,10 @@
+---
+/* The REWORTH favicon, the same on every page (LPs and legal pages). Files: public/images/brand/. Listed in company.ts. */
+import { company } from '../content/company';
+
+const { svg, png, apple } = company.icon;
+---
+
+<link rel="icon" href={svg} type="image/svg+xml" />
+<link rel="icon" href={png} type="image/png" sizes="32x32" />
+<link rel="apple-touch-icon" href={apple} />

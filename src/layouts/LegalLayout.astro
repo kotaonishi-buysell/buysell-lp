@@ -9,6 +9,8 @@ import '../styles/legal.css';
 import { site } from '../content/site';
 import { legalCopy, legalPages } from '../content/legal';
 import { fill, plain } from '../lib/text';
+import BrandLogo from '../components/BrandLogo.astro';
+import Favicon from '../components/Favicon.astro';
 
 interface Props {
   slug: string;
@@ -18,7 +20,7 @@ interface Props {
 
 const { slug, title, description } = Astro.props;
 const company = plain(site.company.name);
-const pageTitle = `${title} | ${company}`;
+const pageTitle = `${title} | ${site.brand.name}`;
 const canonical = new URL(`/${slug}`, Astro.site);
 const pages = legalPages.map((page) => ({ slug: page.slug, label: page.title, href: `/${page.slug}` }));
 ---
@@ -29,16 +31,16 @@ const pages = legalPages.map((page) => ({ slug: page.slug, label: page.title, hr
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
-    <meta name="description" content={fill(plain(description), { company })} />
+    <meta name="description" content={fill(plain(description), { company, brand: site.brand.name })} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="data:," />
+    <Favicon />
     <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
   </head>
   <body data-page="legal">
     <a class="skip-link" href="#main">{site.ui.skipLink}</a>
     <header class="lg-header">
       <div class="lg-wrap lg-header__inner">
-        <a class="lg-brand" href="/">{company}</a>
+        <a class="lg-brand" href="/" aria-label={`${site.brand.name} home`}><BrandLogo class="lg-logo" decorative /></a>
         <nav aria-label={legalCopy.navLabel}>
           <ul class="lg-nav" role="list">
             {
