@@ -1,26 +1,33 @@
 /*
- * Company facts and interface copy shared by every LP (Downsizing and the other
- * Home Appraisal LPs, and Silver).
- * Values marked {{TODO: ...}} are business facts the client confirms before launch.
+ * Interface copy and the facts shared by Downsizing and Silver (Home Value reads
+ * the same company facts through its own config).
+ * Company name, phone, hours, address and OCCC registration are not typed here: they
+ * come from ./company.ts, the single source. While one is unconfirmed (null) this LP
+ * family shows a {{TODO: ...}} placeholder for it.
  */
+import { company as companyFacts, isCallablePhone, type CompanyFacts } from './company.ts';
 import type { SiteContent } from './types.ts';
 import { serviceAreaZips } from './service-area-zips.ts';
 
-export const site: SiteContent = {
+// Written as a concatenation so `npm run todos` lists the open item once, in company.ts.
+const pending = (what: string): string => '{{' + `TODO: ${what}` + '}}';
+
+// Shown only while company.phone is unconfirmed, so the layout and tel: links can be reviewed.
+const placeholderPhone = { display: '(800) 000-0000', e164: '+18000000000' };
+
+export const buildSite = (facts: CompanyFacts): SiteContent => ({
   company: {
-    // TODO: company name (placeholder from the build spec)
-    name: 'Company name',
-    address: '{{TODO: street address, city, TX ZIP}}',
+    name: facts.legalName ?? 'Company name',
+    address: facts.address ?? pending('street address, city, TX ZIP'),
     registration: {
       label: 'Texas registration No.',
-      value: '{{TODO: state registration number}}',
+      value: facts.occc.registrationNumber ?? pending('state registration number'),
     },
-    hours: '{{TODO: days and hours}}, Central Time',
+    // null = hours are not published (company.showHours). Pages then leave the hours out.
+    hours: facts.showHours ? `${facts.hours ?? pending('days and hours')}, ${facts.timeZone}` : null,
   },
   phone: {
-    // TODO: phone number. Placeholder in US format; replace both values together.
-    display: '(800) 000-0000',
-    e164: '+18000000000',
+    ...(isCallablePhone(facts.phone) ? facts.phone : placeholderPhone),
     callPrefix: 'Call',
     hoursLine: 'Calls answered {hours}.',
   },
@@ -33,7 +40,7 @@ export const site: SiteContent = {
   },
   regulator: {
     label: 'Texas Office of Consumer Credit Commissioner (OCCC)',
-    value: '{{TODO: OCCC address, phone and the notice wording required for our registration}}',
+    value: facts.occc.regulatorNotice ?? pending('OCCC address, phone and the notice wording required for our registration'),
   },
   legal: {
     effectiveDate: '{{TODO: effective date}}',
@@ -71,4 +78,6 @@ export const site: SiteContent = {
     // Google Tag Manager container. Loaded by layouts/Document.astro (/downsizing and /silver; /home-value has its own page).
     gtmId: 'GTM-PQQFZ723',
   },
-};
+});
+
+export const site: SiteContent = buildSite(companyFacts);

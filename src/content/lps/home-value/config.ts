@@ -1,9 +1,12 @@
+import { company as companyFacts, isCallablePhone, type CompanyFacts } from '../../company.ts';
+
 export interface HomeValueConfig {
   brand: string;
   area: string;
   phone: { display: string; e164: string } | null;
+  /** Hours with the time zone, e.g. "Mon–Fri, 9 a.m.–5 p.m. (Central Time)". null = do not show hours. */
   hours: string | null;
-  localOperator: { name: string; address: string; contact: string } | null;
+  localOperator: { name: string; address: string; contact: string | null } | null;
   privacyUrl: string | null;
   legalLinks: { label: string; href: string }[];
   productionOrigin: string | null;
@@ -12,14 +15,22 @@ export interface HomeValueConfig {
   group: { name: string; purchaseCount: string; regions: string; approved: boolean };
 }
 
-// Client-confirmed facts from docs/requirements/home-value.en.md.
+export const approvedPhone = (phone: HomeValueConfig['phone']): HomeValueConfig['phone'] =>
+  isCallablePhone(phone) ? phone : null;
+
+// Company facts (brand, phone, hours, name, address, group) come from src/content/company.ts.
 // Nulls are intentional: never fall back to the legacy page's dummy values.
-export const homeValueConfig: HomeValueConfig = {
-  brand: 'BuySell',
+// The rest is client-confirmed in docs/requirements/home-value.en.md.
+export const buildHomeValueConfig = (facts: CompanyFacts): HomeValueConfig => ({
+  brand: facts.brand,
   area: 'Dallas–Fort Worth and surrounding areas',
-  phone: null,
-  hours: null,
-  localOperator: null,
+  phone: approvedPhone(facts.phone),
+  hours: facts.showHours && facts.hours?.trim() ? `${facts.hours.trim()} (${facts.timeZone})` : null,
+  // Shown only once both the operating entity and its address are confirmed.
+  localOperator:
+    facts.legalName && facts.address
+      ? { name: facts.legalName, address: facts.address, contact: approvedPhone(facts.phone)?.display ?? null }
+      : null,
   // The shared legal pages (the same on every LP); the text is in src/content/legal.ts.
   privacyUrl: '/privacy',
   legalLinks: [
@@ -29,13 +40,7 @@ export const homeValueConfig: HomeValueConfig = {
   productionOrigin: null,
   deliveryEndpoint: null,
   measurementEnabled: false,
-  group: {
-    name: 'BuySell Technologies Co. Ltd.',
-    purchaseCount: '400,000',
-    regions: 'Japan and the United States',
-    approved: false,
-  },
-};
+  group: { name: facts.group.name, purchaseCount: '400,000', regions: 'Japan and the United States', approved: false },
+});
 
-export const approvedPhone = (phone: HomeValueConfig['phone']): HomeValueConfig['phone'] =>
-  phone && phone.display.trim() && /^\+1[2-9]\d{2}[2-9]\d{6}$/.test(phone.e164) ? phone : null;
+export const homeValueConfig: HomeValueConfig = buildHomeValueConfig(companyFacts);

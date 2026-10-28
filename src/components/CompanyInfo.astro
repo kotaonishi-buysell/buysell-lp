@@ -15,7 +15,7 @@ const rows = [
   { label: labels.name, value: rich(site.company.name) },
   { label: labels.address, value: rich(site.company.address) },
   { label: labels.registration, value: rich(site.company.registration.value) },
-  { label: labels.hours, value: rich(site.company.hours) },
+  ...(site.company.hours ? [{ label: labels.hours, value: rich(site.company.hours) }] : []),
 ];
 ---
 

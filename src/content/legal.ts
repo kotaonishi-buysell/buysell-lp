@@ -7,7 +7,7 @@
  * The whole text needs a lawyer's review before launch; the draft notice below says so and is a
  * TODO marker too, so `npm run todos` lists it until it is removed.
  *
- * Tokens filled in by the page: {company} {address} {phone} {hours} {email} {registration} {regulator}
+ * Tokens filled in by the page: {company} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
  */
 
 export type LegalBlock = string | { list: string[] };
@@ -46,7 +46,7 @@ const contact: LegalSection = {
       list: [
         '{company}',
         '{address}',
-        'Phone: {phone} ({hours})',
+        'Phone: {phone}{hoursSuffix}',
         'Email: {email}',
       ],
     },

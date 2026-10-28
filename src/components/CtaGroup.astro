@@ -22,7 +22,7 @@ interface Props {
 }
 
 const { location, label, reassurance, secondary, align = 'start' } = Astro.props;
-const hoursLine = rich(fill(site.phone.hoursLine, { hours: site.company.hours }));
+const hoursLine = site.company.hours ? rich(fill(site.phone.hoursLine, { hours: site.company.hours })) : null;
 ---
 
 <div class:list={['cta-group', `cta-group--${align}`]}>
@@ -48,7 +48,7 @@ const hoursLine = rich(fill(site.phone.hoursLine, { hours: site.company.hours })
     }
   </div>
   <p class="cta-group__note">{reassurance}</p>
-  <p class="cta-group__hours muted" set:html={hoursLine} />
+  {hoursLine && <p class="cta-group__hours muted" set:html={hoursLine} />}
 </div>
 
 <style>

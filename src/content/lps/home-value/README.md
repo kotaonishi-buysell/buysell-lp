@@ -17,7 +17,8 @@ Validation errors, sending/duplicate prevention, explicit preview outcome, servi
 
 ## Editable files
 - Page copy: index.ts in this directory.
-- Business and integration values: config.ts in this directory. Confirmed values are populated; unavailable values are null.
+- Company facts (brand, name, address, phone, hours, group name): src/content/company.ts, shared by every LP. Enter them there, not here.
+- Integration and Home Value-specific values: config.ts in this directory, which builds on company.ts. Confirmed values are populated; unavailable values are null.
 - Route: src/pages/home-value.astro.
 - Contact actions and the form panel: src/components/home-value/. The form itself is the shared src/components/ContactForm.astro.
 - Validation and delivery boundary (shared): src/lib/contact-form.ts. Endpoint and form copy (shared): src/content/contact-form.ts.
@@ -29,13 +30,13 @@ Validation errors, sending/duplicate prevention, explicit preview outcome, servi
 | Boundary | Current status |
 |---|---|
 | Page and sample assets | Implemented; local preview available |
-| Phone number and hours | Unconfigured; no dummy-number links, no hours or open-now claims |
+| Phone number and hours | Unconfigured in company.ts; no dummy-number links, no hours or open-now claims. Filling them there turns on the call button and hours |
 | Request validation | Runs locally; past dates use Central Time |
 | Request delivery | Preview only; no receiving service connected |
 | Jobber | Planned; no endpoint, credentials, field mapping or account configuration assumed |
 | Analytics | Disabled by default; no advertising tracker installed |
 | Group/company copy | Client-supplied draft; approval and count source/reporting period pending |
-| Legal links/local operator | Omitted until approved details and URLs are supplied |
+| Legal links/local operator | Omitted until approved details and URLs are supplied. The local operator appears once company.ts has both the registered name and the address |
 | Canonical/production metadata | No production domain invented; preview is noindex |
 
 ## Delivery adapter contract

@@ -16,7 +16,8 @@ const tokens = {
   company: plain(site.company.name),
   address: site.company.address,
   phone: site.phone.display,
-  hours: site.company.hours,
+  // Hours are printed only when the company publishes them (company.showHours); then " (hours)" follows the phone.
+  hoursSuffix: site.company.hours ? ` (${site.company.hours})` : '',
   email: site.legal.privacyEmail,
   effective: site.legal.effectiveDate,
   registration: `${site.company.registration.label}: ${site.company.registration.value}`,
