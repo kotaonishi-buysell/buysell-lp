@@ -182,6 +182,8 @@ td:not(:nth-child(2)){color:#6f766a;font-size:12px}
 .button-cream{background:var(--ivory);color:var(--green);white-space:nowrap;font-size:12px;gap:20px;padding:15px 17px}
 .button-cream:hover{background:#e1e6d4}
 .areas .zip-result{font-size:11px;margin-top:10px;min-height:36px}
+.zip-request{margin-top:6px}
+.zip-request[hidden]{display:none}
 .cities{border-left:1px solid #5a7059;padding-left:60px;align-self:center}
 .cities-label{font-size:10px;letter-spacing:2px;color:#c1c9ac}
 .cities ul{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:17px 28px;margin-block:33px;font-family:var(--serif);font-size:24px;line-height:1.3}

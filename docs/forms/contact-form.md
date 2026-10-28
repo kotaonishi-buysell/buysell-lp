@@ -170,6 +170,10 @@ LPの側でできるのは、見た目と、少数の文言だけです。
   - **ZIPコードは、ときどき追加・変更されます。** 公開の前と、定期的に、USPS または HUD の最新データと照らして確認してください。
   - 対象を変えるとき（郡を増やす・減らす、郡でなく都市で決める、など）：`scripts/build-service-area-zips.mjs` の `COUNTIES` を直し、元データ（`npm pack zipcodes-us@1.2.0` で取得した `data/US.txt`）を渡して、`node scripts/build-service-area-zips.mjs <US.txt のパス>` を実行します。
   - 郡で決めているので、都市圏の端（Austin 郡の農村部、Galveston 島など）まで含みます。実際の訪問の範囲より広い場合は、郡を減らしてください。
+- **対象だったとき、フォームへつなぎます。** 「対象」の答えの下に、ボタン（「Request a visit」。文言は `src/content/zip-check.ts` の `requestButton`、LPごとに `requestLabel` で変えられます）が出ます。押すと、そのページの問い合わせフォームを開き（Silver はダイアログ、ほかは画面内のフォームへスクロール）、**ZIPの欄に、確認したZIPが入った状態**で、最初の欄（First name）にフォーカスします。
+  - ZIPの欄への入力は、フォームが受ける `cf:prefill` イベント（`detail: { zip }`）で行います（`src/scripts/contact-form.ts`）。入力の途中のイベントは出さないので、`form_start` は計測されません。
+  - ボタンが運ぶのは、**確認したときのZIP**です。確認のあとに入力を変えると、ボタンは消えます（もう一度確認してください）。「対象外」「ZIPとして正しくない」「一覧が未設定」のときは、出ません。
+  - ボタンを押す操作は `cta_click`（`location: zip`、`method: form`）として計測されます（Downsizing と Silver の `main.ts`）。この部品は、ページに問い合わせフォーム（`#consult`）があることを前提にします。
 - 「ZIPとして正しいか」は、問い合わせフォームと**同じルール**です（`normalizeZip`：5桁、`12345-6789`、ハイフンなしの9桁）。正しくない入力には、「Enter a 5-digit ZIP code.」を表示し、入力欄に戻します。
 - 見た目は、LPのCSSで決めます（`.zip-row`、`.zip-result`、`#zip-form` など）。部品には、ボタンのクラス、見出し、ボタンの文言、矢印などを渡せます。同じページに2つ置くときは、`id` を変えてください。
 - Silver は、この部品を使っています（見た目は、共通化の前と同一であることを確認済み）。

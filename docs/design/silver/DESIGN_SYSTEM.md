@@ -26,7 +26,7 @@
 - 見た目は `silver.css` 末尾の `[data-lp='silver']` ブロック（`--cf-*` 変数）で、アイボリー・緑・角なしに合わせています。送信ボタンはモックの `.button` を使います。
 
 ## ZIP確認の欄
-- ページ中ほどの「See if we come to your neighborhood」は、全LP共通の `ZipCheck` 部品です（[docs/forms/contact-form.md](../../forms/contact-form.md)）。見た目は `silver.css` の `#zip-form`、`.zip-row`、`.zip-result` で決まります。文言の変更は、見出しだけ `silver.astro` で、答えの文言は共通の `src/content/zip-check.ts` で行います。
+- ページ中ほどの「See if we come to your neighborhood」は、全LP共通の `ZipCheck` 部品です（[docs/forms/contact-form.md](../../forms/contact-form.md)）。見た目は `silver.css` の `#zip-form`、`.zip-row`、`.zip-result` で決まります。文言の変更は、見出しだけ `silver.astro` で、答えの文言は共通の `src/content/zip-check.ts` で行います。「対象」の答えの下には、予約ダイアログを、ZIP入力済みで開くボタン（`.zip-request`、`button button-cream`）が出ます。
 
 ## 編集のルール
 - Silver の見た目の変更は、`silver.css` と `silver.astro` の中だけで行い、他のLPのスタイルに影響させない。
