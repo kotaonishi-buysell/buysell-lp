@@ -195,6 +195,6 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
 - Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
-- GTM コンテナ ID、コールトラッキングツール
+- コールトラッキングツール（GTM コンテナ ID は設定済み）
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ
 - 公開ドメイン（`astro.config.mjs` の `site`）と、Netlify へのサイトの作成
