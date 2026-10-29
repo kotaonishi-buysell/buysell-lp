@@ -18,6 +18,8 @@ export interface CompanyFacts {
   legalName: string | null;
   /** The parent group, as named in the "About the BuySell group" copy. */
   group: { name: string };
+  /** The primary contact email. It is also where privacy requests go (shown on the legal pages). */
+  email: string | null;
   /** One line, e.g. "123 Main St, Suite 4, Dallas, TX 75201". */
   address: string | null;
   /** The reception number. Every phone button and link uses it. */
@@ -49,6 +51,7 @@ export const company: CompanyFacts = {
   legalName: 'BuySell America, Inc.',
   // The parent group's official English name (Tokyo Stock Exchange Growth Market, code 7685).
   group: { name: 'BuySell Technologies Co., Ltd.' },
+  email: 'info@buysell-america.com',
   address: '5717 Legacy Drive, Suite 250, Plano, TX 75024',
   phone: { display: '(469) 668-2619', e164: '+14696682619' },
   // TODO: confirm which days the phone is answered, then set showHours to true to publish the hours

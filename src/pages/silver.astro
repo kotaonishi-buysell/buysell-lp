@@ -110,7 +110,7 @@ const showPreviewStrip = true;
         <div>
           <p>{site.company.name}</p>
           <p>
-            <Fragment set:html={rich(site.company.address)} /><br />{site.phone.display}
+            <Fragment set:html={rich(site.company.address)} /><br />{site.phone.display}<br /><a href={`mailto:${site.company.email}`}>{site.company.email}</a>
           </p>
         </div>
         <div>

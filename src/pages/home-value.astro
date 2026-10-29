@@ -112,7 +112,7 @@ const canonical = config.productionOrigin ? new URL('/home-value', config.produc
     </main>
     <footer class="hv-footer hv-container">
       <div><BrandLogo class="hv-logo hv-logo--footer" /><p>{config.area}</p>
-      {config.localOperator && <address>{config.localOperator.name}<br />{config.localOperator.address}{config.localOperator.contact && <><br />{config.localOperator.contact}</>}</address>}</div>
+      {config.localOperator && <address>{config.localOperator.name}<br />{config.localOperator.address}{config.localOperator.contact && <><br />{config.localOperator.contact}</>}{config.email && <><br /><a href={`mailto:${config.email}`}>{config.email}</a></>}</address>}</div>
       <nav aria-label="Legal information">
         {config.privacyUrl && <a href={config.privacyUrl}>Privacy information</a>}
         {config.legalLinks.map((link) => <a href={link.href}>{link.label}</a>)}

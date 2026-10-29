@@ -25,7 +25,12 @@ const tokens = {
   registration: `${site.company.registration.label}: ${site.company.registration.value}`,
   regulator: `${site.regulator.label}: ${site.regulator.value}`,
 };
-const html = (text: string) => rich(fill(text, tokens));
+// A real email address becomes a mailto link; a TODO placeholder stays text.
+const emailLink = tokens.email.includes('{{') ? null : tokens.email;
+const html = (text: string) => {
+  const out = rich(fill(text, tokens));
+  return emailLink ? out.replaceAll(emailLink, `<a href="mailto:${emailLink}">${emailLink}</a>`) : out;
+};
 const description = fill(page.description, { company: tokens.company, brand: tokens.brand });
 ---
 

@@ -212,6 +212,8 @@ export interface SiteContent {
   company: {
     name: string;
     address: string;
+    /** Primary contact email; also the privacy contact. */
+    email: string;
     registration: { label: string; value: string };
     /** null = hours are not published; render nothing. */
     hours: string | null;
@@ -258,6 +260,7 @@ export interface SiteContent {
     companyLabels: {
       name: string;
       address: string;
+      email: string;
       registration: string;
       hours: string;
       phone: string;

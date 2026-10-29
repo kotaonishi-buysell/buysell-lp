@@ -11,6 +11,7 @@ interface Props {
 const { section } = Astro.props;
 const headingId = `${section.id}-title`;
 const labels = site.ui.companyLabels;
+const emailReady = !site.company.email.includes('{{');
 const rows = [
   { label: labels.name, value: rich(site.company.name) },
   { label: labels.address, value: rich(site.company.address) },
@@ -36,6 +37,12 @@ const rows = [
         <a class="link" href={`tel:${site.phone.e164}`} data-cta="company" data-cta-method="phone">
           <span data-phone-number>{site.phone.display}</span>
         </a>
+      </dd>
+    </div>
+    <div class="company__row">
+      <dt class="company__label">{labels.email}</dt>
+      <dd>
+        {emailReady ? <a class="link" href={`mailto:${site.company.email}`}>{site.company.email}</a> : <Fragment set:html={rich(site.company.email)} />}
       </dd>
     </div>
     <div class="company__row">
