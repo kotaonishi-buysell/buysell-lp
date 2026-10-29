@@ -146,10 +146,10 @@ export const privacyPolicy: LegalPageContent = {
         'We give information to others as follows:',
         {
           list: [
-            'Service providers that work for us under contract: Netlify, Inc. (hosts our websites and stores the requests sent through our form), Google (Google Tag Manager and Google Analytics), Microsoft (Clarity), and providers of email, text messaging and scheduling. {{TODO: list every other provider that receives personal information, for example scheduling or CRM tools.}}',
-            'Meta Platforms, Inc., through the Meta Pixel, for advertising and ad measurement (see above and the opt-out).',
+            'Service providers that work for us under contract: website hosting and form-processing providers, analytics and session-recording providers, and providers of email, text messaging and scheduling. {{TODO: confirm there is no other category of provider that receives personal information, for example a CRM tool.}}',
+            'Advertising and social media platforms (for example Meta), through the advertising tool described above, for advertising and ad measurement. You can opt out: see "Do not sell or share my personal information".',
             'Other companies in the BuySell group, to help run the service. {{TODO: confirm whether and under what terms data goes to BuySell Technologies group companies.}}',
-            'Police and regulators. We send a report of each purchase to local law enforcement within 48 hours, as Texas rules require, and we give purchase records to the OCCC and others when the law requires it or a lawful request is made.',
+            'Police and regulators. We report each purchase to local law enforcement, as Texas law requires, and we give purchase records to the OCCC and others when the law requires it or a lawful request is made.',
             'A buyer or successor, if our business is sold or reorganized.',
           ],
         },
@@ -173,8 +173,8 @@ export const privacyPolicy: LegalPageContent = {
       id: 'rights',
       heading: 'Your choices and Texas privacy rights',
       blocks: [
-        '{{TODO: confirm with counsel whether the Texas Data Privacy and Security Act applies to us. We describe the rights below either way.}}',
-        'You can ask us to:',
+        // TODO: confirm with counsel whether the Texas Data Privacy and Security Act applies to us (docs/design/legal/RESEARCH.md). The rights are described either way.
+        'Residents of Texas can ask us to:',
         {
           list: [
             'confirm whether we process your personal information, and give you access to it;',
@@ -205,7 +205,7 @@ export const privacyPolicy: LegalPageContent = {
       id: 'changes',
       heading: 'Changes to this policy',
       blocks: [
-        'We may update this policy. The effective date at the top shows when it last changed. If a change is significant, we will say so on this page before it takes effect.',
+        'We may update this policy. The effective date at the top shows when it last changed. We will post significant changes on this page.',
       ],
     },
     contact,
