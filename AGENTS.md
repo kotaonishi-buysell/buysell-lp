@@ -8,7 +8,7 @@
 - For home-value, also read src/content/lps/home-value/README.md.
 - For home-value business requirements and behavior, read docs/requirements/home-value.en.md. Its confirmed facts and seven-section sequence supersede earlier draft copy.
 - For /silver, read docs/design/silver/DESIGN_SYSTEM.md. Silver loads silver.css only through SilverLayout; never import silver.css or base.css into the other LPs.
-- Preserve the existing Astro application, /downsizing route, and / redirect.
+- Preserve the existing Astro application. Only /silver and the legal pages are published. /downsizing and /home-value are drafts: their pages live in src/draft-pages/ (not src/pages/), are added as routes only in `astro dev` or with `npm run build:drafts` (astro.config.mjs), and are not in the production build. / redirects to /silver (astro.config.mjs and netlify.toml). To publish a draft, move its page into src/pages/ and drop its injectRoute line.
 - Apply Friendly Discovery styling only to home-value unless migration is explicitly requested.
 - Keep legacy tokens.css, base.css and existing LP content unchanged for this addition.
 - Reuse components where appropriate; keep page copy in src/content. All LPs share one contact form (src/components/ContactForm.astro, src/lib/contact-form.ts, src/content/contact-form.ts, docs/forms/contact-form.md). Change its fields, validation, delivery or endpoint in the shared files, and give each LP only a skin and its own panel, heading and button. The shared form has no analytics; each LP listens to its `cf:event` events. The service-area ZIP box is also shared (src/components/ZipCheck.astro; the ZIP prefixes live in site.serviceArea.zipPrefixes); it is not the contact form and sends nothing. Delivery has three modes set by env vars (see docs/forms/contact-form.md): Netlify Forms (default on Netlify; the form markup carries data-netlify and the browser posts to its own page), the email function (src/server/contact.ts, served by netlify/functions/contact.ts) or preview. Host: Netlify, settings in netlify.toml; keep secrets in the Netlify dashboard, never in the repo. Home Value must not load the legacy analytics.
@@ -33,7 +33,7 @@
 ## Verify
 - Run npm run check, npm run build and npm run todos.
 - Run npm test for changes to the contact form, its validation or delivery behavior.
-- Confirm both /downsizing and /home-value are generated and / still redirects to /downsizing.
+- Confirm /silver, the legal pages and 404 are generated and / redirects to /silver. Run `npm run build:drafts` to confirm /downsizing and /home-value still build.
 - With no receiving endpoint configured (the default), the shared form validates locally, sends nothing, and must never report live receipt or emit a submit measurement event.
-- After changing the shared form, verify both /downsizing and /home-value in the browser.
+- After changing the shared form, verify /silver, and /downsizing and /home-value (with `npm run dev` or `npm run build:drafts`), in the browser.
 - Do not deploy or merge as part of scaffolding.

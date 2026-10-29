@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:drafts": "PUBLIC_DRAFT_LPS=true astro build",
     "preview": "astro preview",
     "check": "astro check",
     "todos": "node scripts/list-todos.mjs",

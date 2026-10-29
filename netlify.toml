@@ -17,9 +17,10 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# While /downsizing is the only live LP, the bare domain goes there.
+# The bare domain goes to Silver, the LP that is live. (/downsizing and /home-value are drafts: not published,
+# see astro.config.mjs.)
 [[redirects]]
   from = "/"
-  to = "/downsizing"
+  to = "/silver"
   status = 302
   force = true
