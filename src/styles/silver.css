@@ -1405,13 +1405,15 @@ a.final-phone {
  */
 .mobile-bar[data-sticky-cta] {
   transition:
-    opacity 0.2s ease,
-    visibility 0.2s allow-discrete;
+    opacity 0.3s ease,
+    transform 0.45s cubic-bezier(0.2, 0.75, 0.2, 1),
+    visibility 0.45s;
 }
 
 .mobile-bar[data-sticky-cta][data-visible='false'] {
   opacity: 0;
   visibility: hidden;
+  transform: translateY(100%);
 }
 
 /*
@@ -1499,3 +1501,174 @@ a.final-phone {
 .comparison td .table-check{margin-inline:auto}
 .comparison td .cell-text{display:block;margin-top:8px;font-size:13px;line-height:1.45}
 .comparison td:not(:nth-child(2)){line-height:1.45}
+
+/* --------------------------------------------------------------
+   Motion, second layer: scroll-linked depth, silver glint and
+   interaction. Everything here is an enhancement: it is gated by
+   .motion-ready (set by silver.ts only without reduced motion), by
+   @supports or by prefers-reduced-motion: no-preference, so the page
+   stays complete and still without any of it.
+   -------------------------------------------------------------- */
+
+/* Scroll-linked depth. The hero photograph is driven by silver.ts (--hero-shift); the
+   photographs below use CSS scroll-driven animations where the browser has them. The
+   individual translate/scale properties are used so they never clash with the reveal
+   transitions, which use transform. */
+.motion-ready .hero-photo img{scale:1.08}
+@media (max-width:760px) {
+  .motion-ready .hero-photo img{scale:1.06}
+}
+@supports (animation-timeline: view()) {
+  @keyframes silver-drift {
+    from{translate:0 -5%}
+    to{translate:0 5%}
+  }
+  @keyframes silver-float {
+    from{translate:0 var(--float, 12px)}
+    to{translate:0 calc(var(--float, 12px) * -1)}
+  }
+  /* Longhands on purpose: a build step would fold them into the `animation` shorthand,
+     which not every browser accepts together with a timeline. */
+  .motion-ready :is(.value-image img, .step-art) {
+    animation-name: silver-float;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: view();
+    animation-range: cover;
+  }
+  .motion-ready .value-image img {
+    scale: 1.14;
+    animation-name: silver-drift;
+  }
+  .motion-ready .step-art{--float: 12px}
+  .motion-ready .steps article:nth-child(2) .step-art{--float: 18px}
+  .motion-ready .steps article:nth-child(3) .step-art{--float: 8px}
+  @media (min-width:761px) {
+    .motion-ready .appraiser-photo {
+      --float: 8px;
+      animation-name: silver-float;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+    .motion-ready .appraisers article:nth-child(2) .appraiser-photo{--float: -8px}
+  }
+}
+
+/* Silver glint: one slow sheen across the word "silver" once the hero has settled, and
+   the gold rule beside the eyebrow drawing itself in. */
+@keyframes silver-glint {
+  from{background-position:100% 0}
+  to{background-position:0 0}
+}
+@media (forced-colors: none) {
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .motion-ready.motion-started .glint {
+      background-image: linear-gradient(100deg, var(--ink) 38%, #8a968f 48%, #aeb7b1 50%, #8a968f 52%, var(--ink) 62%);
+      background-size: 300% 100%;
+      background-position: 100% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      animation: silver-glint 2s cubic-bezier(.45,.05,.3,1) 1.1s 1 both;
+    }
+  }
+}
+.motion-ready .short-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .8s cubic-bezier(.2,.75,.2,1) .6s;
+}
+.motion-ready.motion-started .short-rule{transform: scaleX(1)}
+
+/* A sheen passes over buttons on hover and keyboard focus. */
+.button{position:relative;overflow:hidden;isolation:isolate}
+.button::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.3), transparent);
+  transform: translateX(-140%) skewX(-18deg);
+  pointer-events: none;
+}
+.button-cream::after{background: linear-gradient(100deg, transparent, rgba(0,69,15,.09), transparent)}
+@media (prefers-reduced-motion: no-preference) {
+  .button:is(:hover, :focus-visible)::after {
+    transform: translateX(350%) skewX(-18deg);
+    transition: transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+}
+
+/* The booking dialog fades and settles in, and out. Browsers without @starting-style or
+   allow-discrete simply open it without the movement. */
+@media (prefers-reduced-motion: no-preference) {
+  dialog {
+    opacity: 0;
+    transform: translateY(16px) scale(.985);
+    transition:
+      opacity .32s ease,
+      transform .42s cubic-bezier(.2,.75,.2,1),
+      overlay .42s allow-discrete,
+      display .42s allow-discrete;
+  }
+  dialog[open] {
+    opacity: 1;
+    transform: none;
+  }
+  dialog::backdrop {
+    opacity: 0;
+    transition:
+      opacity .36s ease,
+      overlay .36s allow-discrete,
+      display .36s allow-discrete;
+  }
+  dialog[open]::backdrop{opacity: 1}
+  @starting-style {
+    dialog[open] {
+      opacity: 0;
+      transform: translateY(16px) scale(.985);
+    }
+    dialog[open]::backdrop{opacity: 0}
+  }
+}
+
+/* Compact bar: once the full header has scrolled away, a slim copy of its links slides in
+   from the top (desktop only; phones have the bottom bar). silver.ts toggles data-visible
+   and inert, and only when motion is allowed. */
+.compact-bar{display: none}
+@media (min-width: 761px) {
+  html{scroll-padding-top: 84px}
+  .compact-bar {
+    display: flex;
+    position: fixed;
+    z-index: 8;
+    inset: 0 0 auto 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 10px max(32px, calc((100% - 1320px) / 2));
+    background: rgba(245,242,233,.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    transform: translateY(-100%);
+    visibility: hidden;
+    transition: transform .45s cubic-bezier(.2,.75,.2,1), visibility .45s;
+  }
+  .compact-bar[data-visible='true'] {
+    transform: none;
+    visibility: visible;
+  }
+  .compact-bar .brand-logo{height: 30px}
+  .compact-bar nav{display: flex; gap: 26px; font-size: 12px}
+  .compact-bar nav a:hover{text-decoration: underline; text-underline-offset: 6px}
+  .compact-contact{display: flex; align-items: center; gap: 24px}
+  .compact-contact .phone-text{font-size: 18px}
+  .compact-contact .text-link{font-size: 11px; gap: 8px}
+}
+@media (min-width: 761px) and (max-width: 1000px) {
+  .compact-bar nav{display: none}
+}
