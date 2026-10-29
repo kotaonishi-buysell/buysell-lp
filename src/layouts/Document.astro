@@ -6,6 +6,7 @@
  */
 import { site } from '../content/site';
 import { plain } from '../lib/text';
+import { absoluteUrl } from '../lib/site-url';
 import Favicon from '../components/Favicon.astro';
 
 interface Props {
@@ -20,8 +21,8 @@ interface Props {
 const { slug, meta, bodyAttrs = {}, preloadFonts } = Astro.props;
 const title = plain(meta.title);
 const description = plain(meta.description);
-const canonical = new URL(`/${slug}`, Astro.site);
-const ogImage = new URL(meta.ogImage, Astro.site);
+const canonical = absoluteUrl(`/${slug}`, Astro.site);
+const ogImage = absoluteUrl(meta.ogImage, Astro.site);
 const gtmId = site.analytics.gtmId;
 
 const structuredData = {
@@ -29,7 +30,7 @@ const structuredData = {
   '@type': 'LocalBusiness',
   name: site.brand.name,
   legalName: plain(site.company.name),
-  url: canonical.href,
+  ...(canonical ? { url: canonical } : {}),
   telephone: site.phone.e164,
   address: {
     '@type': 'PostalAddress',
@@ -55,18 +56,18 @@ const gtmScript = gtmId
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {canonical && <link rel="canonical" href={canonical} />}
     <Favicon />
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    {meta.ogImageAlt && <meta property="og:image:alt" content={meta.ogImageAlt} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:width" content="1200" />}
+    {ogImage && <meta property="og:image:height" content="630" />}
+    {ogImage && meta.ogImageAlt && <meta property="og:image:alt" content={meta.ogImageAlt} />}
     <meta name="twitter:card" content="summary_large_image" />
 
     {preloadFonts.map((font) => <link rel="preload" href={`/fonts/${font}`} as="font" type="font/woff2" crossorigin />)}

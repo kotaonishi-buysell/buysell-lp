@@ -198,4 +198,4 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - コールトラッキングツール（GTM コンテナ ID は設定済み）
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ
-- 公開ドメイン（`astro.config.mjs` の `site`）と、Netlify へのサイトの作成
+- 公開ドメイン：Netlify のサイトの URL（独自ドメインを設定すれば、それ）が、自動で canonical と OG の URL になります（`astro.config.mjs`。Netlify 以外では環境変数 `PUBLIC_SITE_URL`）。ドメインがないローカルのビルドでは、これらのタグを出しません
