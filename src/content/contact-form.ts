@@ -43,6 +43,8 @@ export const contactFormCopy = {
   required: '(required)',
   optional: '(optional)',
   zipHint: 'We use this to check that we can visit your area.',
+  /** Above the submit button: the form is for adults. */
+  ageNote: 'By sending this request, you confirm that you are 18 or older.',
   /** Under the message box: keep sensitive details out of the free text. */
   messageHint: "Please don't write ID numbers, bank account details or other sensitive information here. We'll ask for anything we need later.",
   /** {count} is replaced with the number of characters left. */

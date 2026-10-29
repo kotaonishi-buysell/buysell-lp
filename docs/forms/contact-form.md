@@ -60,6 +60,7 @@
 - フォームの名前は `contact` で、**全LPで同じ**です。そのため、3つのLPの送信が、Netlify の「Forms」の同じ「contact」にまとまります。どのLPからかは、項目 `lp` で区別します。
 - Netlify は、公開のたびに、ページのHTMLの `<form data-netlify="true">` を読んで、フォームと項目を登録します（フォーム検出を有効にしておく必要があります）。項目を足したり変えたりしたときは、公開し直してください。
 - 送られる内容は、上の「送信されるデータ」と同じです（ブラウザが整形した値）。ただし形式は、フォームの送信と同じ `application/x-www-form-urlencoded` で、`smsConsent` は `yes` か `no`、迷惑メール対策の見えない欄は `homepage_url` です。
+- 送信ボタンの上に、「By sending this request, you confirm that you are 18 or older.」を表示します（`ageNote`。サービスは18歳以上のみ。Privacy と Terms も同じ）。
 - 自由記述欄（Message）の下に、注意書き「Please don't write ID numbers, bank account details or other sensitive information here.」を表示します（文言は `src/content/contact-form.ts` の `messageHint`。全LP共通）。
 - 迷惑メール対策：見えない入力欄（`homepage_url`。ラベルの文字も置かないので、ページの文字を読み取るツールには見えません）は、Netlify のスパム対策（`data-netlify-honeypot`）として働きます。**この方法には、受付サーバーでの確認し直しや、「2秒未満の送信を断る」仕組みはありません。** Netlify 自身のスパムの判定に頼ります。
 - 成功の判定：Netlify が 2xx を返したときに、画面に完了を表示します。Netlify がスパムとして捨てた送信にも 2xx を返すので、「届いた」ではなく「受け取られた」という意味です。2xx 以外や通信の失敗では、「We couldn't send your request」と表示し、入力は残します。
