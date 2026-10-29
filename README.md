@@ -8,10 +8,10 @@
 
 ## 新LP: Home Value
 
-- URL: `/home-value`。既存の `/` → `/downsizing` は維持します。
+- URL: `/home-value`（**下書き。公開していません**。下の「公開と下書き」）。`/` は `/silver` へリダイレクトします。
 - 文言・事業設定・制作メモ: [src/content/lps/home-value/](src/content/lps/home-value/README.md)
 - 機能・コピー要件: [home-value.en.md](docs/requirements/home-value.en.md)
-- 専用ページ: `src/pages/home-value.astro`（既存LPのダミー情報・フォーム送信スタブを読み込まない）
+- 専用ページ: `src/draft-pages/home-value.astro`（下書き。既存LPのダミー情報・フォーム送信スタブを読み込まない）
 - 新デザイン仕様: [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md)
 - 開発ルール: [AGENTS.md](AGENTS.md)
 - 専用スタイル: `src/styles/home-value.css`（`body[data-lp="home-value"]` に限定）
@@ -42,15 +42,22 @@ Node.js 22.12 以上。
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/downsizing
-npm run build    # dist/ に静的ファイルを出力
+npm run dev      # http://localhost:4321/silver（下書きの /downsizing /home-value も開ける）
+npm run build    # dist/ に静的ファイルを出力（公開用。Silver と法務ページ）
+npm run build:drafts  # 下書きの /downsizing /home-value も含めて出力（確認用。公開しない）
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
 npm run todos    # 未確定の事業情報（TODO）の一覧
 npm test         # 共通フォームの入力チェック、送信処理、受付サーバーのテスト
 ```
 
-`/` は `/downsizing` へリダイレクトする（`astro.config.mjs`）。公開ドメインが決まったら `site` を差し替える（canonical と OG 画像の URL に使う）。
+`/` は `/silver` へリダイレクトする（`astro.config.mjs` と `netlify.toml`）。
+
+## 公開と下書き
+- **公開しているのは、Silver（`/silver`）と法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。
+- **Downsizing（`/downsizing`）と Home Value（`/home-value`）は下書き**です。コードは残してあり、ページは `src/draft-pages/` に置いています。ここは Astro がページとして扱わないため、通常のビルド（Netlify の本番とプレビュー）には出ません。`npm run dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` が、ルートとして足します。
+- 下書きを公開するとき：ページ（`src/draft-pages/` のファイル）を `src/pages/` に移し、`astro.config.mjs` の `injectRoute` の該当行を消します。Downsizing は、動的ルート（`lp.astro`）なので、`src/pages/[slug].astro` に戻します。
+- Netlify のプレビューで、下書きを確認したいときは、Netlify の環境変数 `PUBLIC_DRAFT_LPS=true` を、そのブランチのデプロイだけに設定します（公開の URL になるので、確認が終わったら外してください）。
 
 ## 構成
 

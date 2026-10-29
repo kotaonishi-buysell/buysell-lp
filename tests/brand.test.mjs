@@ -22,7 +22,7 @@ test('the logo files exist and the light one is for dark backgrounds', () => {
 test('no LP prints the old brand "BuySell"; only the company and the group keep that name', () => {
   const files = [
     'src/pages/silver.astro',
-    'src/pages/home-value.astro',
+    'src/draft-pages/home-value.astro',
     'src/content/lps/silver.ts',
     'src/content/lps/downsizing.ts',
     'src/content/lps/home-value/index.ts',
@@ -37,7 +37,7 @@ test('no LP prints the old brand "BuySell"; only the company and the group keep 
 
 test('the favicon files exist and every page head uses the shared favicon', () => {
   for (const file of Object.values(company.icon)) assert(existsSync(new URL(`../public${file}`, import.meta.url)), file);
-  for (const file of ['src/layouts/Document.astro', 'src/layouts/LegalLayout.astro', 'src/pages/home-value.astro']) {
+  for (const file of ['src/layouts/Document.astro', 'src/layouts/LegalLayout.astro', 'src/draft-pages/home-value.astro']) {
     const text = readFileSync(new URL(`../${file}`, import.meta.url), 'utf8');
     assert.match(text, /<Favicon \/>/, file);
     assert.doesNotMatch(text, /rel="icon" href="data:,"/, file);

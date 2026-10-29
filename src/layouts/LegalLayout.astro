@@ -17,12 +17,14 @@ interface Props {
   slug: string;
   title: string;
   description: string;
+  /** Keep the page out of search results and leave the canonical link out (the 404 page). */
+  noindex?: boolean;
 }
 
-const { slug, title, description } = Astro.props;
+const { slug, title, description, noindex = false } = Astro.props;
 const company = plain(site.company.name);
 const pageTitle = `${title} | ${site.brand.name}`;
-const canonical = absoluteUrl(`/${slug}`, Astro.site);
+const canonical = noindex ? null : absoluteUrl(`/${slug}`, Astro.site);
 const pages = legalPages.map((page) => ({ slug: page.slug, label: page.title, href: `/${page.slug}` }));
 ---
 
@@ -34,6 +36,7 @@ const pages = legalPages.map((page) => ({ slug: page.slug, label: page.title, hr
     <title>{pageTitle}</title>
     <meta name="description" content={fill(plain(description), { company, brand: site.brand.name })} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex" />}
     <Favicon />
     <link rel="preload" href="/fonts/instrument-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
   </head>
