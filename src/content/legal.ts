@@ -10,7 +10,7 @@
  * Tokens filled in by the page: {company} {brand} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
  */
 
-export type LegalBlock = string | { list: string[] };
+export type LegalBlock = string | { list: string[] } | { control: 'privacy-choice' };
 
 export interface LegalSection {
   id: string;
@@ -36,6 +36,17 @@ export const legalCopy = {
   back: 'Back to the top',
   navLabel: 'Legal pages',
   home: 'Home',
+  /** The opt-out control on the Do Not Sell or Share page. */
+  choice: {
+    checking: 'Checking your browser…',
+    gpc: 'Your browser is sending a Global Privacy Control signal, so these tools are already off for you.',
+    on: 'These tools are on in this browser.',
+    off: 'You have opted out. These tools are off in this browser.',
+    optOut: 'Opt out in this browser',
+    turnOn: 'Turn the tools back on',
+    noStorage: 'These tools are on in this browser. Your browser does not let us save a choice, so to opt out, send a Global Privacy Control signal or contact us.',
+    noScript: 'Turning this off needs JavaScript. To opt out without it, contact us using the details below.',
+  },
 };
 
 const contact: LegalSection = {
@@ -90,7 +101,15 @@ export const privacyPolicy: LegalPageContent = {
             'Basic technical data (IP address, browser and device type, pages requested) that our hosting provider logs to run and secure the site.',
           ],
         },
-        'Some of our landing pages use Google Tag Manager, which loads measurement tags. Those tags may set cookies or similar technologies and receive data such as your IP address, browser and device, the pages you view, and the actions you take (for example, tapping a call or request button, opening a question, or starting or sending the form). They do not receive what you type into the form. {{TODO: list the tags in the container (for example Google Analytics or advertising tags) and the cookies they set.}} This policy and our other legal pages do not load Google Tag Manager.',
+        'Some of our landing pages use Google Tag Manager to load three tools. They set cookies and similar technologies, and they receive data such as your IP address, browser and device, the page you came from, the pages you view, and the actions you take (for example, tapping a call or request button, opening a question, or starting or sending the form). They do not receive what you type into the form.',
+        {
+          list: [
+            'Google Analytics (Google). Measures how many people visit and what they do. Cookies: _ga and _ga_*.',
+            'Meta Pixel (Meta Platforms, Inc.). Measures our ads on Facebook and Instagram and lets Meta show our ads to people who visited our pages. Cookies: _fbp and _fbc. This is advertising use: see "Who we share it with".',
+            'Microsoft Clarity (Microsoft). Records how people use the page (clicks, taps, scrolling, mouse movement) as session recordings and heatmaps, so we can improve the page. We mask what you type into our form. Cookies: _clck and _clsk.',
+          ],
+        },
+        'You can turn these tools off for your browser at any time: see "Do not sell or share my personal information". This policy and our other legal pages do not load Google Tag Manager.',
       ],
     },
     {
@@ -104,7 +123,8 @@ export const privacyPolicy: LegalPageContent = {
             'To keep the records the law requires and to answer lawful requests from police and regulators.',
             'To send text messages about your request, only if you agreed (see "Text messages").',
             'To block spam and fraud and to keep our websites secure.',
-            'To understand which pages and campaigns lead to requests, in aggregate.',
+            'To understand which pages and campaigns lead to requests, and how people use our pages.',
+            'To measure our advertising and to show our ads to people who visited our pages (through the Meta Pixel).',
           ],
         },
       ],
@@ -122,11 +142,12 @@ export const privacyPolicy: LegalPageContent = {
       id: 'sharing',
       heading: 'Who we share it with',
       blocks: [
-        'We do not sell your personal information, and we do not share it for advertising across other companies\' websites. See "Do not sell or share my personal information".',
-        'We give information to others only as follows:',
+        'We do not sell your personal information for money. We do use the advertising and measurement tools described above, which send limited data (such as cookie IDs, your IP address, the pages you view and button taps) to Meta, Google and Microsoft. Under some state privacy laws, sending data to Meta for advertising can count as a "sale", as "sharing", or as "targeted advertising". You can opt out: see "Do not sell or share my personal information".',
+        'We give information to others as follows:',
         {
           list: [
-            'Service providers that work for us under contract: Netlify, Inc. (hosts our websites and stores the requests sent through our form), Google (Google Tag Manager and the measurement tags it loads), and providers of email, text messaging and scheduling. {{TODO: list every other provider that receives personal information, for example scheduling or CRM tools.}}',
+            'Service providers that work for us under contract: Netlify, Inc. (hosts our websites and stores the requests sent through our form), Google (Google Tag Manager and Google Analytics), Microsoft (Clarity), and providers of email, text messaging and scheduling. {{TODO: list every other provider that receives personal information, for example scheduling or CRM tools.}}',
+            'Meta Platforms, Inc., through the Meta Pixel, for advertising and ad measurement (see above and the opt-out).',
             'Other companies in the BuySell group, to help run the service. {{TODO: confirm whether and under what terms data goes to BuySell Technologies group companies.}}',
             'Police and regulators. We send a report of each purchase to local law enforcement within 48 hours, as Texas rules require, and we give purchase records to the OCCC and others when the law requires it or a lawful request is made.',
             'A buyer or successor, if our business is sold or reorganized.',
@@ -160,7 +181,7 @@ export const privacyPolicy: LegalPageContent = {
             'correct inaccuracies;',
             'delete it. We cannot delete a purchase record that the law requires us to keep, and we will tell you if that is the case;',
             'give you a copy in a portable format;',
-            'stop selling it, sharing it for targeted advertising, or using it for profiling. We do none of these.',
+            'opt out of the sale of it, of targeted advertising and of profiling. We do not profile you in a way that has legal or similarly significant effects. You can opt out of the advertising tools yourself at any time on our "Do not sell or share my personal information" page.',
           ],
         },
         'To make a request, email {email} or call {phone}. We may need to confirm who you are before we act. We answer within 45 days, and we may extend that once by 45 more days when reasonably necessary, telling you why. There is no charge for a reasonable request.',
@@ -304,45 +325,46 @@ export const termsOfUse: LegalPageContent = {
 export const doNotSell: LegalPageContent = {
   slug: 'do-not-sell',
   title: 'Do Not Sell or Share My Personal Information',
-  description: 'We do not sell your personal information or share it for advertising. How to reach us about your privacy choices.',
+  description: 'How {brand} uses advertising and measurement tools, and how to opt out of them.',
   intro:
-    '{company} does not sell your personal information. We do not share it with other companies for cross-context behavioral (targeted) advertising either. There is nothing you need to opt out of.',
+    '{company} does not sell your personal information for money. Some of our pages use advertising and measurement tools that send limited information to Meta, Google and Microsoft. Under some state privacy laws that can count as a "sale", as "sharing" or as "targeted advertising". You can opt out here at any time.',
   sections: [
     {
-      id: 'what',
-      heading: 'What this means',
+      id: 'opt-out',
+      heading: 'Opt out on this browser',
       blocks: [
-        'In the past 12 months we have not sold, and have not shared for targeted advertising, any personal information we collect, including:',
+        'When you opt out, we stop loading Google Tag Manager, and with it the Meta Pixel, Google Analytics and Microsoft Clarity, on our pages in this browser, and we remove the cookies those tools set on this site.',
+        { control: 'privacy-choice' },
+        'We also treat an opt-out preference signal, such as Global Privacy Control, as an opt-out. If your browser sends one, these tools are not loaded at all. The choice applies to this browser and device; if you use another browser or device, or clear your site data, choose again.',
+      ],
+    },
+    {
+      id: 'what',
+      heading: 'What we use, and what it receives',
+      blocks: [
         {
           list: [
-            'Contact details: your name, ZIP code, phone number and email address.',
-            'Your message and your text-message consent record.',
-            'At a visit, when you sell: ID details, item records and photographs, and payment details.',
-            'Technical and measurement data: campaign details in the link you used, which buttons you tap and pages you view (through Google Tag Manager), and basic logs kept by our hosting provider.',
+            'Meta Pixel (Meta Platforms, Inc.): advertising. Measures our ads on Facebook and Instagram and lets Meta show our ads to people who visited our pages. This is the use that can count as a sale, sharing or targeted advertising. You can also control ads in your Facebook and Instagram settings.',
+            'Google Analytics (Google): measures visits and what people do on the page.',
+            'Microsoft Clarity (Microsoft): session recordings and heatmaps of clicks, taps and scrolling. We mask what you type into our form.',
           ],
         },
-        '{{TODO: Google Tag Manager (container GTM-PQQFZ723) is now live on some LPs. Before launch, confirm that no tag in it (for example Google Ads or Meta remarketing) shares data for advertising. If one does, this page and the Privacy Policy must change first, and opt-out must be offered.}}',
+        'These tools receive data such as cookie IDs, your IP address, your browser and device, the page you came from, the pages you view and the actions you take (for example, tapping a call or request button, or starting or sending the form). They do not receive what you type into the form: not your name, phone number, email address or message.',
+        'We do not share your contact details, your ID or purchase records, or your text-message consent record with advertisers.',
       ],
     },
     {
       id: 'providers',
-      heading: 'Service providers are not a sale',
+      heading: 'Service providers',
       blocks: [
-        'We do give information to service providers that work for us, such as the company that hosts our websites and stores your request. They may use it only to provide their service to us. We do not consider this a sale or sharing. We also give records to police and regulators when the law requires it. See our Privacy Policy.',
-      ],
-    },
-    {
-      id: 'signals',
-      heading: 'Browser opt-out signals',
-      blocks: [
-        'If your browser sends an opt-out preference signal such as Global Privacy Control, we treat it as a request not to sell or share. Because we do not sell or share, it does not change anything. {{TODO: if an advertising tag is ever added, it must respect this signal.}}',
+        'We also give information to service providers that work for us, such as the company that hosts our websites and stores your request. They may use it only to provide their service to us, and we do not consider this a sale or sharing. We give records to police and regulators when the law requires it. See our Privacy Policy.',
       ],
     },
     {
       id: 'ask',
       heading: 'Questions or requests',
       blocks: [
-        'You can still ask to see, correct or delete your personal information, or ask us about this page. Email {email} or call {phone}. Your other rights are described in our Privacy Policy.',
+        'You can also ask to see, correct or delete your personal information, or ask us about this page. Email {email} or call {phone}. Your other rights are described in our Privacy Policy.',
       ],
     },
     contact,

@@ -4,6 +4,7 @@ import { site } from '../content/site';
 import { legalCopy, legalDraftNotice, type LegalPageContent } from '../content/legal';
 import { fill, plain, rich } from '../lib/text';
 import LegalLayout from '../layouts/LegalLayout.astro';
+import PrivacyChoice from './PrivacyChoice.astro';
 
 interface Props {
   page: LegalPageContent;
@@ -49,8 +50,10 @@ const description = fill(page.description, { company: tokens.company, brand: tok
           {section.blocks.map((block) =>
             typeof block === 'string' ? (
               <p set:html={html(block)} />
-            ) : (
+            ) : 'list' in block ? (
               <ul>{block.list.map((item) => <li set:html={html(item)} />)}</ul>
+            ) : (
+              <PrivacyChoice />
             ),
           )}
         </section>

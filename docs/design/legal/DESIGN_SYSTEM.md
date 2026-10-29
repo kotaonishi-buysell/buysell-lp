@@ -6,6 +6,7 @@ LPではなく、**全LPが同じリンクで開く共通ページ**です。LP�
 - 文面：`src/content/legal.ts`（3ページ分。コピーはここだけ）。会社名・住所・電話・営業時間・登録番号・OCCC は `src/content/site.ts`、メールと発効日は `site.legal` から差し込みます。
 - 表示：`src/components/LegalPage.astro`（文面を描画）、`src/layouts/LegalLayout.astro`（ヘッダー、フッター、`<head>`）、`src/styles/legal.css`（`body[data-page="legal"]` に限定）。
 - ページ：`src/pages/privacy.astro`、`terms.astro`、`do-not-sell.astro`。リンクは `site.links`（各LPのフッターと問い合わせフォームが使う）。Home Value は `config.ts` の `privacyUrl` と `legalLinks`。
+- Do Not Sell のページだけは、オプトアウトのボタンの小さなスクリプト（`scripts/privacy-choice.ts`）を読み込みます（計測ではありません）。GTM の中身と、その開示は [GTM_CONTAINER.md](GTM_CONTAINER.md)。
 - 読み込むのはフォント（`fonts.css`）と `legal.css` だけ。**LPのCSS、計測、スクリプトは読み込みません**（Home Value が旧計測を読み込まない決まりも守れます）。
 
 ## 見た目
