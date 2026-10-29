@@ -188,7 +188,8 @@ const mark = (required: boolean) => (required ? copy.required : copy.optional);
         rows="4"
         maxlength={MESSAGE_MAX}
         autocomplete="off"
-        aria-describedby={`${id('message-count')} ${id('message-error')}`}></textarea>
+        aria-describedby={`${id('message-hint')} ${id('message-count')} ${id('message-error')}`}></textarea>
+      <p class="cf-hint" id={id('message-hint')}>{copy.messageHint}</p>
       <p class="cf-hint cf-count" id={id('message-count')} data-cf-count>
         {fill(copy.remaining, { count: MESSAGE_MAX.toLocaleString('en-US') })}
       </p>
@@ -209,14 +210,15 @@ const mark = (required: boolean) => (required ? copy.required : copy.optional);
   <input type="hidden" name="smsConsentText" value="" />
   <input type="hidden" name="submittedAt" value="" />
 
-  <!-- Spam trap: people never see or reach this field; bots tend to fill it in. -->
+  <!-- Spam trap: people never see or reach this field; bots tend to fill it in. No label text, so nothing
+       about it shows up when the page's text is read. -->
   <div class="cf-trap" aria-hidden="true">
-    <label for={id('homepage')}>Leave this field empty</label>
     <input id={id('homepage')} name="homepage_url" type="text" tabindex="-1" autocomplete="off" data-cf-trap />
   </div>
 
   <div class="cf-actions">
-    <button class={buttonClass} type="submit" data-cf-submit>{submitLabel}</button>
+    <p class="cf-note" id={id('age-note')}>{copy.ageNote}</p>
+    <button class={buttonClass} type="submit" data-cf-submit aria-describedby={id('age-note')}>{submitLabel}</button>
     <p class="cf-status" role="status" aria-live="polite" tabindex="-1" data-cf-status></p>
     {afterSubmit && <p class="cf-note" set:html={rich(afterSubmit)} />}
     {

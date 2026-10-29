@@ -8,7 +8,7 @@
 | 買取記録の保存期間 | 取引報告書（transaction report）は、記録の日から3年目まで保存（OCCC の命令書に記載） | OCCC 命令書 l23-00042、l18-00165（occc.texas.gov）、7 TAC §85.2001（Cornell） | legal.ts の「How long we keep it」：「at least three years」 |
 | 警察への報告 | 各取引の報告書を、48時間以内に地元の法執行機関へ送る（OCCC の命令書）。OCCC は報告の受付は行わない | 同上、OCCC「Crafted Precious Metals Dealers」ページ | legal.ts の「Who we share it with」 |
 | 売主の記録事項 | 売主の身体的特徴、ID番号、品目の説明などを取引報告書に記載（7 TAC §85.2001）。登録した業者は OCCC への登録が必要 | 7 TAC §85.2001（Cornell）、OCCC のページ | legal.ts の「Information we collect」 |
-| 未成年の売主 | 18歳未満の売主には、保護者の書面による同意を記録として保存する規定がある（Occupations Code ch. 1956 の検索結果の要約）。**最低年齢の規定は見つからなかった** | Texas Occupations Code ch. 1956（texas.public.law ほか） | terms の「Appraisals and purchases」：「18歳以上」の断定をやめ、「18歳未満の場合は知らせてほしい。保護者の同意が必要なことがある」 |
+| 未成年の売主 | 18歳未満の売主には、保護者の書面による同意を記録として保存する規定がある（Occupations Code ch. 1956 の検索結果の要約）。**最低年齢の規定は見つからなかった** | Texas Occupations Code ch. 1956（texas.public.law ほか） | 事業の方針で「18歳以上のみ」に決定（2026-10-29）。Terms は「You must be 18 or older」、Privacy は「18歳未満から意図的に集めない」、フォームに年齢の確認文 |
 | グループの英文名と証券コード | 「BuySell Technologies Co., Ltd.」、東証グロース、コード 7685 | Bridge Report（bridge-salon.jp）、j-lic.com、松井証券 | company.ts、Silver の「A company of …」 |
 | 「25 years of in-home buying」 | **根拠が見つからず、事実と合わない可能性が高い。** 会社は2001年1月に、人材紹介事業として設立（出張買取の開始は別の時期）。 | 同上（沿革） | Silver の見出しから削除（「In-home buying, now in Texas.」） |
 

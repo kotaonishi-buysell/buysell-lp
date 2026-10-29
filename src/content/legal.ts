@@ -172,7 +172,7 @@ export const privacyPolicy: LegalPageContent = {
       id: 'children',
       heading: 'Children',
       blocks: [
-        'Our services are for adults. We do not knowingly collect personal information from children under 13. If you think a child has sent us information, contact us and we will delete it.',
+        'Our services are for adults who are 18 or older. We do not knowingly collect personal information from anyone under 18. If you think someone under 18 has sent us information, contact us and we will delete it.',
       ],
     },
     {
@@ -207,7 +207,7 @@ export const termsOfUse: LegalPageContent = {
       id: 'site',
       heading: 'What our websites are for',
       blocks: [
-        'Our websites give information about our in-home appraisal service and let you ask for a visit. Sending a request does not book or confirm an appointment. Our team will contact you to arrange and confirm a time.',
+        'Our websites give information about our in-home appraisal service and let you ask for a visit. You must be 18 or older to send a request. Sending a request does not book or confirm an appointment. Our team will contact you to arrange and confirm a time.',
         'We visit only the ZIP codes in our service area. The ZIP check on our pages is a guide; we confirm your address when we contact you.',
       ],
     },
@@ -220,7 +220,7 @@ export const termsOfUse: LegalPageContent = {
             'The appraisal is free, and you are never obliged to sell. Decide after you hear the offer.',
             'An appraisal is not a promise that we will buy an item, and prices or ranges on our pages are illustrations, not offers. An offer is the amount we tell you at your home.',
             'We may decline an item, for example if we cannot confirm what it is or who owns it.',
-            'You must own the item or have the right to sell it. Texas has special rules for sellers under 18, so please tell us if you are; we may need a parent\'s or guardian\'s written consent, or we may not be able to buy.',
+            'You must be 18 or older, and you must own the item or have the right to sell it.',
             'If you agree to sell, Texas law requires us to record your ID details and to keep photographs and a description of what we buy. See our Privacy Policy.',
             'The sale itself is governed by the written purchase record you receive at the visit.',
           ],

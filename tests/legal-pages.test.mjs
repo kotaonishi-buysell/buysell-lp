@@ -62,3 +62,11 @@ test('while Google Tag Manager is on the LPs, the policy says so and the legal p
   const layout = readFileSync(new URL('../src/layouts/LegalLayout.astro', import.meta.url), 'utf8');
   assert.doesNotMatch(layout, /gtm|Document\.astro|scripts\/main/i);
 });
+
+test('the services are for adults 18 or older, on the form and in the policy and terms', () => {
+  assert.match(text(termsOfUse), /You must be 18 or older/);
+  assert.match(text(privacyPolicy), /anyone under 18/);
+  assert.doesNotMatch(text(privacyPolicy), /under 13/);
+  const form = readFileSync(new URL('../src/content/contact-form.ts', import.meta.url), 'utf8');
+  assert.match(form, /ageNote: 'By sending this request, you confirm that you are 18 or older\.'/);
+});
