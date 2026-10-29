@@ -32,6 +32,11 @@
 - 全LP共通の `ContactForm` を、予約ダイアログ（`#booking-dialog`）の中に入れています。項目・入力チェック・送信先は共通で、変えません（[docs/forms/contact-form.md](../../forms/contact-form.md)）。
 - 見た目は `silver.css` 末尾の `[data-lp='silver']` ブロック（`--cf-*` 変数）で、アイボリー・緑・角なしに合わせています。送信ボタンはモックの `.button` を使います。
 
+## お客様の声（非表示）
+- 「A few words from the kitchen table.」のカードは、本物の声がないため**表示していません**（`src/content/lps/silver-testimonials.ts`、`enabled: false`）。デザイン（`silver.astro` の `.voices`、`silver.css`）は残してあります。
+- 戻すとき：①`items` を実在の声に差し替える（本人の許可と、`source`＝出典を必ず記入）②`enabled: true` にする③デザインを直す。`tests/silver-testimonials.test.mjs` が、出典のない声の公開を止めます。
+- モックのサンプル（L.M. など）は実在の声ではありません。公開しないでください。
+
 ## ZIP確認の欄
 - ページ中ほどの「See if we come to your neighborhood」は、全LP共通の `ZipCheck` 部品です（[docs/forms/contact-form.md](../../forms/contact-form.md)）。見た目は `silver.css` の `#zip-form`、`.zip-row`、`.zip-result` で決まります。文言の変更は、見出しだけ `silver.astro` で、答えの文言は共通の `src/content/zip-check.ts` で行います。「対象」の答えの下には、予約ダイアログを、ZIP入力済みで開くボタン（`.zip-request`、`button button-cream`）が出ます。
 
