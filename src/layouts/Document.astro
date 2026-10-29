@@ -8,6 +8,7 @@ import { site } from '../content/site';
 import { plain } from '../lib/text';
 import { absoluteUrl } from '../lib/site-url';
 import Favicon from '../components/Favicon.astro';
+import { PRIVACY_OPTOUT_KEY } from '../lib/privacy-choice';
 
 interface Props {
   slug: string;
@@ -44,8 +45,11 @@ const structuredData = {
 };
 const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
 
+// Google Tag Manager (and the tools it loads) is not loaded when the browser sends Global Privacy Control or the
+// visitor opted out on the Do Not Sell or Share page (lib/privacy-choice.ts).
+const optOutGate = `try{if(navigator.globalPrivacyControl===true||localStorage.getItem(${JSON.stringify(PRIVACY_OPTOUT_KEY)})==='1')return;}catch(e){}`;
 const gtmScript = gtmId
-  ? `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',${JSON.stringify(gtmId)});`
+  ? `(function(){${optOutGate}(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',${JSON.stringify(gtmId)});})();`
   : '';
 ---
 

@@ -20,6 +20,7 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
   company: {
     name: facts.legalName ?? 'Company name',
     address: facts.address ?? pending('street address, city, TX ZIP'),
+    email: facts.email ?? pending('contact email'),
     registration: {
       label: 'Texas registration No.',
       value: facts.occc.registrationNumber ?? pending('state registration number'),
@@ -44,8 +45,9 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     value: facts.occc.regulatorNotice ?? pending('OCCC address, phone and the notice wording required for our registration'),
   },
   legal: {
-    effectiveDate: '{{TODO: effective date}}',
-    privacyEmail: '{{TODO: privacy contact email}}',
+    effectiveDate: 'October 29, 2026',
+    // Privacy requests go to the primary contact email.
+    privacyEmail: facts.email ?? pending('privacy contact email'),
   },
   links: {
     // The shared legal pages (src/pages/privacy.astro, terms.astro, do-not-sell.astro), the same on every LP.
@@ -61,6 +63,7 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     companyLabels: {
       name: 'Company',
       address: 'Address',
+      email: 'Email',
       registration: 'Texas registration',
       hours: 'Hours',
       phone: 'Phone',

@@ -50,7 +50,7 @@ test('the three pages agree with the rules of the business', () => {
 
 test('the draft notice and the unconfirmed facts stay visible as TODO markers', () => {
   assert.match(text(privacyPolicy), /\{\{TODO/);
-  assert.match(site.legal.privacyEmail, /\{\{TODO/);
+  assert.match(text(privacyPolicy), /retention period/);
 });
 
 test('while Google Tag Manager is on the LPs, the policy says so and the legal pages do not load it', () => {
@@ -69,4 +69,10 @@ test('the services are for adults 18 or older, on the form and in the policy and
   assert.doesNotMatch(text(privacyPolicy), /under 13/);
   const form = readFileSync(new URL('../src/content/contact-form.ts', import.meta.url), 'utf8');
   assert.match(form, /ageNote: 'By sending this request, you confirm that you are 18 or older\.'/);
+});
+
+test('the contact email and the effective date are set, and privacy requests go to the primary contact email', () => {
+  assert.equal(site.company.email, 'info@buysell-america.com');
+  assert.equal(site.legal.privacyEmail, site.company.email);
+  assert.equal(site.legal.effectiveDate, 'October 29, 2026');
 });

@@ -1,0 +1,17 @@
+---
+/* The opt-out control of the Do Not Sell or Share page. Behaviour: src/scripts/privacy-choice.ts. */
+import { legalCopy } from '../content/legal';
+
+const copy = JSON.stringify(legalCopy.choice);
+---
+
+<div class="lg-choice" data-privacy-choice data-copy={copy}>
+  <p class="lg-choice__status" role="status" aria-live="polite" tabindex="-1" data-choice-status>{legalCopy.choice.checking}</p>
+  <button class="lg-button" type="button" data-choice-button hidden>{legalCopy.choice.optOut}</button>
+  <noscript><p class="lg-choice__status">{legalCopy.choice.noScript}</p></noscript>
+</div>
+
+<script>
+  import { initPrivacyChoice } from '../scripts/privacy-choice';
+  initPrivacyChoice();
+</script>
