@@ -2,8 +2,9 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  // TODO: set to the production origin once hosting is decided (used for canonical and Open Graph URLs).
-  site: 'https://example.com',
+  // The origin used for canonical and Open Graph URLs. On Netlify, URL is the site's address (a custom domain
+  // once one is set), so nothing needs changing; elsewhere set PUBLIC_SITE_URL. With neither, the tags are left out.
+  site: process.env.PUBLIC_SITE_URL || process.env.URL || undefined,
   trailingSlash: 'never',
   build: {
     format: 'file',
