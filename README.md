@@ -160,7 +160,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - 問い合わせフォームは共通の `ContactForm`（最後の申込みセクション）。元の独自フォームは使わない。`gclid` / `fbclid` は送らない。
 - 支払いの表現は全LP共通のルール（査定額は訪問時に伝え、売却に同意したら翌日末までに銀行振込）に直してある。
 - 「Your appraisers」（サンプル写真・名前なし）と「What people say」（サンプルの声）は、本物の情報がそろうまで載せていない。
-- 未確定の事実は `{{TODO}}` で画面に出る（`npm run todos`）。電話・住所・OCCC は `company.ts`。
+- **画面に TODO は出さない**（公開ページのため）。未確認の約束（訪問までの日数、Houston の開始時期、訪問時にIDを見せること、保険）は載せず、確認事項は `gold.ts` の `// TODO:` コメントに残してある（`npm run todos`）。競合比較（「What changes when we come to you」）は、米国弁護士の確認まで**非表示**（`src/content/lps/gold-comparison.ts` の `enabled: false`）。電話・住所・OCCC は `company.ts`。OCCC の登録番号が空の間は、登録の表示をすべて出さない。
 
 ## 仕様からの変更点
 
