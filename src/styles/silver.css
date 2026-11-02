@@ -1405,6 +1405,22 @@ a.final-phone {
   transform: translateY(100%);
 }
 
+/* Richer sticky buttons: a 4px corner, and on "Book a free appraisal" a soft diagonal green
+   gradient (#0b5f1f → #00450f → #003a0c, white text stays above 7:1), a light top edge and a
+   small shadow. It dips slightly when pressed. */
+.mobile-bar :is(a, button) {
+  border-radius: 4px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.mobile-bar :is(a, button):last-child {
+  background-color: var(--green);
+  background-image: linear-gradient(135deg, #0b5f1f 0%, #00450f 55%, #003a0c 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 6px 14px -6px rgba(0, 69, 15, 0.55);
+}
+.mobile-bar :is(a, button):active{transform: scale(0.98)}
+
 /*
  * Skin of the shared contact form (see contact-form.css for the variables). It sits in
  * the dialog, so it takes the mock-up's ivory, green and square corners.
