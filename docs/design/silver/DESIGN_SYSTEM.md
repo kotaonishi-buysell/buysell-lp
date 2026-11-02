@@ -12,7 +12,7 @@
 動きは `silver.css` 末尾の「Motion, second layer」と `silver.ts`（`initMotion`）にあります。すべて追加の演出で、`prefers-reduced-motion` の人、JavaScript が使えない場合は、静止した完全な表示のままです。
 - **スクロール連動の奥行き**：ヒーロー写真（`silver.ts` が `--hero-shift` を更新、CSS で拡大して端を見せない）、value 画像、手順のイラスト、人物写真（761px以上）。後ろ3つは CSS の `animation-timeline: view()`（`@supports` の中）。`transform` と衝突しないよう `translate` / `scale` を使い、ビルドで短縮形にまとめられないよう `animation-*` は個別に書く。
 - **銀の光**：ヒーロー見出しの「silver」（`.glint`）に、読み込み後に光が1回走る。ボタン（`.button`）はホバー・フォーカスで光が通る。自動で繰り返す動きは増やさない。
-- **操作時**：予約ダイアログの開閉（`@starting-style`）、モバイル下部バー（角丸4px、「Book a free appraisal」は斜めの緑グラデーション `#0b5f1f → #00450f → #003a0c`、上端のハイライトと小さな影、押すと少し沈む）が下から滑り込む、ヘッダーが見えなくなったらデスクトップだけ細いバー（`.compact-bar`、`silver.ts` が `data-visible` と `inert` を切り替える）が上から出る。
+- **操作時**：予約ダイアログの開閉（`@starting-style`）、モバイル下部バーとファーストビューのボタン（角丸4px、緑のボタンは斜めのグラデーション `#0b5f1f → #00450f → #003a0c`、上端のハイライトと小さな影、押すと少し沈む。変数は `silver.css` の `--cta-gradient` など）が下から滑り込む、ヘッダーが見えなくなったらデスクトップだけ細いバー（`.compact-bar`、`silver.ts` が `data-visible` と `inert` を切り替える）が上から出る。
 - 新しい動きを足すときは、遅く滑らかに（落ち着いた雰囲気を保つ）、スクロールの乗っ取りはしない。
 
 ## 色・書体（`silver.css` の `:root`）
