@@ -901,14 +901,8 @@ html, body{overflow-x:hidden}
   transform: rotate(180deg);
   color: var(--gold);
 }
-/* 10 — CTA micro-interactions and final-call sequence. */
-.button span[aria-hidden='true'], .text-link span[aria-hidden='true'], .final-phone span, .mobile-sticky span:last-child {
-  display: inline-block;
-  transition: transform .3s cubic-bezier(.2,.7,.2,1);
-}
-.button:hover span[aria-hidden='true'], .text-link:hover span[aria-hidden='true'], .final-phone:hover span, .mobile-sticky:hover span:last-child{transform: translateX(4px)}
 @media (prefers-reduced-motion: reduce) {
-  .motion-item, .hero-photo img, .category-image, .category-image img, .motion-portrait .appraiser-photo, .motion-portrait .appraiser-info, .motion-testimonial .stars, .motion-testimonial blockquote, .motion-testimonial figcaption, .button span[aria-hidden='true'], .text-link span[aria-hidden='true'], .final-phone span, .mobile-sticky span:last-child {
+  .motion-item, .hero-photo img, .category-image, .category-image img, .motion-portrait .appraiser-photo, .motion-portrait .appraiser-info, .motion-testimonial .stars, .motion-testimonial blockquote, .motion-testimonial figcaption {
     transition: none !important;
       animation: none !important;
       transform: none !important;
