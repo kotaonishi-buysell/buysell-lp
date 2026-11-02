@@ -22,8 +22,10 @@ test('the logo files exist and the light one is for dark backgrounds', () => {
 test('no LP prints the old brand "BuySell"; only the company and the group keep that name', () => {
   const files = [
     'src/pages/silver.astro',
+    'src/pages/gold.astro',
     'src/draft-pages/home-value.astro',
     'src/content/lps/silver.ts',
+    'src/content/lps/gold.ts',
     'src/content/lps/downsizing.ts',
     'src/content/lps/home-value/index.ts',
     ...readdirSync(new URL('../src/components', import.meta.url)).filter((f) => f.endsWith('.astro')).map((f) => `src/components/${f}`),
