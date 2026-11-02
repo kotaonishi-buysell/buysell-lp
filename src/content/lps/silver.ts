@@ -22,7 +22,7 @@ export const silver: CustomLandingPage = {
   form: {
     submitLabel: 'Send my request',
     afterSubmit:
-      "We'll call or email within {{TODO: number of}} business days to arrange a time. Nothing is sold unless you say so.",
+      "We'll call or email within 3 business days to arrange a time. Nothing is sold unless you say so.",
     success: "Thank you. We've received your request and will be in touch to arrange a time.",
   },
 };

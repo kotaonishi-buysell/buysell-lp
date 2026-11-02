@@ -1480,6 +1480,13 @@ a.final-phone {
   font-size: 14px;
 }
 
+/* Small print in the form: the SMS consent, the hints under the fields, and the notes around
+   the send button (18+ confirmation, "We'll call or email…", privacy link). */
+[data-lp='silver'] :is(.cf-hint, .cf-note, .cf-field--consent .cf-check span) {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
 [data-lp='silver'] .cf .button {
   justify-content: center;
   align-self: flex-start;
