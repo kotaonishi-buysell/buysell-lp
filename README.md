@@ -140,7 +140,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - 予約ボタンは `data-booking`。押すとダイアログ（`#booking-dialog`）が開き、中に共通フォームが入っている（`cta.ts` が `<dialog>` を検出して `showModal()` する）。
 - モック独自の予約フォーム、情報ダイアログ（ポリシー用）、`[...]` のダミー値は外し、`{{TODO}}` で表示される `company.ts` / `site.ts` の値に置き換えた。
 - Google Fonts をやめ、Newsreader（イタリック追加）を自前ホストにした。
-- 画像はPNG（合計約10MB）から WebP（約1MB）に変換して `public/images/silver/` に置いた。元のPNGはリポジトリに入れていない。OG 画像 `public/images/og-silver.jpg` は hero 画像から切り出した仮のもの。
+- 画像はPNG（合計約10MB）から WebP（約1MB）に変換して `public/images/silver/` に置いた。元のPNGはリポジトリに入れていない。OG 画像は `public/images/og-silver-reworth.jpg`（1200×630。REWORTH のロゴと鑑定士2名の写真）。SNS は画像のURLをキャッシュするので、差し替えるときはファイル名も変える。
 - 追従バー（モバイル下部の「Call us / Book a free appraisal」）は、Downsizing と同じく、ヒーローを過ぎたら出て、最後の申込みセクションで隠れる（`scripts/sticky.ts` を共用。モックは常時表示）。
 
 ### 公開前に確認が必要なもの（ダミーのまま取り込み済み）

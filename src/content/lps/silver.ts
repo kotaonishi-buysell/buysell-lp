@@ -16,8 +16,8 @@ export const silver: CustomLandingPage = {
     title: `Silver appraisals, right at your kitchen table | ${site.brand.name}`,
     description:
       "Keep the silver at home. We'll handle the rest. Explore free, no-obligation silver appraisals by house call in Texas.",
-    ogImage: '/images/og-silver.jpg',
-    ogImageAlt: 'A silver appraiser and a homeowner looking at a flatware chest at a kitchen table. Illustrative image.',
+    ogImage: '/images/og-silver-reworth.jpg',
+    ogImageAlt: 'The REWORTH logo between two appraisers: one smiling in a suit, the other examining an item through a loupe.',
   },
   form: {
     submitLabel: 'Send my request',
