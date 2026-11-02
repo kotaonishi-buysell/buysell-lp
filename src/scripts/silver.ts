@@ -259,7 +259,7 @@ const initMotion = (): void => {
       const rect = heroPhoto.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
       const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
-      const range = window.innerWidth <= 760 ? 10 : 24; // the photo is scaled up in CSS to cover this
+      const range = window.innerWidth <= 760 ? 4 : 9; // the photo is scaled up in CSS to cover this
       const shift = Math.max(-range, Math.min(range, (progress - 0.5) * range * 2));
       heroPhoto.style.setProperty('--hero-shift', `${shift.toFixed(2)}px`);
     };
