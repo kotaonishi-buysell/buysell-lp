@@ -2,8 +2,10 @@
  * Interface copy and the facts shared by Downsizing and Silver (Home Value reads
  * the same company facts through its own config).
  * Company name, phone, hours, address and OCCC registration are not typed here: they
- * come from ./company.ts, the single source. While one is unconfirmed (null) this LP
- * family shows a {{TODO: ...}} placeholder for it.
+ * come from ./company.ts, the single source. While the address, email or phone is unconfirmed
+ * (null) this LP family shows a {{TODO: ...}} placeholder for it; the OCCC registration and
+ * notice are left out entirely until they exist (a published page must not show a TODO, and
+ * must not claim a registration we do not have yet).
  */
 import { company as companyFacts, isCallablePhone, type CompanyFacts } from './company.ts';
 import type { SiteContent } from './types.ts';
@@ -21,10 +23,10 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     name: facts.legalName ?? 'Company name',
     address: facts.address ?? pending('street address, city, TX ZIP'),
     email: facts.email ?? pending('contact email'),
-    registration: {
-      label: 'Texas registration No.',
-      value: facts.occc.registrationNumber ?? pending('state registration number'),
-    },
+    // Unconfirmed (null) = nothing is printed. Never show a placeholder, and never imply we are registered.
+    registration: facts.occc.registrationNumber
+      ? { label: 'Texas registration No.', value: facts.occc.registrationNumber }
+      : null,
     // null = hours are not published (company.showHours). Pages then leave the hours out.
     hours: facts.showHours ? `${facts.hours ?? pending('days and hours')}, ${facts.timeZone}` : null,
   },
@@ -40,10 +42,9 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     zipPrefixes: serviceAreaZips,
     outsideNote: "Don't see your area? Call us and we'll check.",
   },
-  regulator: {
-    label: 'Texas Office of Consumer Credit Commissioner (OCCC)',
-    value: facts.occc.regulatorNotice ?? pending('OCCC address, phone and the notice wording required for our registration'),
-  },
+  regulator: facts.occc.regulatorNotice
+    ? { label: 'Texas Office of Consumer Credit Commissioner (OCCC)', value: facts.occc.regulatorNotice }
+    : null,
   legal: {
     effectiveDate: 'October 29, 2026',
     // Privacy requests go to the primary contact email.

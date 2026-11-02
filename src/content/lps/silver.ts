@@ -22,7 +22,8 @@ export const silver: CustomLandingPage = {
   form: {
     submitLabel: 'Send my request',
     afterSubmit:
-      "We'll call or email within {{TODO: number of}} business days to arrange a time. Nothing is sold unless you say so.",
+      // TODO: number of business days until we get back to a request. State it here once the business confirms it; until then no time is promised.
+      "We'll call or email to arrange a time. Nothing is sold unless you say so.",
     success: "Thank you. We've received your request and will be in touch to arrange a time.",
   },
 };

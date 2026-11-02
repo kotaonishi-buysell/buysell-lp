@@ -140,7 +140,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 
 - スタッフ3名（名前・顔写真）：モックの生成画像。実在のスタッフ名に見えるため、使ってよいか確認する
 - お客様の声：**非表示**（本物の声がまだないため）。デザインは残してあり、`src/content/lps/silver-testimonials.ts` の `enabled` を `true` にし、実在の声（許可と出典つき）に差し替えると戻せます。「Paid next day」（「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
-- 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。公開前に法務の確認が必要（画面に TODO が出ます）
+- 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。**公開前に法務の確認が必要なため、今は非表示**（`src/content/lps/silver-comparison.ts` の `enabled: false`。デザインは残してあり、法務の承認後に `enabled: true` と `legalApproved` で戻せます）
 - Google の評価（★）と価格帯（$3,300–$4,400）は削除済み。価格・評価の数字は載せない
 - 画像はすべて生成画像（「Illustrative photography」と表示）
 - 画面上部と下部の「DESIGN PREVIEW」帯は `silver.astro` の `showPreviewStrip` で消せる
@@ -193,9 +193,9 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 
 ## 未確定の事業情報
 
-`npm run todos` で一覧を出せる。画面上では点線の枠で表示される。主なもの：
+`npm run todos` で一覧を出せる（ソースの `// TODO:` コメントと `{{TODO}}` を拾う）。**公開ページ（Silver、法務ページ、404）には TODO を出さない**：未確認の事実は、項目ごと出さないか、約束にならない書き方にして、確認事項は `// TODO:` コメントで残す。`npm run check:public` が、公開ビルドに TODO が残っていないかを確かめる（Netlify のビルドでも実行）。下書きの Downsizing は、今も点線の枠で表示される。主なもの：
 
-- 会社名、住所、OCCC の登録番号、営業時間、電話番号、OCCC の連絡先と必要な表記の文言（すべて `src/content/company.ts` に入力する。全LPに反映される）
+- 会社名、住所、OCCC の登録番号、営業時間、電話番号、OCCC の連絡先と必要な表記の文言（すべて `src/content/company.ts` に入力する。全LPに反映される）。**OCCC の登録番号と表記が空の間は、登録に関する表示（ヘッダー、フッター、会社情報、Privacy の「Our registration」、Silver の「Registered with the Texas OCCC」の帯、構造化データ）をすべて出さない。番号を入れると、すべて同時に出る。サービスの提供前に必ず入れる**
 - 対応エリア（エリア判定をするなら、対象の ZIP 一覧も）
 - 出張費・査定料、支払い方法とタイミング、買い取った品の行き先（FAQ）
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）

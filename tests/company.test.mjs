@@ -62,12 +62,10 @@ test('the checked-in company facts are the ones supplied for BuySell America', (
   assert.equal(company.occc.registrationNumber, null);
 });
 
-test('unconfirmed facts: legacy LPs show TODO placeholders, Home Value shows nothing and no dummy number', () => {
+test('unconfirmed facts: legacy LPs show TODO placeholders (drafts only), Home Value shows nothing and no dummy number', () => {
   const legacy = buildSite(unconfirmed);
   const hv = buildHomeValueConfig(unconfirmed);
   assert.match(legacy.company.address, /^\{\{TODO:/);
-  assert.match(legacy.company.registration.value, /^\{\{TODO:/);
-  assert.match(legacy.regulator.value, /^\{\{TODO:/);
   assert.match(legacy.company.hours, /^\{\{TODO: days and hours\}\}, Central Time$/);
   assert.equal(hv.phone, null);
   assert.equal(hv.hours, null);
@@ -83,4 +81,16 @@ test('Home Value needs both the entity name and address before showing a local o
 test('the exported site and Home Value config are built from the checked-in company facts', () => {
   assert.deepEqual(site, buildSite(company));
   assert.deepEqual(homeValueConfig, buildHomeValueConfig(company));
+});
+
+test('no OCCC registration number or notice: nothing about a registration is printed (no TODO, no claim of being registered)', () => {
+  const legacy = buildSite(unconfirmed);
+  assert.equal(legacy.company.registration, null);
+  assert.equal(legacy.regulator, null);
+  // The facts checked into the repository are in this state until the registration exists.
+  const checkedIn = buildSite(company);
+  assert.equal(checkedIn.company.registration, null);
+  assert.equal(checkedIn.regulator, null);
+  // Once the number is set it is printed, with its label.
+  assert.deepEqual(buildSite(confirmed).company.registration, { label: 'Texas registration No.', value: 'OCCC-12345' });
 });

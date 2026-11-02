@@ -4,7 +4,10 @@
  * (src/content/site.ts for Downsizing and Silver, src/content/lps/home-value/config.ts
  * for Home Value). Do not type these facts into an LP's own content or page.
  *
- * null = not confirmed. Downsizing and Silver then show their {{TODO: ...}} placeholders;
+ * null = not confirmed. Downsizing and Silver then show a {{TODO: ...}} placeholder for the
+ * address, email and phone (draft pages only: `npm run check:public` fails a build that
+ * prints one on a published page). The OCCC registration number and notice are simply left
+ * out of every page until they are set, so no page claims a registration we do not have.
  * Home Value shows nothing or its explicit preview state, and never a dummy value.
  */
 export interface CompanyFacts {
@@ -59,9 +62,11 @@ export const company: CompanyFacts = {
   showHours: false,
   timeZone: 'Central Time',
   occc: {
-    // TODO: OCCC registration number
+    // TODO: OCCC registration number. Required before we offer the service. Setting it turns on, everywhere:
+    // the registration lines (header, footer, company info, Privacy), the "Registered with the Texas OCCC" band
+    // on Silver and the structured-data identifier.
     registrationNumber: null,
-    // TODO: OCCC address, phone and the notice wording required for our registration
+    // TODO: OCCC address, phone and the notice wording required for our registration. Set it together with the number.
     regulatorNotice: null,
   },
 };

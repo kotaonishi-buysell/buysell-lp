@@ -3,9 +3,11 @@
  * One text for every LP (the links are site.links.privacy, .terms and .doNotSell).
  *
  * Written from what the site and the form actually do (see docs/forms/contact-form.md), not from
- * a template. Business facts that are not confirmed are {{TODO: ...}} markers and show on the page.
- * The whole text needs a lawyer's review before launch; the draft notice below says so and is a
- * TODO marker too, so `npm run todos` lists it until it is removed.
+ * a template. These are published pages, so they never show a TODO: an unconfirmed fact is either
+ * left out or worded so that it promises nothing, and the open question is a comment that starts
+ * with the word TODO next to it (listed by `npm run todos`). `npm run check:public` fails a build that prints one.
+ * TODO: the whole text still needs a lawyer's review (docs/design/legal/RESEARCH.md); it is live
+ * without the "Draft for legal review" notice it carried before.
  *
  * Tokens filled in by the page: {company} {brand} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
  */
@@ -26,9 +28,6 @@ export interface LegalPageContent {
   intro: string;
   sections: LegalSection[];
 }
-
-export const legalDraftNotice =
-  '{{TODO: Draft for legal review. Remove this notice when the text is approved.}}';
 
 export const legalCopy = {
   effective: 'Effective date: {effective}',
@@ -134,7 +133,8 @@ export const privacyPolicy: LegalPageContent = {
       heading: 'Text messages',
       blocks: [
         'Texting is optional. The box on our form is unticked by default, and you can ask for a visit without ticking it. If you tick it, we may text you about your request. Message frequency varies. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help.',
-        'We keep a record of when you agreed and the wording you saw. {{TODO: confirm that we do not share mobile numbers or text-message consent with third parties for their own marketing.}}',
+        // TODO: confirm that we do not share mobile numbers or text-message consent with third parties for their own marketing, then add that promise here. Nothing is promised until then.
+        'We keep a record of when you agreed and the wording you saw.',
         'More details are in our Terms of Use.',
       ],
     },
@@ -146,9 +146,11 @@ export const privacyPolicy: LegalPageContent = {
         'We give information to others as follows:',
         {
           list: [
-            'Service providers that work for us under contract: website hosting and form-processing providers, analytics and session-recording providers, and providers of email, text messaging and scheduling. {{TODO: confirm there is no other category of provider that receives personal information, for example a CRM tool.}}',
+            // TODO: confirm there is no other category of provider that receives personal information, for example a CRM tool. If there is, add it to this list.
+            'Service providers that work for us under contract: website hosting and form-processing providers, analytics and session-recording providers, and providers of email, text messaging and scheduling.',
             'Advertising and social media platforms (for example Meta), through the advertising tool described above, for advertising and ad measurement. You can opt out: see "Do not sell or share my personal information".',
-            'Other companies in the BuySell group, to help run the service. {{TODO: confirm whether and under what terms data goes to BuySell Technologies group companies.}}',
+            // TODO: confirm whether and under what terms data goes to BuySell Technologies group companies. Remove this line if it does not.
+            'Other companies in the BuySell group, to help run the service.',
             'Police and regulators. We report each purchase to local law enforcement, as Texas law requires, and we give purchase records to the OCCC and others when the law requires it or a lawful request is made.',
             'A buyer or successor, if our business is sold or reorganized.',
           ],
@@ -159,7 +161,8 @@ export const privacyPolicy: LegalPageContent = {
       id: 'retention',
       heading: 'How long we keep it',
       blocks: [
-        'We keep requests that did not lead to a purchase for {{TODO: retention period for requests}}. Purchase records are kept for at least three years, which is the period the OCCC requires for transaction reports, and are then deleted when we no longer need them.',
+        // TODO: retention period for requests that did not lead to a purchase. State it here once decided; until then the text names no number.
+        'We keep requests that did not lead to a purchase only as long as we need them to answer your request and keep our records, and then delete them. Purchase records are kept for at least three years, which is the period the OCCC requires for transaction reports, and are then deleted when we no longer need them.',
       ],
     },
     {
@@ -310,7 +313,8 @@ export const termsOfUse: LegalPageContent = {
       id: 'law',
       heading: 'Governing law',
       blocks: [
-        'These terms are governed by the laws of the State of Texas, without regard to its conflict-of-law rules. {{TODO: confirm the venue (for example, the courts of Collin County, Texas) with counsel.}}',
+        // TODO: confirm the venue (for example, the courts of Collin County, Texas) with counsel, then add it here. No venue is named until then.
+        'These terms are governed by the laws of the State of Texas, without regard to its conflict-of-law rules.',
       ],
     },
     {

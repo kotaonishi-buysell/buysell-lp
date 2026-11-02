@@ -110,14 +110,6 @@ body[data-page="legal"] .lg-intro {
   font-size: 19px;
   line-height: 1.65;
 }
-body[data-page="legal"] .lg-draft {
-  padding: 10px 14px;
-  border: 1px dashed var(--lg-muted);
-  border-radius: 6px;
-  background: var(--lg-sunk);
-  font-size: 15px;
-}
-
 body[data-page="legal"] .lg-toc {
   margin: 28px 0 8px;
   padding: 16px 20px;

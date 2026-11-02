@@ -214,7 +214,8 @@ export interface SiteContent {
     address: string;
     /** Primary contact email; also the privacy contact. */
     email: string;
-    registration: { label: string; value: string };
+    /** null = the OCCC registration number is not confirmed yet: no page prints the label, the number or any claim of being registered. */
+    registration: { label: string; value: string } | null;
     /** null = hours are not published; render nothing. */
     hours: string | null;
   };
@@ -235,10 +236,11 @@ export interface SiteContent {
     zipPrefixes: string[];
     outsideNote: string;
   };
+  /** null = the OCCC notice wording is not confirmed yet: pages print nothing for it. */
   regulator: {
     label: string;
     value: string;
-  };
+  } | null;
   /** Facts the shared legal pages (privacy, terms, do not sell) print. */
   legal: {
     /** May contain {{TODO: ...}} markers. */
