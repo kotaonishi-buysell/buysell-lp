@@ -149,7 +149,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - お客様の声：**非表示**（本物の声がまだないため）。デザインは残してあり、`src/content/lps/silver-testimonials.ts` の `enabled` を `true` にし、実在の声（許可と出典つき）に差し替えると戻せます。「Paid next day」（「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
 - 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。公開前に法務の確認が必要（画面に TODO が出ます）
 - Google の評価（★）と価格帯（$3,300–$4,400）は削除済み。価格・評価の数字は載せない
-- 画像はすべて生成画像（「Illustrative photography」と表示）
+- ヒーロー写真は実写（表示なし）。ほかの画像は生成画像（下部の「DESIGN PREVIEW」の注記に「Illustrative photography」と記載）
 - 画面上部と下部の「DESIGN PREVIEW」帯は `silver.astro` の `showPreviewStrip` で消せる
 - フォーム、電話番号、営業時間、登録番号、OCCC、ポリシーのURLなどは Downsizing と同じ未確定事項（`npm run todos`）
 
