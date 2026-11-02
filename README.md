@@ -1,9 +1,10 @@
 # Home Appraisal LPs
 
-訪問査定・リセール事業の米国（テキサス）向け英語LP。今あるのは次の3本。
+訪問査定・リセール事業の米国（テキサス）向け英語LP。今あるのは次の4本。
 
 - **Downsizing LP（`/downsizing`）**：共通の部品とデザインシステムで組んだ型。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
 - **Silver LP（`/silver`）**：Codex で作ったモックを取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Silver LP](#silver-lp-silver)。
+- **Gold LP（`/gold`）**：デザイナーの静的HTML（金の買取、案2）を取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Gold LP](#gold-lp-gold)。
 - **Home Value LP（`/home-value`）**：専用ページ・専用CSS・専用デザイン仕様のLP（初期実装）。フォーム・計測の部品は共通。詳しくは下の「新LP: Home Value」。
 
 ## 新LP: Home Value
@@ -32,9 +33,10 @@
 | `/downsizing` | [Downsizing DESIGN_SYSTEM.md](docs/design/downsizing/DESIGN_SYSTEM.md) |
 | `/home-value` | [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md) |
 | `/silver` | [Silver DESIGN_SYSTEM.md](docs/design/silver/DESIGN_SYSTEM.md) |
+| `/gold` | [Gold DESIGN_SYSTEM.md](docs/design/gold/DESIGN_SYSTEM.md) |
 
 色・フォント・写真・角丸・レイアウトは各LPの仕様で個別に決めます。
-Home Value と Silver は専用のCSSとページを使います。問い合わせフォームと計測は全LP共通です。見た目の変更は対象LPに限定します。
+Home Value、Silver、Gold は専用のCSSとページを使います。問い合わせフォームと計測は全LP共通です。見た目の変更は対象LPに限定します。
 
 ## 使い方
 
@@ -42,8 +44,8 @@ Node.js 22.12 以上。
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/silver（下書きの /downsizing /home-value も開ける）
-npm run build    # dist/ に静的ファイルを出力（公開用。Silver と法務ページ）
+npm run dev      # http://localhost:4321/silver と /gold（下書きの /downsizing /home-value も開ける）
+npm run build    # dist/ に静的ファイルを出力（公開用。Silver、Gold と法務ページ）
 npm run build:drafts  # 下書きの /downsizing /home-value も含めて出力（確認用。公開しない）
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
@@ -54,7 +56,7 @@ npm test         # 共通フォームの入力チェック、送信処理、受�
 `/` は `/silver` へリダイレクトする（`astro.config.mjs` と `netlify.toml`）。
 
 ## 公開と下書き
-- **公開しているのは、Silver（`/silver`）と法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。
+- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）と法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。
 - **Downsizing（`/downsizing`）と Home Value（`/home-value`）は下書き**です。コードは残してあり、ページは `src/draft-pages/` に置いています。ここは Astro がページとして扱わないため、通常のビルド（Netlify の本番とプレビュー）には出ません。`npm run dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` が、ルートとして足します。
 - 下書きを公開するとき：ページ（`src/draft-pages/` のファイル）を `src/pages/` に移し、`astro.config.mjs` の `injectRoute` の該当行を消します。Downsizing は、動的ルート（`lp.astro`）なので、`src/pages/[slug].astro` に戻します。
 - Netlify のプレビューで、下書きを確認したいときは、Netlify の環境変数 `PUBLIC_DRAFT_LPS=true` を、そのブランチのデプロイだけに設定します（公開の URL になるので、確認が終わったら外してください）。
@@ -68,6 +70,7 @@ src/
   styles/form-support.css  フォームが使う部品（ボタン、リンク、.muted、.todo、[hidden] など）。base.css から分離（理由は Silver LP の節）
   styles/fonts.css       自前ホストのフォント（public/fonts/、OFL）
   styles/silver.css      Silver LP 専用。/silver だけが読み込む
+  styles/gold.css        Gold LP 専用。/gold だけが読み込む
   content/company.ts     全LP共通の会社情報（唯一の入力元）：ブランド名、会社名、グループ名、住所、受付電話、営業時間、OCCC登録番号・表記。未確定は null
   content/site.ts        Downsizing / Silver 用：company.ts から組み立てた会社情報に、対応エリア、法定リンク、共通UI文言、GTM を加えたもの。company.ts が null の項目は {{TODO}} 表示
   content/lps/*.ts       LPごと：meta、ボタン文言、セクションの並び順と全コピー、FAQ、フォームの選択肢
@@ -78,6 +81,7 @@ src/
   layouts/Document.astro    全LP共通の HTML（meta、OG、LocalBusiness 構造化データ、GTM、共通スクリプト）。CSS は読まない
   layouts/BaseLayout.astro  Document ＋ tokens / base / form-support（Downsizing 系）
   layouts/SilverLayout.astro  Document ＋ tokens / form-support / silver.css（base.css は読まない）
+  layouts/GoldLayout.astro    Document ＋ tokens / form-support / gold.css（base.css と silver.css は読まない）
   pages/[slug].astro     content/lps/*.ts の sections を順に描画
   content/contact-form.ts   全LP共通：問い合わせフォームの送信先、英語の共通文言、SMS同意の仮文言
   components/ContactForm.astro  全LP共通の問い合わせフォーム（スキンはLPごと）
@@ -85,10 +89,13 @@ src/
   pages/silver.astro     Silver のページ本体（Codex のマークアップ）
   scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ、ZIP判定）
   scripts/silver.ts      Silver 専用の動き（カテゴリのリボン、スクロール演出、FAQ の開閉）
+  pages/gold.astro       Gold のページ本体（デザイナーの静的HTMLを取り込んだもの）
+  scripts/gold.ts        Gold 専用の動き（カルーセル、タブ、メニュー、追従バー）
+  content/lps/gold.ts    Gold：meta、フォーム文言、未確定の事実を含む文（{{TODO}}）
   components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）
   server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、メール通知）
 netlify/functions/       Netlify Functions（POST /api/contact）。設定は netlify.toml
-public/images/           OG 画像（仮）、silver/ は Silver の画像（WebP）
+public/images/           OG 画像（仮）、silver/ は Silver、gold/ は Gold の画像（WebP）
 ```
 
 - 文言はすべて `src/content/` にあり、部品にはコピーを直書きしていない。
@@ -145,6 +152,15 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - 画像はすべて生成画像（「Illustrative photography」と表示）
 - 画面上部と下部の「DESIGN PREVIEW」帯は `silver.astro` の `showPreviewStrip` で消せる
 - フォーム、電話番号、営業時間、登録番号、OCCC、ポリシーのURLなどは Downsizing と同じ未確定事項（`npm run todos`）
+
+## Gold LP（`/gold`）
+
+デザイナーの静的HTML（`Reworth_LP_金_案2_2026-11-01/公開用`、2026-11-01）を取り込んだ、デザインの違う4本目。Silver と同じ方式：**見た目は元のHTMLのまま**にして、フォーム・計測・会社情報・法務リンクだけ共通にしてある。変更点、外した節、公開前の確認事項は [Gold DESIGN_SYSTEM.md](docs/design/gold/DESIGN_SYSTEM.md)。
+
+- 問い合わせフォームは共通の `ContactForm`（最後の申込みセクション）。元の独自フォームは使わない。`gclid` / `fbclid` は送らない。
+- 支払いの表現は全LP共通のルール（査定額は訪問時に伝え、売却に同意したら翌日末までに銀行振込）に直してある。
+- 「Your appraisers」（サンプル写真・名前なし）と「What people say」（サンプルの声）は、本物の情報がそろうまで載せていない。
+- 未確定の事実は `{{TODO}}` で画面に出る（`npm run todos`）。電話・住所・OCCC は `company.ts`。
 
 ## 仕様からの変更点
 
