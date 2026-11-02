@@ -1,0 +1,27 @@
+---
+/*
+ * Layout of the Gold LP. Loads tokens.css and form-support.css (the shared form needs them) and gold.css, but
+ * not base.css or silver.css: gold.css has its own resets and global element rules, which must not meet theirs.
+ * Keep gold.css last: it sets the form skin.
+ */
+import '../styles/tokens.css';
+import '../styles/form-support.css';
+import '../styles/gold.css';
+import type { CustomLandingPage } from '../content/types';
+import Document from './Document.astro';
+
+interface Props {
+  page: CustomLandingPage;
+}
+
+const { page } = Astro.props;
+---
+
+<Document
+  slug={page.slug}
+  meta={page.meta}
+  bodyAttrs={{ 'data-lp': page.slug }}
+  preloadFonts={['instrument-serif-400-normal.woff2', 'open-sans-variable.woff2']}
+>
+  <slot />
+</Document>

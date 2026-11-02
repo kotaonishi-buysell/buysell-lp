@@ -69,7 +69,7 @@ export const privacyPolicy: LegalPageContent = {
   title: 'Privacy Policy',
   description: 'What personal information {company} collects for {brand} when you ask about an in-home appraisal, how we use it, and your choices.',
   intro:
-    '{company} ("we", "us") operates {brand}, which offers free in-home appraisals and buys items such as silver, jewelry and watches from people in Texas. This policy explains what personal information we collect on our websites, by phone and at your home, how we use and share it, and the choices you have.',
+    '{company} ("we", "us") operates {brand}, which offers free in-home appraisals and buys items such as gold, silver, jewelry and watches from people in Texas. This policy explains what personal information we collect on our websites, by phone and at your home, how we use and share it, and the choices you have.',
   sections: [
     {
       id: 'collect',
