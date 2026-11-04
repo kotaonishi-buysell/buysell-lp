@@ -1712,3 +1712,11 @@ a.final-phone {
 @media (min-width: 761px) and (max-width: 1399px) {
   .hero-photo img{object-position: 100% center}
 }
+
+/* ZIP box: "Check availability" always sits inside its own clickable box. The button keeps the width of its
+   text (it never shrinks below it) and goes onto its own line when the input and the button do not fit side by
+   side; at a very narrow width its text wraps inside the box. */
+.zip-row{flex-direction:row;flex-wrap:wrap;gap:0}
+.zip-row input{flex:1 1 150px;width:auto;min-width:0}
+.zip-row .button{flex:0 0 auto;max-width:100%;white-space:normal;text-align:left;justify-content:center}
+.zip-row .button:not(:first-child){margin-top:0}
