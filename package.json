@@ -13,6 +13,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "todos": "node scripts/list-todos.mjs",
+    "check:public": "node scripts/check-public-todos.mjs",
     "test:home-value": "npm test",
     "test": "node --experimental-transform-types --test \"tests/**/*.test.mjs\""
   },

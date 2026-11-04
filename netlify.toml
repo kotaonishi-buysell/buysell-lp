@@ -2,7 +2,7 @@
 # See docs/forms/contact-form.md.
 
 [build]
-  command = "npm run build"
+  command = "npm run build && npm run check:public"
   publish = "dist"
 
 [build.environment]

@@ -1,7 +1,7 @@
 ---
 /* Renders one of the shared legal pages from src/content/legal.ts. */
 import { site } from '../content/site';
-import { legalCopy, legalDraftNotice, type LegalPageContent } from '../content/legal';
+import { legalCopy, type LegalPageContent } from '../content/legal';
 import { fill, plain, rich } from '../lib/text';
 import LegalLayout from '../layouts/LegalLayout.astro';
 import PrivacyChoice from './PrivacyChoice.astro';
@@ -12,7 +12,8 @@ interface Props {
 
 const { page } = Astro.props;
 
-// {company}, {address} ... come from site.ts. Values may hold TODO markers, which stay visible.
+// {company}, {address} ... come from site.ts. The OCCC registration and notice are '' until they are
+// confirmed: a block that then prints nothing (and a section left empty) is dropped, never shown as a TODO.
 const tokens = {
   company: plain(site.company.name),
   brand: site.brand.name,
@@ -22,8 +23,8 @@ const tokens = {
   hoursSuffix: site.company.hours ? ` (${site.company.hours})` : '',
   email: site.legal.privacyEmail,
   effective: site.legal.effectiveDate,
-  registration: `${site.company.registration.label}: ${site.company.registration.value}`,
-  regulator: `${site.regulator.label}: ${site.regulator.value}`,
+  registration: site.company.registration ? `${site.company.registration.label}: ${site.company.registration.value}` : '',
+  regulator: site.regulator ? `${site.regulator.label}: ${site.regulator.value}` : '',
 };
 // A real email address becomes a mailto link; a TODO placeholder stays text.
 const emailLink = tokens.email.includes('{{') ? null : tokens.email;
@@ -32,24 +33,29 @@ const html = (text: string) => {
   return emailLink ? out.replaceAll(emailLink, `<a href="mailto:${emailLink}">${emailLink}</a>`) : out;
 };
 const description = fill(page.description, { company: tokens.company, brand: tokens.brand });
+const sections = page.sections
+  .map((section) => ({
+    ...section,
+    blocks: section.blocks.filter((block) => typeof block !== 'string' || fill(block, tokens).trim() !== ''),
+  }))
+  .filter((section) => section.blocks.length > 0);
 ---
 
 <LegalLayout slug={page.slug} title={page.title} description={description}>
   <article class="lg-article">
     <h1>{page.title}</h1>
     <p class="lg-meta" set:html={html(legalCopy.effective)} />
-    <p class="lg-draft" set:html={html(legalDraftNotice)} />
     <p class="lg-intro" set:html={html(page.intro)} />
 
     <nav class="lg-toc" aria-labelledby="toc-title">
       <h2 id="toc-title">{legalCopy.contents}</h2>
       <ol>
-        {page.sections.map((section) => <li><a href={`#${section.id}`}>{section.heading}</a></li>)}
+        {sections.map((section) => <li><a href={`#${section.id}`}>{section.heading}</a></li>)}
       </ol>
     </nav>
 
     {
-      page.sections.map((section) => (
+      sections.map((section) => (
         <section id={section.id} aria-labelledby={`${section.id}-title`}>
           <h2 id={`${section.id}-title`}>{section.heading}</h2>
           {section.blocks.map((block) =>

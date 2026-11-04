@@ -11,7 +11,8 @@ export const zipCheckCopy = {
   prompt: 'Enter a 5-digit ZIP code.',
   inArea: 'Good news. We visit homes in your area.',
   outOfArea: "We may not visit this ZIP code yet. Call us and we'll check.",
-  notConfigured: '{{TODO: service-area ZIP list}}',
+  // Only shown if the ZIP list is ever empty. Never a TODO: this box is on a published page.
+  notConfigured: "Call us and we'll check whether we visit your ZIP code.",
   /** Button under the "in your area" answer. It opens the contact form with the ZIP code filled in. */
   requestButton: 'Request a visit',
 };

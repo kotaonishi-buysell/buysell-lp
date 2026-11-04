@@ -28,12 +28,20 @@ const links = [
       </ul>
     </nav>
     <div class="site-footer__legal muted">
-      <p>
-        {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
-      </p>
-      <p>
-        {`${site.regulator.label}: `}<Fragment set:html={rich(site.regulator.value)} />
-      </p>
+      {
+        site.company.registration && (
+          <p>
+            {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
+          </p>
+        )
+      }
+      {
+        site.regulator && (
+          <p>
+            {`${site.regulator.label}: `}<Fragment set:html={rich(site.regulator.value)} />
+          </p>
+        )
+      }
       <p>{copyright}</p>
     </div>
   </div>

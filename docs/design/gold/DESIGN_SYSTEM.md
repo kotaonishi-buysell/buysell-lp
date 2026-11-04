@@ -17,7 +17,7 @@
 - **電話・住所・登録番号・OCCC・グループ名**：`company.ts` から出す（`site.ts` 経由）。元の `(XXX) XXX-XXXX`、`#XXXXX` は使わない。
 - **ロゴ**：共通の `BrandLogo`（積み上げ型の REWORTH）。元の1行のロゴ（SVG）は使わない。そのため、ヘッダー、タブ、比較表、フッターのロゴの幅は `gold.css` で決め直してある。
 - **ボタン**：クラス名 `.btn` を `.gbtn` に変えた（共通の `form-support.css` が `.btn` を持つため）。
-- **未確定の事実**：元の `[TBC]` は `{{TODO: ...}}`（`npm run todos` に出る）に変えた。事実として確認できているものの TBC（無料の訪問と査定、写真付きIDの確認）は外した。
+- **未確定の事実**：元の `[TBC]` は、画面に出さない（公開ページに TODO を出さないため）。約束になるもの（訪問までの日数、「訪問時にIDを見せる」、保険、Houston の開始時期の「December」）は載せず、`gold.ts` の `// TODO:` コメントに確認事項として残した（`npm run todos` に出る）。「Always true」の約束は5つから4つになった。事実として確認できているものの TBC（無料の訪問と査定、写真付きIDの確認）は外した。
 - **支払い**：元の「We send your payment right away」「Paid on the spot」は、全LP共通のルールに直した（査定額は訪問時に伝え、売却に同意したら、翌日末までに銀行振込。小さな注記は `payment-note.ts`）。比較表の「Paid on the spot」の行は「Paid by bank transfer by the end of the next day」にし、他社の欄は「Varies」にした。
 - **フッター**：Do not sell or share のリンクを足した。元の「wholly owned subsidiary … publicly listed Japanese reuse company」の重複する文は、`company.ts` の言い方（part of ○○）に揃えて1つにした。
 - **外した節（本物の情報がそろうまで）**：
@@ -37,12 +37,12 @@
 | `--sky` | `#90C4EB` | ヘッダーの小さなボタン |
 | `--serif` / `--sans` | Instrument Serif / Open Sans | 見出し / 本文 |
 
-## 公開前に確認が必要なもの（`npm run todos`、画面にも TODO が出る）
+## 公開前に確認が必要なもの（`npm run todos`。画面には出さない）
 - OCCC の登録番号、OCCC の連絡先と必要な表記の文言（`company.ts`。全LPに反映される）
 - 申込み後の連絡までの営業日数、訪問までの日数
-- 買取できる品目の一覧、Houston の開始時期、訪問時にIDを見せること
-- 比較表の文言の確認（U.S. counsel）。出典の整理は Silver の [COMPARISON_SOURCES.md](../silver/COMPARISON_SOURCES.md) と同じ扱い
-- 保険（Insured）の表記、テキサスの登録確認ページのリンク
+- 買取できる品目の一覧、Houston の開始時期（今は「coming soon」だけ）、訪問時にIDを見せること（今は載せていない）
+- 比較表の文言の確認（U.S. counsel）。**確認まで非表示**（`src/content/lps/gold-comparison.ts`。`enabled: true` と `legalApproved` で戻す）。出典の整理は Silver の [COMPARISON_SOURCES.md](../silver/COMPARISON_SOURCES.md) と同じ扱い
+- 保険（Insured）の表記（今は載せていない）、テキサスの登録確認ページのリンク（登録番号を入れるときに、番号の横に足す）
 - 写真はすべて生成画像（フッターに「Images are for illustration.」）。会社のオフィスの写真（`company-office.webp`）の使用許諾
 
 ## 編集のルール

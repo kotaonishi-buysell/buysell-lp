@@ -59,15 +59,14 @@ test('the checked-in company facts are the ones supplied for BuySell America', (
   assert.equal(company.legalName, 'BuySell America, Inc.');
   assert.equal(company.address, '5717 Legacy Drive, Suite 250, Plano, TX 75024');
   assert.deepEqual(company.phone, { display: '(469) 668-2619', e164: '+14696682619' });
-  assert.equal(company.occc.registrationNumber, null);
+  assert.equal(company.occc.registrationNumber, '2600083284-237004');
+  assert.equal(company.occc.regulatorNotice, '2601 N Lamar Blvd, Austin, TX 78705 · (512) 936-7600 · www.occc.texas.gov');
 });
 
-test('unconfirmed facts: legacy LPs show TODO placeholders, Home Value shows nothing and no dummy number', () => {
+test('unconfirmed facts: legacy LPs show TODO placeholders (drafts only), Home Value shows nothing and no dummy number', () => {
   const legacy = buildSite(unconfirmed);
   const hv = buildHomeValueConfig(unconfirmed);
   assert.match(legacy.company.address, /^\{\{TODO:/);
-  assert.match(legacy.company.registration.value, /^\{\{TODO:/);
-  assert.match(legacy.regulator.value, /^\{\{TODO:/);
   assert.match(legacy.company.hours, /^\{\{TODO: days and hours\}\}, Central Time$/);
   assert.equal(hv.phone, null);
   assert.equal(hv.hours, null);
@@ -83,4 +82,19 @@ test('Home Value needs both the entity name and address before showing a local o
 test('the exported site and Home Value config are built from the checked-in company facts', () => {
   assert.deepEqual(site, buildSite(company));
   assert.deepEqual(homeValueConfig, buildHomeValueConfig(company));
+});
+
+test('with no OCCC registration number or notice, nothing about a registration is printed (no TODO, no claim of being registered)', () => {
+  const legacy = buildSite(unconfirmed);
+  assert.equal(legacy.company.registration, null);
+  assert.equal(legacy.regulator, null);
+  // The registration the OCCC issued is checked in, so every page prints it with its label and the OCCC's contact line.
+  const checkedIn = buildSite(company);
+  assert.deepEqual(checkedIn.company.registration, { label: 'Texas registration No.', value: '2600083284-237004' });
+  assert.equal(checkedIn.regulator.label, 'Texas Office of Consumer Credit Commissioner (OCCC)');
+  assert.match(checkedIn.regulator.value, /2601 N Lamar Blvd, Austin, TX 78705/);
+  assert.match(checkedIn.regulator.value, /\(512\) 936-7600/);
+  assert.match(checkedIn.regulator.value, /www\.occc\.texas\.gov/);
+  // Once the number is set it is printed, with its label.
+  assert.deepEqual(buildSite(confirmed).company.registration, { label: 'Texas registration No.', value: 'OCCC-12345' });
 });

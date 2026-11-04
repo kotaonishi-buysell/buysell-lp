@@ -8,9 +8,13 @@ import { rich } from '../lib/text';
   <div class="container site-header__inner">
     <div class="site-header__brand">
       <BrandLogo class="site-header__logo" />
-      <p class="t-meta muted">
-        {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
-      </p>
+      {
+        site.company.registration && (
+          <p class="t-meta muted">
+            {`${site.company.registration.label} `}<Fragment set:html={rich(site.company.registration.value)} />
+          </p>
+        )
+      }
     </div>
     <div class="site-header__actions">
       <div class="site-header__phone">

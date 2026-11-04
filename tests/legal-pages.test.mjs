@@ -48,9 +48,16 @@ test('the three pages agree with the rules of the business', () => {
   assert.match(text(privacyPolicy), /photographs/);
 });
 
-test('the draft notice and the unconfirmed facts stay visible as TODO markers', () => {
-  assert.match(text(privacyPolicy), /\{\{TODO/);
-  assert.match(text(privacyPolicy), /retention period/);
+test('published pages show no TODO: unconfirmed facts are left out or promise nothing', () => {
+  for (const page of legalPages) {
+    assert.doesNotMatch(`${text(page)} ${page.description} ${page.intro}`, /TODO|Draft for legal review/, page.slug);
+  }
+  // The retention period is not decided, so the text names no number of days, months or years for requests.
+  const retention = text(privacyPolicy).match(/We keep requests that did not lead to a purchase[^.]*\./)?.[0] ?? '';
+  assert(retention, 'the retention sentence exists');
+  assert.doesNotMatch(retention, /\d/);
+  // No venue is named until counsel confirms one.
+  assert.doesNotMatch(text(termsOfUse), /Collin County|venue/i);
 });
 
 test('while Google Tag Manager is on the LPs, the policy says so and the legal pages do not load it', () => {
