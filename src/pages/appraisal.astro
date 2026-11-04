@@ -1,6 +1,6 @@
 ---
 /*
- * Appraisal LP (/appraisal, a draft): "Not using it. Not tossing it. Just give us a call."
+ * Appraisal LP (/appraisal): "Not using it. Not tossing it. Just give us a call."
  * Same skeleton and motion as the Silver LP (src/pages/silver.astro, src/scripts/silver.ts), with its own stylesheet
  * (src/styles/appraisal.css). Copy that is shared with the LP machinery (meta, form, FAQ, categories) is in
  * src/content/lps/appraisal.ts and src/content/site.ts. Everything that is a call or a request goes through the shared pieces:
@@ -23,7 +23,7 @@ const telHref = `tel:${site.phone.e164}`;
 const hoursLine = site.company.hours ? rich(fill(site.phone.hoursLine, { hours: site.company.hours })) : null;
 const year = new Date().getFullYear();
 
-// Draft banner. Set to false at launch, together with the "Design preview" note in the footer.
+// Preview banner. Set to false at launch, together with the "Design preview" note in the footer.
 const showPreviewStrip = true;
 ---
 

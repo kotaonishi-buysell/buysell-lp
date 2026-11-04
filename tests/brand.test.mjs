@@ -24,7 +24,7 @@ test('no LP prints the old brand "BuySell"; only the company and the group keep 
     'src/pages/silver.astro',
     'src/pages/gold.astro',
     'src/draft-pages/home-value.astro',
-    'src/draft-pages/appraisal.astro',
+    'src/pages/appraisal.astro',
     'src/content/lps/appraisal.ts',
     'src/content/lps/silver.ts',
     'src/content/lps/gold.ts',

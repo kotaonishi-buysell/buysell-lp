@@ -1,7 +1,7 @@
 /*
- * Appraisal LP (/appraisal, a draft): house-call appraisals of everything a household has kept (accessories, designer
+ * Appraisal LP (/appraisal): house-call appraisals of everything a household has kept (accessories, designer
  * goods, watches, jewelry, antiques, cameras, gold coins, silverware). Like Silver it has its own page,
- * src/draft-pages/appraisal.astro, and its own stylesheet. This file holds the meta, the copy of the shared contact
+ * src/pages/appraisal.astro, and its own stylesheet. This file holds the meta, the copy of the shared contact
  * form, the FAQ (which analytics tracks) and the category list. Company facts (phone, hours, registration) come from
  * ../site.ts, which derives from ../company.ts.
  *

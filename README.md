@@ -5,7 +5,7 @@
 - **Downsizing LP（`/downsizing`）**：共通の部品とデザインシステムで組んだ型。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
 - **Silver LP（`/silver`）**：Codex で作ったモックを取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Silver LP](#silver-lp-silver)。
 - **Gold LP（`/gold`）**：デザイナーの静的HTML（金の買取、案2）を取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Gold LP](#gold-lp-gold)。
-- **Appraisal LP（`/appraisal`）**：総合買取（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）のLP。**下書き**。Silver と同じ骨格・動きで、専用のCSSとページを持つ。詳しくは [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md)。
+- **Appraisal LP（`/appraisal`）**：総合買取（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）のLP。**公開ページ**。Silver と同じ骨格・動きで、専用のCSSとページを持つ。詳しくは [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md)。
 - **Home Value LP（`/home-value`）**：専用ページ・専用CSS・専用デザイン仕様のLP（初期実装）。フォーム・計測の部品は共通。詳しくは下の「新LP: Home Value」。
 
 ## 新LP: Home Value
@@ -35,7 +35,7 @@
 | `/home-value` | [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md) |
 | `/silver` | [Silver DESIGN_SYSTEM.md](docs/design/silver/DESIGN_SYSTEM.md) |
 | `/gold` | [Gold DESIGN_SYSTEM.md](docs/design/gold/DESIGN_SYSTEM.md) |
-| `/appraisal`（下書き） | [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md) |
+| `/appraisal` | [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md) |
 
 色・フォント・写真・角丸・レイアウトは各LPの仕様で個別に決めます。
 Home Value、Silver、Gold は専用のCSSとページを使います。問い合わせフォームと計測は全LP共通です。見た目の変更は対象LPに限定します。
@@ -46,9 +46,9 @@ Node.js 22.12 以上。
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/silver と /gold（下書きの /downsizing /home-value /appraisal も開ける）
+npm run dev      # http://localhost:4321/silver と /gold（下書きの /downsizing /home-value も開ける）
 npm run build    # dist/ に静的ファイルを出力（公開用。Silver、Gold と法務ページ）
-npm run build:drafts  # 下書きの /downsizing /home-value /appraisal も含めて出力（確認用。公開しない）
+npm run build:drafts  # 下書きの /downsizing /home-value も含めて出力（確認用。公開しない）
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
 npm run todos    # 未確定の事業情報（TODO）の一覧
@@ -58,8 +58,8 @@ npm test         # 共通フォームの入力チェック、送信処理、受�
 `/` は `/silver` へリダイレクトする（`astro.config.mjs` と `netlify.toml`）。
 
 ## 公開と下書き
-- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）と法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。
-- **Downsizing（`/downsizing`）、Home Value（`/home-value`）、Appraisal（`/appraisal`）は下書き**です。コードは残してあり、ページは `src/draft-pages/` に置いています。ここは Astro がページとして扱わないため、通常のビルド（Netlify の本番とプレビュー）には出ません。`npm run dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` が、ルートとして足します。
+- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Appraisal（`/appraisal`）と法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。
+- **Downsizing（`/downsizing`）と Home Value（`/home-value`）は下書き**です。コードは残してあり、ページは `src/draft-pages/` に置いています。ここは Astro がページとして扱わないため、通常のビルド（Netlify の本番とプレビュー）には出ません。`npm run dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` が、ルートとして足します。
 - 下書きを公開するとき：ページ（`src/draft-pages/` のファイル）を `src/pages/` に移し、`astro.config.mjs` の `injectRoute` の該当行を消します。Downsizing は、動的ルート（`lp.astro`）なので、`src/pages/[slug].astro` に戻します。
 - Netlify のプレビューで、下書きを確認したいときは、Netlify の環境変数 `PUBLIC_DRAFT_LPS=true` を、そのブランチのデプロイだけに設定します（公開の URL になるので、確認が終わったら外してください）。
 
@@ -75,7 +75,7 @@ src/
   styles/gold.css        Gold LP 専用。/gold だけが読み込む
   styles/appraisal.css   Appraisal LP 専用（silver.css のコピー）。/appraisal だけが読み込む
   layouts/AppraisalLayout.astro  Document ＋ tokens / form-support / appraisal.css
-  draft-pages/appraisal.astro    Appraisal のページ本体（下書き）
+  pages/appraisal.astro          Appraisal のページ本体
   content/lps/appraisal.ts       Appraisal：meta、フォーム文言、FAQ、カテゴリ一覧
   content/company.ts     全LP共通の会社情報（唯一の入力元）：ブランド名、会社名、グループ名、住所、受付電話、営業時間、OCCC登録番号・表記。未確定は null
   content/site.ts        Downsizing / Silver 用：company.ts から組み立てた会社情報に、対応エリア、法定リンク、共通UI文言、GTM を加えたもの。company.ts が null の項目は {{TODO}} 表示

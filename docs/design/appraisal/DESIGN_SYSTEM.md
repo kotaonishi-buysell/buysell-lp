@@ -1,9 +1,9 @@
 # Appraisal LP のデザイン
 
-`/appraisal` は、Silver LP と同じ骨格・動きで作った、総合買取のLPです（**下書き**。公開していません）。「家にある、使わないけど捨てられないもの（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）を、プロに見てもらう」という訴求です。他のLPのデザインシステムは使いません。**見た目の正本は `src/styles/appraisal.css` です。**
+`/appraisal` は、Silver LP と同じ骨格・動きで作った、総合買取のLPです（**公開ページ**。`/silver` `/gold` と同じく `src/pages/`）。「家にある、使わないけど捨てられないもの（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）を、プロに見てもらう」という訴求です。他のLPのデザインシステムは使いません。**見た目の正本は `src/styles/appraisal.css` です。**
 
 ## 実装
-- ページ：`src/draft-pages/appraisal.astro`（下書き。`astro dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` がルートとして足す）、レイアウト：`src/layouts/AppraisalLayout.astro`（`base.css` `silver.css` `gold.css` は読み込まない）。
+- ページ：`src/pages/appraisal.astro`、レイアウト：`src/layouts/AppraisalLayout.astro`（`base.css` `silver.css` `gold.css` は読み込まない）。
 - スタイル：`src/styles/appraisal.css`。`silver.css` のコピーに、フォームの外観の範囲（`[data-lp='appraisal']`）と、カテゴリの円の中身（アイコン）の変更を加えたもの。`AppraisalLayout` 以外から読み込まない（`body` `a` `button` `dialog` などに直接指定があるため）。
 - 動き：`src/scripts/silver.ts` を Silver と**共用**する（ページが `import '../scripts/silver'`）。カテゴリのセクションは `.buy-section` のクラスで見つける（Silver は `#silver`、Appraisal は `#items`）。動きを変えるときは、両方のLPを確認する。
 - 文言：meta、フォームの文言、FAQ、カテゴリ一覧は `src/content/lps/appraisal.ts`。それ以外の見出し・本文は `appraisal.astro` に直接書いてある。
@@ -32,7 +32,6 @@
 - スタッフの経験の表記（Silver と同じ。「Experience to be confirmed」のまま）
 - OG 画像の差し替え、カテゴリの写真
 - 画面上部と下部の「DESIGN PREVIEW」帯は、`appraisal.astro` の `showPreviewStrip` で消す
-- 公開するとき：ページを `src/draft-pages/` から `src/pages/` に移し、`astro.config.mjs` の `injectRoute` の該当行を消す。公開前に、`tests/drafts.test.mjs` の該当の行も直す。
 
 ## 編集のルール
 - Appraisal の見た目の変更は、`appraisal.css` と `appraisal.astro` の中だけで行い、他のLPのスタイルに影響させない。

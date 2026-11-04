@@ -6,9 +6,10 @@ import { appraisal, appraisalCategories, appraisalFaq } from '../src/content/lps
 const root = new URL('../', import.meta.url);
 const read = (file) => readFileSync(new URL(file, root), 'utf8');
 
-test('/appraisal is a draft page with its own layout and stylesheet', () => {
+test('/appraisal is a published page with its own layout and stylesheet', () => {
   assert.equal(appraisal.slug, 'appraisal');
-  assert(existsSync(new URL('src/draft-pages/appraisal.astro', root)));
+  assert(existsSync(new URL('src/pages/appraisal.astro', root)));
+  assert(!existsSync(new URL('src/draft-pages/appraisal.astro', root)), 'no draft copy');
   assert(existsSync(new URL(`public${appraisal.meta.ogImage}`, root)), 'OG image');
   const layout = read('src/layouts/AppraisalLayout.astro');
   assert.match(layout, /styles\/appraisal\.css/);
@@ -28,7 +29,7 @@ test('appraisal.css is loaded only by AppraisalLayout, and no other layout loads
 });
 
 test('the page uses the shared form, ZIP box, brand logo and company facts', () => {
-  const page = read('src/draft-pages/appraisal.astro');
+  const page = read('src/pages/appraisal.astro');
   assert.match(page, /<ContactForm/);
   assert.match(page, /<ZipCheck/);
   assert.match(page, /<BrandLogo/);
@@ -43,7 +44,7 @@ test('the category ribbon lists the main categories first, then the others', () 
 });
 
 test('the copy keeps to the payment rule and makes no claim it cannot back', () => {
-  const text = [read('src/draft-pages/appraisal.astro'), read('src/content/lps/appraisal.ts')].join('\n');
+  const text = [read('src/pages/appraisal.astro'), read('src/content/lps/appraisal.ts')].join('\n');
   assert.doesNotMatch(text, /same[- ]day|on the spot|before we leave|right away|cash on|paid (today|instantly)/i);
   assert.doesNotMatch(text, /no photos|best price|highest price|guarantee|authenticat/i);
   const payment = appraisalFaq.find((f) => f.id === 'payment');
@@ -52,7 +53,7 @@ test('the copy keeps to the payment rule and makes no claim it cannot back', () 
 });
 
 test('the hero uses the agreed copy', () => {
-  const page = read('src/draft-pages/appraisal.astro');
+  const page = read('src/pages/appraisal.astro');
   assert.match(page, /TOO NICE TO TOSS\./);
   assert.match(page, /Not using it\. Not <span class="glint">tossing<\/span> it\./);
   assert.match(page, /Just give us a call\./);
