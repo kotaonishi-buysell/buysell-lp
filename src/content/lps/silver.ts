@@ -16,14 +16,13 @@ export const silver: CustomLandingPage = {
     title: `Silver appraisals, right at your kitchen table | ${site.brand.name}`,
     description:
       "Keep the silver at home. We'll handle the rest. Explore free, no-obligation silver appraisals by house call in Texas.",
-    ogImage: '/images/og-silver.jpg',
-    ogImageAlt: 'A silver appraiser and a homeowner looking at a flatware chest at a kitchen table. Illustrative image.',
+    ogImage: '/images/og-silver-reworth.jpg',
+    ogImageAlt: 'The REWORTH logo between two appraisers: one smiling in a suit, the other examining an item through a loupe.',
   },
   form: {
     submitLabel: 'Send my request',
     afterSubmit:
-      // TODO: number of business days until we get back to a request. State it here once the business confirms it; until then no time is promised.
-      "We'll call or email to arrange a time. Nothing is sold unless you say so.",
+      "We'll call or email within 3 business days to arrange a time. Nothing is sold unless you say so.",
     success: "Thank you. We've received your request and will be in touch to arrange a time.",
   },
 };

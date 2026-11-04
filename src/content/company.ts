@@ -6,8 +6,8 @@
  *
  * null = not confirmed. Downsizing and Silver then show a {{TODO: ...}} placeholder for the
  * address, email and phone (draft pages only: `npm run check:public` fails a build that
- * prints one on a published page). The OCCC registration number and notice are simply left
- * out of every page until they are set, so no page claims a registration we do not have.
+ * prints one on a published page). If the OCCC registration number or notice is null, it is
+ * simply left out of every page, so no page claims a registration we do not hold.
  * Home Value shows nothing or its explicit preview state, and never a dummy value.
  */
 export interface CompanyFacts {
@@ -62,12 +62,14 @@ export const company: CompanyFacts = {
   showHours: false,
   timeZone: 'Central Time',
   occc: {
-    // TODO: OCCC registration number. Required before we offer the service. Setting it turns on, everywhere:
-    // the registration lines (header, footer, company info, Privacy), the "Registered with the Texas OCCC" band
-    // on Silver and the structured-data identifier.
-    registrationNumber: null,
-    // TODO: OCCC address, phone and the notice wording required for our registration. Set it together with the number.
-    regulatorNotice: null,
+    // Our registration number, as issued by the OCCC (supplied 2026-11-04). It turns on, everywhere: the registration
+    // lines (header, footer, company info, Privacy), the "Registered with the Texas OCCC" band on Silver and the
+    // structured-data identifier. Set it back to null if the registration lapses, and every one of them disappears.
+    registrationNumber: '2600083284-237004',
+    // The OCCC's contact details (supplied 2026-11-04). Printed as one line under the OCCC's name.
+    // TODO: confirm with counsel whether our registration requires specific notice wording on the site (for example a
+    // complaint notice). Only the contact details are shown until then; add any required wording to this string.
+    regulatorNotice: '2601 N Lamar Blvd, Austin, TX 78705 · (512) 936-7600 · www.occc.texas.gov',
   },
 };
 

@@ -67,10 +67,9 @@ h1 em{display:block;font-size:.77em;line-height:1.18;margin-top:6px;white-space:
 .hero-chips li:first-child{padding-left:0}
 .hero-chips li:last-child{border:0}
 .hero-photo{position:relative;min-height:590px;overflow:hidden;background:#c4bda8}
-.hero-photo img{position:absolute;inset:0;object-position:51% center}
+.hero-photo img{position:absolute;inset:0;object-position:50% center}
 .hero-photo figcaption{position:absolute;inset:auto 0 0;color:white;padding:60px 30px 22px;background:linear-gradient(transparent,rgba(20,26,16,.7));font-size:9px;letter-spacing:1.5px}
 .photo-caption{display:block;font:italic 29px/1.4 var(--serif);letter-spacing:-.6px;margin-top:5px}
-.image-note{font-size:9px;letter-spacing:.2px;opacity:.75}
 .trust{display:grid;grid-template-columns:1.2fr 1.25fr 1.15fr .7fr;padding-block:23px 25px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);gap:27px;font-size:11px;align-items:center}
 .trust>div+div{border-left:1px solid var(--line);padding-left:27px}
 .trust p+p{margin-top:8px}
@@ -292,7 +291,7 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
   .hero-chips{margin-top:21px}
   .hero-chips li{font-size:9px;padding-inline:10px}
   .hero-photo{height:420px;min-height:0;margin-inline:-22px}
-  .hero-photo img{object-position:50% 44%}
+  .hero-photo img{object-position:48% 44%}
   .hero-photo figcaption{padding:40px 22px 16px}
   .photo-caption{font-size:29px}
   .trust{grid-template-columns:1fr 1fr;gap:20px;padding-block:24px;font-size:10px}
@@ -408,10 +407,9 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
   .footer-info p+p{margin-top:6px}
   .footer-bottom{flex-direction:column;gap:8px;font-size:10px}
   .mobile-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:5;background:var(--ivory);border-top:1px solid #d6d9cd;padding:9px 14px calc(9px + env(safe-area-inset-bottom));gap:9px}
-  .mobile-bar :is(a, button){font-size:13px;min-height:44px;display:flex;justify-content:space-between;align-items:center;padding:10px 15px}
+  .mobile-bar :is(a, button){font-size:13px;min-height:44px;display:flex;justify-content:center;align-items:center;gap:9px;padding:10px 15px}
   .mobile-bar :is(a, button):first-child{flex:1;border:1px solid var(--green)}
   .mobile-bar :is(a, button):last-child{flex:2;background:var(--green);color:white}
-  .mobile-bar span{margin-left:13px}
   dialog{padding:32px 23px}
   dialog h2{font-size:37px}
 }
@@ -600,8 +598,7 @@ html, body{overflow-x:hidden}
   .final-cta h2{font-size:39px}
   .final-phone{font-size:23px}
   .mobile-bar{padding:8px 10px calc(8px + env(safe-area-inset-bottom));gap:7px}
-  .mobile-bar :is(a, button){font-size:12px;min-height:42px;padding:9px 11px;justify-content:flex-start;gap:8px}
-  .mobile-bar :is(a, button)>span:last-child{margin-left:auto}
+  .mobile-bar :is(a, button){font-size:12px;min-height:42px;padding:9px 11px;gap:8px}
   .cta-icon{width:17px;height:17px}
 }
 /* Hero headline: preserve the two-line campaign statement at every breakpoint. */
@@ -904,14 +901,8 @@ html, body{overflow-x:hidden}
   transform: rotate(180deg);
   color: var(--gold);
 }
-/* 10 — CTA micro-interactions and final-call sequence. */
-.button span[aria-hidden='true'], .text-link span[aria-hidden='true'], .final-phone span, .mobile-sticky span:last-child {
-  display: inline-block;
-  transition: transform .3s cubic-bezier(.2,.7,.2,1);
-}
-.button:hover span[aria-hidden='true'], .text-link:hover span[aria-hidden='true'], .final-phone:hover span, .mobile-sticky:hover span:last-child{transform: translateX(4px)}
 @media (prefers-reduced-motion: reduce) {
-  .motion-item, .hero-photo img, .category-image, .category-image img, .motion-portrait .appraiser-photo, .motion-portrait .appraiser-info, .motion-testimonial .stars, .motion-testimonial blockquote, .motion-testimonial figcaption, .button span[aria-hidden='true'], .text-link span[aria-hidden='true'], .final-phone span, .mobile-sticky span:last-child {
+  .motion-item, .hero-photo img, .category-image, .category-image img, .motion-portrait .appraiser-photo, .motion-portrait .appraiser-info, .motion-testimonial .stars, .motion-testimonial blockquote, .motion-testimonial figcaption {
     transition: none !important;
       animation: none !important;
       transform: none !important;
@@ -1414,6 +1405,44 @@ a.final-phone {
   transform: translateY(100%);
 }
 
+/* Richer call-to-action buttons, shared by the sticky bar and the first view: a 4px corner,
+   a soft diagonal green gradient (#0b5f1f → #00450f → #003a0c, white text stays above 7:1), a
+   light top edge and a small shadow. They dip slightly when pressed. */
+:root {
+  --cta-gradient: linear-gradient(135deg, #0b5f1f 0%, #00450f 55%, #003a0c 100%);
+  --cta-gradient-hover: linear-gradient(135deg, #0e6c24 0%, #054c13 55%, #00420e 100%);
+  --cta-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 6px 14px -6px rgba(0, 69, 15, 0.55);
+}
+.mobile-bar :is(a, button) {
+  border-radius: 4px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.mobile-bar :is(a, button):last-child {
+  background-color: var(--green);
+  background-image: var(--cta-gradient);
+  box-shadow: var(--cta-shadow);
+}
+.mobile-bar :is(a, button):active{transform: scale(0.98)}
+
+/* First view: the green phone button takes the same treatment; on phones the outlined
+   "Book online" button gets the same corner. */
+.hero-actions .button {
+  border-radius: 4px;
+  background-color: var(--green);
+  background-image: var(--cta-gradient);
+  box-shadow: var(--cta-shadow);
+  transition: background .2s, transform .2s, box-shadow .2s;
+}
+.hero-actions .button:hover {
+  background-color: var(--green);
+  background-image: var(--cta-gradient-hover);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 9px 18px -8px rgba(0, 69, 15, 0.6);
+}
+.hero-actions .button:active{transform: translateY(0) scale(0.98)}
+@media (max-width: 760px) {
+  .hero-actions>.text-link{border-radius: 4px}
+}
+
 /*
  * Skin of the shared contact form (see contact-form.css for the variables). It sits in
  * the dialog, so it takes the mock-up's ivory, green and square corners.
@@ -1449,6 +1478,13 @@ a.final-phone {
 
 [data-lp='silver'] .cf-error {
   font-size: 14px;
+}
+
+/* Small print in the form: the SMS consent, the hints under the fields, and the notes around
+   the send button (18+ confirmation, "We'll call or email…", privacy link). */
+[data-lp='silver'] :is(.cf-hint, .cf-note, .cf-field--consent .cf-check span) {
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 [data-lp='silver'] .cf .button {
@@ -1512,9 +1548,9 @@ a.final-phone {
    photographs below use CSS scroll-driven animations where the browser has them. The
    individual translate/scale properties are used so they never clash with the reveal
    transitions, which use transform. */
-.motion-ready .hero-photo img{scale:1.08}
+.motion-ready .hero-photo img{scale:1.03}
 @media (max-width:760px) {
-  .motion-ready .hero-photo img{scale:1.06}
+  .motion-ready .hero-photo img{scale:1.02}
 }
 @supports (animation-timeline: view()) {
   @keyframes silver-drift {
@@ -1669,4 +1705,10 @@ a.final-phone {
 }
 @media (min-width: 761px) and (max-width: 1000px) {
   .compact-bar nav{display: none}
+}
+
+/* The hero photograph shows two appraisers side by side. Where its frame is too narrow for
+   both, it keeps the one on the right (the appraiser with the loupe) in view. */
+@media (min-width: 761px) and (max-width: 1399px) {
+  .hero-photo img{object-position: 100% center}
 }

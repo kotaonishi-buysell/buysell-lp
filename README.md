@@ -140,7 +140,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - 予約ボタンは `data-booking`。押すとダイアログ（`#booking-dialog`）が開き、中に共通フォームが入っている（`cta.ts` が `<dialog>` を検出して `showModal()` する）。
 - モック独自の予約フォーム、情報ダイアログ（ポリシー用）、`[...]` のダミー値は外し、`{{TODO}}` で表示される `company.ts` / `site.ts` の値に置き換えた。
 - Google Fonts をやめ、Newsreader（イタリック追加）を自前ホストにした。
-- 画像はPNG（合計約10MB）から WebP（約1MB）に変換して `public/images/silver/` に置いた。元のPNGはリポジトリに入れていない。OG 画像 `public/images/og-silver.jpg` は hero 画像から切り出した仮のもの。
+- 画像はPNG（合計約10MB）から WebP（約1MB）に変換して `public/images/silver/` に置いた。元のPNGはリポジトリに入れていない。OG 画像は `public/images/og-silver-reworth.jpg`（1200×630。REWORTH のロゴと鑑定士2名の写真）。SNS は画像のURLをキャッシュするので、差し替えるときはファイル名も変える。
 - 追従バー（モバイル下部の「Call us / Book a free appraisal」）は、Downsizing と同じく、ヒーローを過ぎたら出て、最後の申込みセクションで隠れる（`scripts/sticky.ts` を共用。モックは常時表示）。
 
 ### 公開前に確認が必要なもの（ダミーのまま取り込み済み）
@@ -149,9 +149,9 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - お客様の声：**非表示**（本物の声がまだないため）。デザインは残してあり、`src/content/lps/silver-testimonials.ts` の `enabled` を `true` にし、実在の声（許可と出典つき）に差し替えると戻せます。「Paid next day」（「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
 - 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。**公開前に法務の確認が必要なため、今は非表示**（`src/content/lps/silver-comparison.ts` の `enabled: false`。デザインは残してあり、法務の承認後に `enabled: true` と `legalApproved` で戻せます）
 - Google の評価（★）と価格帯（$3,300–$4,400）は削除済み。価格・評価の数字は載せない
-- 画像はすべて生成画像（「Illustrative photography」と表示）
+- ヒーロー写真は実写（表示なし）。ほかの画像は生成画像（下部の「DESIGN PREVIEW」の注記に「Illustrative photography」と記載）
 - 画面上部と下部の「DESIGN PREVIEW」帯は `silver.astro` の `showPreviewStrip` で消せる
-- フォーム、電話番号、営業時間、登録番号、OCCC、ポリシーのURLなどは Downsizing と同じ未確定事項（`npm run todos`）
+- フォーム、電話番号、営業時間、ポリシーのURLなどは Downsizing と同じ未確定事項（`npm run todos`）
 
 ## Gold LP（`/gold`）
 
@@ -211,7 +211,8 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 
 `npm run todos` で一覧を出せる（ソースの `// TODO:` コメントと `{{TODO}}` を拾う）。**公開ページ（Silver、法務ページ、404）には TODO を出さない**：未確認の事実は、項目ごと出さないか、約束にならない書き方にして、確認事項は `// TODO:` コメントで残す。`npm run check:public` が、公開ビルドに TODO が残っていないかを確かめる（Netlify のビルドでも実行）。下書きの Downsizing は、今も点線の枠で表示される。主なもの：
 
-- 会社名、住所、OCCC の登録番号、営業時間、電話番号、OCCC の連絡先と必要な表記の文言（すべて `src/content/company.ts` に入力する。全LPに反映される）。**OCCC の登録番号と表記が空の間は、登録に関する表示（ヘッダー、フッター、会社情報、Privacy の「Our registration」、Silver の「Registered with the Texas OCCC」の帯、構造化データ）をすべて出さない。番号を入れると、すべて同時に出る。サービスの提供前に必ず入れる**
+- 営業時間、電話番号の受付日（すべて `src/content/company.ts` に入力する。全LPに反映される）
+- **OCCC：登録番号（2600083284-237004）と OCCC の連絡先（住所・電話・サイト）は、`company.ts` に登録済み（2026-11-04）。** ヘッダー、フッター、会社情報、Privacy の「Our registration」、Silver・Gold の登録の表示、構造化データに出る。**未確定：登録に必要な表記の文言（苦情窓口の案内など）が、サイトに要るかどうか（弁護士に確認）。** 番号を `null` に戻すと、登録の表示はすべて消える
 - 対応エリア（エリア判定をするなら、対象の ZIP 一覧も）
 - 出張費・査定料、支払い方法とタイミング、買い取った品の行き先（FAQ）
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
