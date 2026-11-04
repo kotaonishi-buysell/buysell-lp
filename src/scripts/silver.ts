@@ -1,5 +1,5 @@
 /*
- * Silver LP behaviour: the category ribbon, scroll reveals, hero drift, compact header bar,
+ * Silver and Appraisal LP behaviour (both pages import this file): the category ribbon, scroll reveals, hero drift, compact header bar,
  * FAQ animation, appraiser arrows and dialog closing. Ported from the Codex mock-up's app.js (logic unchanged).
  * What the mock-up did for calls, booking, the form, the ZIP box and the policy links is
  * shared now: scripts/cta.ts, contact-form.ts, zip-check.ts and real links.
@@ -230,7 +230,7 @@ const initMotion = (): void => {
   }
 
   // Section introductions: label, headline, then supporting copy.
-  stageAll('#silver .category-heading > *, #silver .polish', 85);
+  stageAll('.buy-section .category-heading > *, .buy-section .polish', 85);
   stageAll('.how .section-top, .how > .wrap > h2', 100);
   stageAll('.value-copy > .eyebrow, .value-copy > h2, .value-copy > p, .value-copy > .price', 90);
   stage(document.querySelector<HTMLElement>('.value-image'), 130, 'mask-left');

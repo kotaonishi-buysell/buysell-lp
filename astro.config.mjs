@@ -5,7 +5,7 @@ import { defineConfig } from 'astro/config';
 /** @type {Record<string, string | undefined>} */
 const env = /** @type {any} */ (globalThis).process?.env ?? {};
 
-// Draft LPs (/downsizing, /home-value) are still being built. Their code stays in src/draft-pages/, which Astro does
+// Draft LPs (/downsizing, /home-value, /appraisal) are still being built. Their code stays in src/draft-pages/, which Astro does
 // not turn into pages by itself: they are added as routes only in `astro dev`, or in a build with
 // PUBLIC_DRAFT_LPS=true (npm run build:drafts). A normal build, so the Netlify production site, publishes only
 // the pages in src/pages/ (Silver and the legal pages). To publish a draft, move it into src/pages/ (or add it to
@@ -18,7 +18,8 @@ const draftPages = {
       if (command !== 'dev' && env.PUBLIC_DRAFT_LPS !== 'true') return;
       injectRoute({ pattern: '/[slug]', entrypoint: './src/draft-pages/lp.astro' });
       injectRoute({ pattern: '/home-value', entrypoint: './src/draft-pages/home-value.astro' });
-      logger.info('Draft LPs are included: /downsizing and /home-value.');
+      injectRoute({ pattern: '/appraisal', entrypoint: './src/draft-pages/appraisal.astro' });
+      logger.info('Draft LPs are included: /downsizing, /home-value and /appraisal.');
     },
   },
 };
