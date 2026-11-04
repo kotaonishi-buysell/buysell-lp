@@ -6,7 +6,7 @@
 - ページ：`src/pages/silver.astro`、レイアウト：`src/layouts/SilverLayout.astro`（`base.css` は読み込まない）。
 - スタイル：`src/styles/silver.css`（このファイルは `SilverLayout` 以外から読み込まない。`body`、`a`、`button`、`dialog` などに直接指定があるため）。
 - 動き：`src/scripts/silver.ts`（スクロール演出、カテゴリのリボン、FAQの開閉、ZIP欄、ダイアログの閉じ方）。
-- 画像：`public/images/silver/`（ヒーロー写真 `hero-appraisal.webp` は実写で、画面に注記は出さない。ほかは生成画像で、下部の「DESIGN PREVIEW」の注記に「Illustrative photography」と記載）。
+- 画像：`public/images/silver/`（ヒーロー写真 `hero-appraisal.webp` は実写で、画面に注記は出さない。ほかは生成画像で、フッターの注記「Illustrative photography.」で、生成画像であることを示す。この注記は消さない。ヒーロー以外の画像を実写に替え終えたときだけ、外せる）。
 
 ## 動き
 動きは `silver.css` 末尾の「Motion, second layer」と `silver.ts`（`initMotion`）にあります。すべて追加の演出で、`prefers-reduced-motion` の人、JavaScript が使えない場合は、静止した完全な表示のままです。

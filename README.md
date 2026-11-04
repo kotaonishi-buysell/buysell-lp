@@ -149,8 +149,8 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 - お客様の声：**非表示**（本物の声がまだないため）。デザインは残してあり、`src/content/lps/silver-testimonials.ts` の `enabled` を `true` にし、実在の声（許可と出典つき）に差し替えると戻せます。「Paid next day」（「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
 - 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。**公開前に法務の確認が必要なため、今は非表示**（`src/content/lps/silver-comparison.ts` の `enabled: false`。デザインは残してあり、法務の承認後に `enabled: true` と `legalApproved` で戻せます）
 - Google の評価（★）と価格帯（$3,300–$4,400）は削除済み。価格・評価の数字は載せない
-- ヒーロー写真は実写（表示なし）。ほかの画像は生成画像（下部の「DESIGN PREVIEW」の注記に「Illustrative photography」と記載）
-- 画面上部と下部の「DESIGN PREVIEW」帯は `silver.astro` の `showPreviewStrip` で消せる
+- ヒーロー写真は実写（表示なし）。ほかの画像は生成画像で、フッターの注記「Illustrative photography.」で示している（消さない。ヒーロー以外もすべて実写に替えたときだけ外せる）
+- 画面上部の「DESIGN PREVIEW」の帯と、フッターの「Design preview…」の文言は、削除済み（2026-11-04）
 - フォーム、電話番号、営業時間、ポリシーのURLなどは Downsizing と同じ未確定事項（`npm run todos`）
 
 ## Gold LP（`/gold`）
