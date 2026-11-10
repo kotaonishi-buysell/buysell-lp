@@ -1062,7 +1062,7 @@ h1 em, h2 em, .photo-caption, .trust-label, .serif, .voices blockquote {
   box-shadow: 0 24px 55px rgba(23,37,30,.11);
 }
 .appraisers h3::before {
-  content: 'SILVER SPECIALIST';
+  content: 'APPRAISAL PROFESSIONAL';
   display: block;
   margin-bottom: 7px;
   color: var(--gold);
