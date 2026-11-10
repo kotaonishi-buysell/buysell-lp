@@ -58,7 +58,7 @@ test('hours that are recorded but not published appear on no LP', () => {
 test('the checked-in company facts are the ones supplied for BuySell America', () => {
   assert.equal(company.legalName, 'BuySell America, Inc.');
   assert.equal(company.address, '5717 Legacy Drive, Suite 250, Plano, TX 75024');
-  assert.deepEqual(company.phone, { display: '(469) 668-2619', e164: '+14696682619' });
+  assert.deepEqual(company.phone, { display: '(877) 745-7677', e164: '+18777457677' });
   assert.equal(company.occc.registrationNumber, '2600083284-237004');
   assert.equal(company.occc.regulatorNotice, '2601 N Lamar Blvd, Austin, TX 78705 · (512) 936-7600 · www.occc.texas.gov');
 });
