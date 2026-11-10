@@ -56,7 +56,7 @@ export const company: CompanyFacts = {
   group: { name: 'BuySell Technologies Co., Ltd.' },
   email: 'info@buysell-america.com',
   address: '5717 Legacy Drive, Suite 250, Plano, TX 75024',
-  phone: { display: '(469) 668-2619', e164: '+14696682619' },
+  phone: { display: '(877) 745-7677', e164: '+18777457677' },
   // TODO: confirm which days the phone is answered, then set showHours to true to publish the hours
   hours: '9:00 a.m.–midnight',
   showHours: false,
