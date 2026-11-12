@@ -9,9 +9,11 @@ export interface HomeValueConfig {
   /** Hours with the time zone, e.g. "Mon–Fri, 9 a.m.–5 p.m. (Central Time)". null = do not show hours. */
   hours: string | null;
   localOperator: { name: string; address: string; contact: string | null } | null;
+  /** The OCCC registration and the OCCC's contact line, as on every published LP. null = not confirmed: print nothing. */
+  registration: { label: string; value: string } | null;
+  regulator: { label: string; value: string } | null;
   privacyUrl: string | null;
   legalLinks: { label: string; href: string }[];
-  productionOrigin: string | null;
   deliveryEndpoint: string | null;
   measurementEnabled: boolean;
   group: { name: string; purchaseCount: string; regions: string; approved: boolean };
@@ -34,15 +36,20 @@ export const buildHomeValueConfig = (facts: CompanyFacts): HomeValueConfig => ({
     facts.legalName && facts.address
       ? { name: facts.legalName, address: facts.address, contact: approvedPhone(facts.phone)?.display ?? null }
       : null,
+  registration: facts.occc.registrationNumber ? { label: 'Texas registration No.', value: facts.occc.registrationNumber } : null,
+  regulator: facts.occc.regulatorNotice
+    ? { label: 'Texas Office of Consumer Credit Commissioner (OCCC)', value: facts.occc.regulatorNotice }
+    : null,
   // The shared legal pages (the same on every LP); the text is in src/content/legal.ts.
   privacyUrl: '/privacy',
   legalLinks: [
     { label: 'Terms of use', href: '/terms' },
     { label: 'Do not sell or share my personal information', href: '/do-not-sell' },
   ],
-  productionOrigin: null,
   deliveryEndpoint: null,
   measurementEnabled: false,
+  // TODO: the source and reporting period of the purchase count. The page states the count only when `approved` is true;
+  // until then it says only that the group is publicly listed in Japan (confirmed, Tokyo Stock Exchange Growth Market).
   group: { name: facts.group.name, purchaseCount: '400,000', regions: 'Japan and the United States', approved: false },
 });
 

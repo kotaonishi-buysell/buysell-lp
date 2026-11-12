@@ -19,7 +19,7 @@ export const homeValue = {
     body: `Bags you no longer use. Tableware tucked away. Things from an old hobby. ${config.brand} comes to your home to assess them together, so you can decide what to keep and what to sell.`,
     reassurances: ['Free appraisal and travel.', 'One item is enough.', "Just curious about the value? That's welcome, too."],
     image: '/images/home-value/hero-sample.svg',
-    imageAlt: 'Sample illustration of bags, a watch, jewelry, tableware and hobby belongings on shelves at home.',
+    imageAlt: 'Illustration of bags, a watch, jewelry, tableware and hobby belongings on shelves at home.',
   },
   empathy: {
     heading: 'Sound familiar?',
@@ -29,15 +29,15 @@ export const homeValue = {
   categories: {
     heading: 'Different kinds of belongings. One visit.',
     items: [
-      { name: 'Bags', image: 'bags', alt: 'Sample illustration of a handbag.' },
-      { name: 'Watches', image: 'watches', alt: 'Sample illustration of a wristwatch.' },
-      { name: 'Jewelry and accessories', image: 'jewelry', alt: 'Sample illustration of a necklace and earrings.' },
-      { name: 'Tableware', image: 'tableware', alt: 'Sample illustration of a cup and plates.' },
-      { name: 'Cameras', image: 'cameras', alt: 'Sample illustration of a camera.' },
-      { name: 'Musical instruments', image: 'instruments', alt: 'Sample illustration of a guitar.' },
-      { name: 'Coins and stamps', image: 'coins-stamps', alt: 'Sample illustration of coins and a postage stamp.' },
-      { name: 'Art and antiques', image: 'art-antiques', alt: 'Sample illustration of framed art and a vase.' },
-      { name: 'Other belongings you would like us to assess', image: 'other', alt: 'Sample illustration of a vase and a storage box.' },
+      { name: 'Bags', image: 'bags', alt: 'Illustration of a handbag.' },
+      { name: 'Watches', image: 'watches', alt: 'Illustration of a wristwatch.' },
+      { name: 'Jewelry and accessories', image: 'jewelry', alt: 'Illustration of a necklace and earrings.' },
+      { name: 'Tableware', image: 'tableware', alt: 'Illustration of a cup and plates.' },
+      { name: 'Cameras', image: 'cameras', alt: 'Illustration of a camera.' },
+      { name: 'Musical instruments', image: 'instruments', alt: 'Illustration of a guitar.' },
+      { name: 'Coins and stamps', image: 'coins-stamps', alt: 'Illustration of coins and a postage stamp.' },
+      { name: 'Art and antiques', image: 'art-antiques', alt: 'Illustration of framed art and a vase.' },
+      { name: 'Other belongings you would like us to assess', image: 'other', alt: 'Illustration of a vase and a storage box.' },
     ],
     body: "Start with the items you have in mind. If something else comes to mind while we're there, you can show us that, too.",
     qualification: 'We can assess your items and explain whether we can make a purchase offer.',
@@ -61,8 +61,10 @@ export const homeValue = {
     ],
     disclaimer: 'Illustrative inquiries, not customer reviews.',
     groupHeading: 'About the BuySell group',
-    groupBody: `${config.group.name} is publicly listed in Japan. The group has completed ${config.group.purchaseCount} purchases across ${config.group.regions}.`,
-    groupDraft: 'Client-supplied draft for this preview. Official entity wording, the local operator relationship, and the purchase-count source and reporting period require confirmation before public launch.',
+    // The purchase count is stated only once its source and reporting period are confirmed (config.group.approved).
+    groupBody:
+      `${config.group.name} is publicly listed in Japan.` +
+      (config.group.approved ? ` The group has completed ${config.group.purchaseCount} purchases across ${config.group.regions}.` : ''),
   },
   process: {
     heading: 'How a home visit works',
