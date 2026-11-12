@@ -30,7 +30,7 @@
 - 各カテゴリの名前と範囲（特に「アクセサリー」を、金・プラチナのものとして扱っていること）、買取できない品目（FAQ に書く）
 - 「クリーニングしない」「箱・書類を出す」の案内が、全カテゴリで正しいか
 - OG 画像の差し替え、カテゴリの写真
-- 画面上部と下部の「DESIGN PREVIEW」帯は、`appraisal.astro` の `showPreviewStrip` で消す
+- 画面上部の「DESIGN PREVIEW」の帯と、フッターの「Design preview…」の文言は、削除済み（2026-11-12）。フッターの「Illustrative photography.」は、生成画像であることを示す注記なので消さない（実写に替え終えたときだけ外せる）
 
 ## 編集のルール
 - Appraisal の見た目の変更は、`appraisal.css` と `appraisal.astro` の中だけで行い、他のLPのスタイルに影響させない。
