@@ -152,10 +152,10 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 ### 公開前に確認が必要なもの（ダミーのまま取り込み済み）
 
 - スタッフ3名（名前・顔写真）：モックの生成画像。実在のスタッフ名に見えるため、使ってよいか確認する
-- お客様の声：**非表示**（本物の声がまだないため）。デザインは残してあり、`src/content/lps/silver-testimonials.ts` の `enabled` を `true` にし、実在の声（許可と出典つき）に差し替えると戻せます。「Paid next day」（「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
+- お客様の声：**非表示**（本物の声がまだないため）。デザインは残してあり、`src/content/lps/silver-testimonials.ts` の `enabled` を `true` にし、実在の声（許可と出典つき）に差し替えると戻せます。（「Paid next day」は削除済み。「25 years」は、創業の経緯と合わず削除済み。グループ名・証券コード 7685 は確認済み）
 - 競合比較の表：一般的な説明に書き換え済み（出典と確認すべき点は [docs/design/silver/COMPARISON_SOURCES.md](docs/design/silver/COMPARISON_SOURCES.md)）。**公開前に法務の確認が必要なため、今は非表示**（`src/content/lps/silver-comparison.ts` の `enabled: false`。デザインは残してあり、法務の承認後に `enabled: true` と `legalApproved` で戻せます）
 - Google の評価（★）と価格帯（$3,300–$4,400）は削除済み。価格・評価の数字は載せない
-- ヒーロー写真は実写（表示なし）。ほかの画像は生成画像で、フッターの注記「Illustrative photography.」で示している（消さない。ヒーロー以外もすべて実写に替えたときだけ外せる）
+- ヒーロー写真は実写。ほかの画像は生成画像。フッターの注記「Illustrative photography.」は、依頼により削除した（2026-11-12）。生成画像を、実在のお客様や実際の訪問の写真に見せないこと
 - 画面上部の「DESIGN PREVIEW」の帯と、フッターの「Design preview…」の文言は、削除済み（Silver：2026-11-04、Appraisal：2026-11-12）
 - フォーム、電話番号、営業時間、ポリシーのURLなどは Downsizing と同じ未確定事項（`npm run todos`）
 
@@ -164,7 +164,7 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 デザイナーの静的HTML（`Reworth_LP_金_案2_2026-11-01/公開用`、2026-11-01）を取り込んだ、デザインの違う4本目。Silver と同じ方式：**見た目は元のHTMLのまま**にして、フォーム・計測・会社情報・法務リンクだけ共通にしてある。変更点、外した節、公開前の確認事項は [Gold DESIGN_SYSTEM.md](docs/design/gold/DESIGN_SYSTEM.md)。
 
 - 問い合わせフォームは共通の `ContactForm`（最後の申込みセクション）。元の独自フォームは使わない。`gclid` / `fbclid` は送らない。
-- 支払いの表現は全LP共通のルール（査定額は訪問時に伝え、売却に同意したら翌日末までに銀行振込）に直してある。
+- 買取の流れは全LP共通のルール（`src/content/purchase-flow.ts`）：訪問は査定だけ（自宅では買い取らない。Occupations Code 1956.067）。査定額を伝え、売ると決めたら、翌日に品物を引き取りに伺う、または郵送してもらう。支払いは銀行振込で、時期は約束しない。
 - 「Your appraisers」（サンプル写真・名前なし）と「What people say」（サンプルの声）は、本物の情報がそろうまで載せていない。
 - **画面に TODO は出さない**（公開ページのため）。未確認の約束（訪問までの日数、Houston の開始時期、訪問時にIDを見せること、保険）は載せず、確認事項は `gold.ts` の `// TODO:` コメントに残してある（`npm run todos`）。競合比較（「What changes when we come to you」）は、米国弁護士の確認まで**非表示**（`src/content/lps/gold-comparison.ts` の `enabled: false`）。電話・住所・OCCC は `company.ts`。OCCC の登録番号が空の間は、登録の表示をすべて出さない。
 

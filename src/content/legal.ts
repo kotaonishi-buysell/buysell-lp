@@ -68,7 +68,7 @@ export const privacyPolicy: LegalPageContent = {
   title: 'Privacy Policy',
   description: 'What personal information {company} collects for {brand} when you ask about an in-home appraisal, how we use it, and your choices.',
   intro:
-    '{company} ("we", "us") operates {brand}, which offers free in-home appraisals and buys items such as gold, silver, jewelry and watches from people in Texas. This policy explains what personal information we collect on our websites, by phone and at your home, how we use and share it, and the choices you have.',
+    '{company} ("we", "us") operates {brand}, which offers free in-home appraisals and buys items such as gold, silver, jewelry and watches from people in Texas. This policy explains what personal information we collect on our websites, by phone, at your home and when we collect your items, how we use and share it, and the choices you have.',
   sections: [
     {
       id: 'collect',
@@ -91,7 +91,7 @@ export const privacyPolicy: LegalPageContent = {
             'The date, the price and how you were paid, including the bank account details we need to send a transfer.',
           ],
         },
-        'We collect this only at a visit and only for a purchase. We do not ask for it on our websites.',
+        'We collect this only when you decide to sell, when we collect or receive your items. We do not ask for it on our websites or at the appraisal visit.',
         'Information collected automatically when you use our websites:',
         {
           list: [
@@ -118,7 +118,7 @@ export const privacyPolicy: LegalPageContent = {
         {
           list: [
             'To answer your request, arrange a visit and tell you whether we can come to your ZIP code.',
-            'To appraise and buy items, and to pay you.',
+            'To appraise items, to buy the items you decide to sell, and to pay you.',
             'To keep the records the law requires and to answer lawful requests from police and regulators.',
             'To send text messages about your request, only if you agreed (see "Text messages").',
             'To block spam and fraud and to keep our websites secure.',
@@ -241,15 +241,16 @@ export const termsOfUse: LegalPageContent = {
       blocks: [
         {
           list: [
-            'The appraisal is free, and you are never obliged to sell. Decide after you hear the offer.',
-            'An appraisal is not a promise that we will buy an item, and prices or ranges on our pages are illustrations, not offers. An offer is the amount we tell you at your home.',
+            'The appraisal is free, and you are never obliged to sell. Decide after you hear the appraised amount.',
+            'We visit to appraise. Nothing is bought at your home. If you decide to sell, we collect your items the next day, or you can send them to us.',
+            'An appraisal is not a promise that we will buy an item. The appraised amount we tell you at your home is not a purchase, and prices or ranges on our pages are illustrations.',
             'We may decline an item, for example if we cannot confirm what it is or who owns it.',
             'You must be 18 or older, and you must own the item or have the right to sell it.',
             'If you agree to sell, Texas law requires us to record your ID details and to keep photographs and a description of what we buy. See our Privacy Policy.',
-            'The sale itself is governed by the written purchase record you receive at the visit.',
+            'The sale itself is governed by the written purchase record you receive when we collect or receive your items.',
           ],
         },
-        'Payment: if you agree to sell, we pay you by bank transfer by the end of the next calendar day. When the funds arrive depends on your bank, and weekends and bank holidays can add time.',
+        'Payment is by bank transfer.',
       ],
     },
     {
@@ -306,7 +307,7 @@ export const termsOfUse: LegalPageContent = {
       id: 'liability',
       heading: 'Limit of liability',
       blocks: [
-        'To the fullest extent the law allows, we are not liable for indirect, incidental or consequential damages from your use of the websites. This does not limit rights you have under the purchase record you receive at a visit, or any right that cannot be limited by law.',
+        'To the fullest extent the law allows, we are not liable for indirect, incidental or consequential damages from your use of the websites. This does not limit rights you have under the purchase record you receive when we collect or receive your items, or any right that cannot be limited by law.',
       ],
     },
     {

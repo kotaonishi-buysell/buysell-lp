@@ -18,7 +18,7 @@
 - **ロゴ**：共通の `BrandLogo`（積み上げ型の REWORTH）。元の1行のロゴ（SVG）は使わない。そのため、ヘッダー、タブ、比較表、フッターのロゴの幅は `gold.css` で決め直してある。
 - **ボタン**：クラス名 `.btn` を `.gbtn` に変えた（共通の `form-support.css` が `.btn` を持つため）。
 - **未確定の事実**：元の `[TBC]` は、画面に出さない（公開ページに TODO を出さないため）。約束になるもの（訪問までの日数、「訪問時にIDを見せる」、保険、Houston の開始時期の「December」）は載せず、`gold.ts` の `// TODO:` コメントに確認事項として残した（`npm run todos` に出る）。「Always true」の約束は5つから4つになった。事実として確認できているものの TBC（無料の訪問と査定、写真付きIDの確認）は外した。
-- **支払い**：元の「We send your payment right away」「Paid on the spot」は、全LP共通のルールに直した（査定額は訪問時に伝え、売却に同意したら、翌日末までに銀行振込。小さな注記は `payment-note.ts`）。比較表の「Paid on the spot」の行は「Paid by bank transfer by the end of the next day」にし、他社の欄は「Varies」にした。
+- **買取の流れ**：元の「We send your payment right away」「Paid on the spot」は、全LP共通のルール（`purchase-flow.ts`）に直した。訪問は査定だけで、自宅では買い取らない。売ると決めたら、翌日に引き取りに伺う、または郵送。支払いは銀行振込で、時期は約束しない。**ヒューストン**は、ダラス・フォートワースと同じ「Now visiting」のカードにした（「Coming soon」は削除済み）。
 - **フッター**：Do not sell or share のリンクを足した。元の「wholly owned subsidiary … publicly listed Japanese reuse company」の重複する文は、`company.ts` の言い方（part of ○○）に揃えて1つにした。
 - **外した節（本物の情報がそろうまで）**：
   - 「Your appraisers」：サンプル写真と `[Real name]` のままだったため。写真2枚（A1、A2）は取り込んでいない。

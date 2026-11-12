@@ -36,10 +36,11 @@ test('the page uses the shared contact form, brand logo and company facts, not i
   assert.doesNotMatch(page.replace(/BuySell (Technologies|America|group)/g, ''), /buysell/i);
 });
 
-test('payment is never promised the same day or "before we leave": next-day bank transfer only', () => {
+test('payment is never promised the same day or "before we leave", and no payment time is promised at all', () => {
   const text = [read('src/pages/gold.astro'), JSON.stringify(goldCopy)].join('\n');
   assert.doesNotMatch(text, /(paid|pay|payment)\b[^.]{0,40}(right away|on the spot|same[- ]day)|same[- ]day|before we leave/i);
-  assert.match(goldCopy.step4 + goldCopy.payment, /bank transfer by the end of the next day/);
+  assert.match(goldCopy.step4 + goldCopy.payment, /Payment is by bank transfer/);
+  assert.doesNotMatch(goldCopy.step4 + goldCopy.payment, /end of the next day/);
 });
 
 test('the sample appraisers and sample reviews of the designer\'s page are not published', () => {

@@ -40,8 +40,10 @@ test('the three pages agree with the rules of the business', () => {
   // Texting is optional and can be stopped.
   for (const page of [privacyPolicy, termsOfUse]) assert.match(text(page), /Reply STOP/);
   assert.match(text(termsOfUse), /not a condition/);
-  // The payment rule is the one of every LP.
-  assert.match(text(termsOfUse), /bank transfer by the end of the next calendar day/);
+  // The purchase rule is the one of every LP: the visit appraises, nothing is bought at the home, payment is by bank transfer.
+  assert.match(text(termsOfUse), /Nothing is bought at your home/);
+  assert.match(text(termsOfUse), /Payment is by bank transfer/);
+  assert.doesNotMatch(text(termsOfUse), /end of the next (calendar )?day/);
   assert.doesNotMatch(text(termsOfUse), /same day|before we leave/i);
   // Texas dealer records exist, so no page may promise "no photos" or "no sharing".
   for (const page of legalPages) assert.doesNotMatch(text(page), /no photos|never (take|share)/i, page.slug);
