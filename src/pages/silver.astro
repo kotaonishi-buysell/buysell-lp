@@ -25,21 +25,11 @@ const telHref = `tel:${site.phone.e164}`;
 const hoursLine = site.company.hours ? rich(fill(site.phone.hoursLine, { hours: site.company.hours })) : null;
 const year = new Date().getFullYear();
 
-// Mock-up banner. Set to false at launch, together with the "Design preview" note in the footer.
-const showPreviewStrip = true;
-
 // Section numbers after the comparison (06): while the comparison is hidden they move up by one, so there is no gap.
 const no = (n: number): string => String(silverComparison.enabled ? n : n - 1).padStart(2, '0');
 ---
 
 <SilverLayout page={silver}>
-  {
-    showPreviewStrip && (
-      <div class="preview-strip">
-        DESIGN PREVIEW <span>·</span> Contact details, credentials &amp; offers subject to confirmation
-      </div>
-    )
-  }
   <header class="header wrap">
 <a class="brand" href="#" aria-label={`${company.brand} home`}><BrandLogo class="brand-logo" decorative /><span>SILVER SPECIALISTS · TEXAS</span></a>
 <nav class="desktop-nav" aria-label="Main navigation"><a href="#silver">What we buy</a><a href="#how">How it works</a><a href="#questions">Your questions</a></nav>
@@ -135,14 +125,7 @@ const no = (n: number): string => String(silverComparison.enabled ? n : n - 1).p
         <span>© {year} {site.company.name}. All rights reserved.</span>
         <span>A company of {company.group.name}</span>
       </div>
-      {
-        showPreviewStrip && (
-          <p class="fine footer-preview">
-            Design preview. Illustrative photography. Highlighted fields, service claims and legal information require
-            confirmation before launch.
-          </p>
-        )
-      }
+      <p class="fine footer-note">Illustrative photography.</p>
     </div>
   </footer>
 

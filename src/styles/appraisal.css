@@ -39,8 +39,6 @@ p{color:inherit}
 .button span{font-size:21px;font-weight:400}
 .skip,.skip-link{position:fixed;left:20px;top:-100px;background:white;z-index:20;padding:12px}
 .skip:focus,.skip-link:focus{top:20px}
-.preview-strip{background:#e9e9df;text-align:center;font-size:11px;letter-spacing:.6px;line-height:24px;padding:3px 15px;color:#555c51}
-.preview-strip span{padding:0 9px}
 .header{display:flex;align-items:center;justify-content:space-between;gap:32px;padding-block:28px;border-bottom:1px solid var(--line)}
 .brand{font-family:var(--serif);font-size:42px;letter-spacing:-2px;line-height:1;white-space:nowrap}
 .brand span{display:block;font-family:var(--sans);font-size:9px;letter-spacing:2.1px;margin-top:12px;font-weight:500}
@@ -216,7 +214,7 @@ footer{background:#102c20;color:#e8eee1;padding-block:54px 25px}
 .footer-info a{display:block;text-align:left;padding:0;margin-bottom:9px;font-size:11px}
 .footer-info a:hover{text-decoration:underline}
 .footer-bottom{border-top:1px solid #3e5341;padding-top:20px;display:flex;justify-content:space-between;gap:25px;font-size:10px;color:#b9c4b3}
-.footer-preview{font-size:10px;color:#aebea9;margin-top:15px}
+.footer-note{font-size:10px;color:#aebea9;margin-top:15px}
 .mobile-bar{display:none}
 dialog{border:0;padding:44px;width:calc(100% - 36px);max-width:540px;background:var(--ivory);color:var(--ink);max-height:90dvh;overflow:auto}
 dialog::backdrop{background:#0a211bc4;backdrop-filter:blur(4px)}
@@ -267,7 +265,6 @@ dialog>p:not(.eyebrow){font-size:15px;margin-bottom:20px}
 @media(max-width:760px) {
   .wrap{width:calc(100% - 44px)}
   .section{padding-block:65px}
-  .preview-strip{font-size:9px;letter-spacing:0;line-height:1.5;padding:6px 20px}
   .header{padding-block:20px;gap:15px}
   .brand{font-size:32px}
   .brand span{font-size:7px;letter-spacing:1.5px;margin-top:8px}
@@ -518,7 +515,6 @@ html, body{overflow-x:hidden}
   body{font-size:15px;line-height:1.58}
   .wrap{width:calc(100% - 36px)}
   .section{padding-block:52px}
-  .preview-strip{font-size:8px;padding:5px 12px}
   .header{padding-block:16px}
   .brand{font-size:29px}
   .brand span{font-size:6px;margin-top:7px}
