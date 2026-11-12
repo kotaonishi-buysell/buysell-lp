@@ -30,14 +30,14 @@ Validation errors, sending/duplicate prevention, explicit preview outcome, servi
 | Boundary | Current status |
 |---|---|
 | Page and sample assets | Implemented; local preview available |
-| Phone number and hours | Unconfigured in company.ts; no dummy-number links, no hours or open-now claims. Filling them there turns on the call button and hours |
+| Phone number and hours | The phone number is set in company.ts, so the call buttons are live (the "phone pending" text exists only while there is no number). Hours are recorded but not published (`showHours`); no open-now claims |
 | Request validation | Runs locally; past dates use Central Time |
 | Request delivery | Preview only; no receiving service connected |
 | Jobber | Planned; no endpoint, credentials, field mapping or account configuration assumed |
 | Analytics | Disabled by default; no advertising tracker installed |
-| Group/company copy | Client-supplied draft; approval and count source/reporting period pending |
+| Group/company copy | The page says only that the group is publicly listed in Japan (confirmed). The purchase count (400,000) is **not shown** until its source and reporting period are confirmed: then set `group.approved` to true in config.ts and it appears. No draft notice is shown on the page |
 | Legal links/local operator | Omitted until approved details and URLs are supplied. The local operator appears once company.ts has both the registered name and the address |
-| Canonical/production metadata | No production domain invented; preview is noindex |
+| Canonical/production metadata | The canonical and `og:url` come from the site's own address (Netlify's URL, or a custom domain; `src/lib/site-url.ts`), like every published LP. A local build has none and the page is noindex. There is no OG image yet (needs a 1200×630 picture) |
 
 ## Delivery adapter contract
 Set the shared endpoint (contactFormConfig.endpoint in src/content/contact-form.ts) only after an approved receiving service and staff review workflow exist. The browser POSTs JSON with lp, firstName, lastName, zip, phone (digits only), email, message, smsConsent, smsConsentAt, smsConsentText, submittedAt and utm.
@@ -61,5 +61,6 @@ Phone events represent tap intent; accepted requests are not confirmed appointme
 - Real request delivery/Jobber verification: pending. Receiving-service states tested with mocked transport, not a live provider.
 
 ## Public-launch dependencies
-Approved phone number, operating hours when supplied, receiving destination and staff confirmation workflow, live integration testing, exact ZIP coverage if automatic coverage checks are wanted, local operating entity/contact details, privacy information and consent wording, company/group wording approval and purchase-count source/reporting date, production domain, approved photography and desired DM Sans assets.
+Done: the phone number, the company and OCCC details (the footer prints the registration number and the OCCC contact line, from company.ts), the privacy pages, the canonical URL, and no draft wording on the page.
+Still open: the decision to publish this LP next to Appraisal (the two make nearly the same offer); the images (ten original SVG illustrations, captioned "Illustration.", or approved photography); the purchase-count source and reporting period (until then the count is not shown); an OG image; whether it should load Google Tag Manager like the other LPs (it does not: no ad or analytics tags); approved SMS consent wording; the receiving destination for requests (shared form on Netlify Forms; Jobber is not connected); exact ZIP coverage if automatic coverage checks are wanted.
 No unsupported cancellation, item collection, staff credential or security-standard claims have been added.

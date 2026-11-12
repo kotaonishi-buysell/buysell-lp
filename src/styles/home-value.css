@@ -63,7 +63,6 @@ body[data-lp="home-value"] {
 [data-lp="home-value"] :is(.hv-category,.hv-process > li,.hv-three-grid > *) { min-width: 0; }
 [data-lp="home-value"] .hv-section-note { margin-block: 24px 12px; }
 [data-lp="home-value"] .hv-group { margin-top: 64px; padding: 32px; border-radius: var(--hv-radius); background: var(--hv-mint); max-width: 900px; }
-[data-lp="home-value"] .hv-preview-note { padding: 16px; margin-top: 16px; border: 2px dashed var(--hv-green); border-radius: 12px; font-size: 14px; color: var(--hv-green); background: var(--hv-cream); }
 [data-lp="home-value"] .hv-faq { margin-top: 64px; max-width: 900px; padding: 24px; border-radius: var(--hv-radius); background: var(--hv-blue); scroll-margin-top: 24px; }
 [data-lp="home-value"] details { background: var(--hv-white); border-radius: 20px; padding: 20px 24px; margin-top: 16px; }
 [data-lp="home-value"] summary { cursor: pointer; font-weight: 700; color: var(--hv-green); min-height: 32px; }
