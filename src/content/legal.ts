@@ -29,6 +29,39 @@ export interface LegalPageContent {
   sections: LegalSection[];
 }
 
+/**
+ * Do the advertising tools receive what visitors type into the form (even hashed)?
+ *
+ * Our own code sends nothing to them: the dataLayer events (form_start, form_submit) carry only the LP name. But
+ * Google's "enhanced conversions" and Meta's "advanced matching" can read an email address or phone number from a
+ * form on the page, in the browser, if they are turned on in the tools' own settings, and that is not visible from
+ * this repository (the GTM container export does not show it). So the text has three states:
+ *   'unconfirmed' (now): says the features exist and may read the form, and promises nothing;
+ *   'yes':  the features are on: says hashed contact details are sent to Google and Meta;
+ *   'no':   confirmed off in GTM, Google Ads and Meta Events Manager: says the tools do not receive the form input.
+ * Pick 'yes' or 'no' only after checking (docs/design/legal/GTM_CONTAINER.md, "Form data").
+ */
+export const formDataToAdvertisers: 'unconfirmed' | 'yes' | 'no' = 'unconfirmed';
+
+const formDataTexts = {
+  unconfirmed: {
+    received:
+      'Our own website code does not send what you type into the form to these tools. However, Google (enhanced conversions) and Meta (advanced matching) have features that, if they are turned on in those tools\' own settings, can read contact details you enter in a form on the page, such as an email address or a phone number, and send them to Google or Meta in hashed (one-way scrambled) form. Opting out stops this too.',
+    notShared:
+      'Apart from what those features may read from the form, we do not pass your contact details, your ID or purchase records, or your text-message consent record to advertisers.',
+  },
+  yes: {
+    received:
+      'When you send a request through our form, the Google and Meta tools on our pages receive hashed (one-way scrambled) versions of the contact details you entered, such as your phone number and email address, together with the fact that you sent a request. Google and Meta use them to measure whether our ads led to your request and to show our ads. Opting out stops this too.',
+    notShared: 'We do not pass your ID or purchase records, or your text-message consent record, to advertisers.',
+  },
+  no: {
+    received: 'They do not receive what you type into the form: not your name, phone number, email address or message.',
+    notShared:
+      'We do not share your contact details, your ID or purchase records, or your text-message consent record with advertisers.',
+  },
+}[formDataToAdvertisers];
+
 export const legalCopy = {
   effective: 'Effective date: {effective}',
   contents: 'On this page',
@@ -100,11 +133,13 @@ export const privacyPolicy: LegalPageContent = {
             'Basic technical data (IP address, browser and device type, pages requested) that our hosting provider logs to run and secure the site.',
           ],
         },
-        'Some of our landing pages use Google Tag Manager to load three tools. They set cookies and similar technologies, and they receive data such as your IP address, browser and device, the page you came from, the pages you view, and the actions you take (for example, tapping a call or request button, opening a question, or starting or sending the form). They do not receive what you type into the form.',
+        'Some of our landing pages use Google Tag Manager to load four advertising and measurement tools. They set cookies and similar technologies (cookies and data in your browser\'s local storage), and they receive data such as cookie IDs and advertising IDs, your IP address, browser and device, the page you came from, the pages you view, and the actions you take (for example, tapping a call or request button, opening a question, or starting or sending the form).',
+        formDataTexts.received,
         {
           list: [
-            'Google Analytics (Google). Measures how many people visit and what they do. Cookies: _ga and _ga_*.',
-            'Meta Pixel (Meta Platforms, Inc.). Measures our ads on Facebook and Instagram and lets Meta show our ads to people who visited our pages. Cookies: _fbp and _fbc. This is advertising use: see "Who we share it with".',
+            'Google Ads (Google). Measures whether our ads led to requests (conversion measurement) and lets Google show our ads to people who visited our pages (remarketing), on Google and on other websites. It stores identifiers in your browser, for example _gcl_ls in local storage. This is advertising use: see "Who we share it with".',
+            'Google Analytics (Google). Measures how many people visit and what they do. Its audience lists can also be used with Google Ads. Cookies: _ga and _ga_*.',
+            'Meta Pixel (Meta Platforms, Inc.). Measures our ads on Facebook and Instagram and lets Meta show our ads to people who visited our pages. Cookies: _fbp and _fbc. It also loads a script that prepares parameters for Meta\'s Conversions API (from the jsDelivr code-delivery network). This is advertising use: see "Who we share it with".',
             'Microsoft Clarity (Microsoft). Records how people use the page (clicks, taps, scrolling, mouse movement) as session recordings and heatmaps, so we can improve the page. We mask what you type into our form. Cookies: _clck and _clsk.',
           ],
         },
@@ -123,7 +158,7 @@ export const privacyPolicy: LegalPageContent = {
             'To send text messages about your request, only if you agreed (see "Text messages").',
             'To block spam and fraud and to keep our websites secure.',
             'To understand which pages and campaigns lead to requests, and how people use our pages.',
-            'To measure our advertising and to show our ads to people who visited our pages (through the Meta Pixel).',
+            'To measure our advertising and to show our ads to people who visited our pages (through the Meta Pixel and Google Ads).',
           ],
         },
       ],
@@ -142,13 +177,14 @@ export const privacyPolicy: LegalPageContent = {
       id: 'sharing',
       heading: 'Who we share it with',
       blocks: [
-        'We do not sell your personal information for money. We do use the advertising and measurement tools described above, which send limited data (such as cookie IDs, your IP address, the pages you view and button taps) to Meta, Google and Microsoft. Under some state privacy laws, sending data to Meta for advertising can count as a "sale", as "sharing", or as "targeted advertising". You can opt out: see "Do not sell or share my personal information".',
+        'We do not sell your personal information for money. We do use the advertising and measurement tools described above, which send limited data (such as cookie IDs and advertising IDs, your IP address, the pages you view and button taps) to Meta, Google and Microsoft. Under some state privacy laws, sending data to Meta or Google for advertising can count as a "sale", as "sharing", or as "targeted advertising". Both Meta (Meta Pixel) and Google (Google Ads) are used this way on our pages. You can opt out: see "Do not sell or share my personal information".',
+        'Personal data we share for advertising and measurement: identifiers (cookie IDs, advertising IDs and your IP address), device and browser information, and internet activity (the pages you view and the actions you take on them). We share it with these categories of third parties: advertising and social media platforms (Meta and Google), and analytics and session-recording providers (Google and Microsoft).',
         'We give information to others as follows:',
         {
           list: [
             // TODO: confirm there is no other category of provider that receives personal information, for example a CRM tool. If there is, add it to this list.
             'Service providers that work for us under contract: website hosting and form-processing providers, analytics and session-recording providers, and providers of email, text messaging and scheduling.',
-            'Advertising and social media platforms (for example Meta), through the advertising tool described above, for advertising and ad measurement. You can opt out: see "Do not sell or share my personal information".',
+            'Advertising and social media platforms (Meta and Google), through the advertising tools described above, for advertising and ad measurement. You can opt out: see "Do not sell or share my personal information".',
             // TODO: confirm whether and under what terms data goes to BuySell Technologies group companies. Remove this line if it does not.
             'Other companies in the BuySell group, to help run the service.',
             'Police and regulators. We report each purchase to local law enforcement, as Texas law requires, and we give purchase records to the OCCC and others when the law requires it or a lawful request is made.',
@@ -187,6 +223,7 @@ export const privacyPolicy: LegalPageContent = {
             'opt out of the sale of it, of targeted advertising and of profiling. We do not profile you in a way that has legal or similarly significant effects. You can opt out of the advertising tools yourself at any time on our "Do not sell or share my personal information" page.',
           ],
         },
+        'We treat an opt-out preference signal, such as Global Privacy Control, as a request to opt out of the sale of personal data, of sharing it and of targeted advertising, in the browser that sends it.',
         'To make a request, email {email} or call {phone}. We may need to confirm who you are before we act. We answer within 45 days, and we may extend that once by 45 more days when reasonably necessary, telling you why. There is no charge for a reasonable request.',
         'If we decline a request, you can appeal by replying to our answer or writing to the email above. We answer an appeal within 60 days. If you are not satisfied, you can contact the Texas Attorney General\'s office.',
         'To stop texts, reply STOP. To stop emails, use the link in the email or write to us.',
@@ -332,13 +369,13 @@ export const doNotSell: LegalPageContent = {
   title: 'Do Not Sell or Share My Personal Information',
   description: 'How {brand} uses advertising and measurement tools, and how to opt out of them.',
   intro:
-    '{company} does not sell your personal information for money. Some of our pages use advertising and measurement tools that send limited information to Meta, Google and Microsoft. Under some state privacy laws that can count as a "sale", as "sharing" or as "targeted advertising". You can opt out here at any time.',
+    '{company} does not sell your personal information for money. Some of our pages use advertising and measurement tools (Google Ads, the Meta Pixel, Google Analytics and Microsoft Clarity) that send limited information to Google, Meta and Microsoft. Under some state privacy laws that can count as a "sale", as "sharing" or as "targeted advertising". You can opt out here at any time.',
   sections: [
     {
       id: 'opt-out',
       heading: 'Opt out on this browser',
       blocks: [
-        'When you opt out, we stop loading Google Tag Manager, and with it the Meta Pixel, Google Analytics and Microsoft Clarity, on our pages in this browser, and we remove the cookies those tools set on this site.',
+        'When you opt out, we stop loading Google Tag Manager, and with it Google Ads, the Meta Pixel, Google Analytics and Microsoft Clarity, on our pages in this browser, and we remove the cookies and local-storage data those tools set on this site (such as _ga, _fbp, _clck and _gcl_ls).',
         { control: 'privacy-choice' },
         'We also treat an opt-out preference signal, such as Global Privacy Control, as an opt-out. If your browser sends one, these tools are not loaded at all. The choice applies to this browser and device; if you use another browser or device, or clear your site data, choose again.',
       ],
@@ -349,13 +386,15 @@ export const doNotSell: LegalPageContent = {
       blocks: [
         {
           list: [
-            'Meta Pixel (Meta Platforms, Inc.): advertising. Measures our ads on Facebook and Instagram and lets Meta show our ads to people who visited our pages. This is the use that can count as a sale, sharing or targeted advertising. You can also control ads in your Facebook and Instagram settings.',
-            'Google Analytics (Google): measures visits and what people do on the page.',
+            'Google Ads (Google): advertising. Measures whether our ads led to requests and lets Google show our ads to people who visited our pages, on Google and on other websites. This is a use that can count as a sale, sharing or targeted advertising. You can also control ads in your Google account\'s ad settings.',
+            'Meta Pixel (Meta Platforms, Inc.): advertising. Measures our ads on Facebook and Instagram and lets Meta show our ads to people who visited our pages. This is a use that can count as a sale, sharing or targeted advertising. You can also control ads in your Facebook and Instagram settings.',
+            'Google Analytics (Google): measures visits and what people do on the page. Its audience lists can also be used with Google Ads.',
             'Microsoft Clarity (Microsoft): session recordings and heatmaps of clicks, taps and scrolling. We mask what you type into our form.',
           ],
         },
-        'These tools receive data such as cookie IDs, your IP address, your browser and device, the page you came from, the pages you view and the actions you take (for example, tapping a call or request button, or starting or sending the form). They do not receive what you type into the form: not your name, phone number, email address or message.',
-        'We do not share your contact details, your ID or purchase records, or your text-message consent record with advertisers.',
+        'These tools receive data such as cookie IDs, your IP address, your browser and device, the page you came from, the pages you view and the actions you take (for example, tapping a call or request button, or starting or sending the form).',
+        formDataTexts.received,
+        formDataTexts.notShared,
       ],
     },
     {

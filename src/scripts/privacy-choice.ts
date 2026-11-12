@@ -1,5 +1,5 @@
 /* The opt-out control on the Do Not Sell or Share page (components/PrivacyChoice.astro). */
-import { clearTrackingCookies, gpcOn, optedOut, setOptOut } from '../lib/privacy-choice';
+import { clearTrackingCookies, clearTrackingStorage, gpcOn, optedOut, setOptOut } from '../lib/privacy-choice';
 
 export function initPrivacyChoice(): void {
   const root = document.querySelector<HTMLElement>('[data-privacy-choice]');
@@ -14,6 +14,15 @@ export function initPrivacyChoice(): void {
   } catch {
     storage = null;
   }
+
+  /** Removes what the tools stored in this browser: their cookies and local-storage keys (such as _gcl_ls). */
+  const clearTracking = (): void => {
+    clearTrackingCookies(document, window.location.hostname);
+    clearTrackingStorage(storage);
+  };
+
+  // Someone who already opted out, or sends Global Privacy Control, should not keep what a tool stored earlier.
+  if (gpcOn(navigator) || optedOut(storage)) clearTracking();
 
   const render = (): void => {
     if (gpcOn(navigator)) {
@@ -31,7 +40,7 @@ export function initPrivacyChoice(): void {
   button.addEventListener('click', () => {
     const next = !optedOut(storage);
     setOptOut(storage, next);
-    if (next) clearTrackingCookies(document, window.location.hostname);
+    if (next) clearTracking();
     render();
     status.focus();
   });

@@ -46,6 +46,7 @@ export const buildSite = (facts: CompanyFacts): SiteContent => ({
     ? { label: 'Texas Office of Consumer Credit Commissioner (OCCC)', value: facts.occc.regulatorNotice }
     : null,
   legal: {
+    // TODO: set the effective date to the day the updated policy (Google Ads disclosure, 2026-11-12 edits) goes live.
     effectiveDate: 'October 29, 2026',
     // Privacy requests go to the primary contact email.
     privacyEmail: facts.email ?? pending('privacy contact email'),

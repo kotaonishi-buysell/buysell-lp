@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import {
   PRIVACY_OPTOUT_KEY,
   clearTrackingCookies,
+  clearTrackingStorage,
+  isTrackingStorageKey,
   cookieDomains,
   cookieNames,
   gpcOn,
@@ -11,7 +13,7 @@ import {
   optedOut,
   setOptOut,
 } from '../src/lib/privacy-choice.ts';
-import { privacyPolicy, doNotSell } from '../src/content/legal.ts';
+import { privacyPolicy, doNotSell, formDataToAdvertisers } from '../src/content/legal.ts';
 
 const memory = () => {
   const data = new Map();
@@ -39,7 +41,7 @@ test('the opt-out is saved in the browser and can be undone; no storage means no
 });
 
 test('only the cookies of the tools are removed', () => {
-  for (const name of ['_ga', '_ga_JP716WPFW5', '_gid', '_fbp', '_fbc', '_clck', '_clsk']) assert(isTrackingCookie(name), name);
+  for (const name of ['_ga', '_ga_JP716WPFW5', '_gid', '_gcl_au', '_gcl_aw', '_fbp', '_fbc', '_clck', '_clsk']) assert(isTrackingCookie(name), name);
   for (const name of ['session', 'cf_form', 'rw-privacy-optout', '_gadget']) assert(!isTrackingCookie(name), name);
   assert.deepEqual(cookieNames('_ga=1; session=x; _fbp=2'), ['_ga', 'session', '_fbp']);
   assert.deepEqual(cookieDomains('a.b.netlify.app'), ['a.b.netlify.app', '.a.b.netlify.app', '.b.netlify.app', '.netlify.app']);
@@ -61,13 +63,52 @@ test('Google Tag Manager is not loaded after an opt-out or with Global Privacy C
 const text = (page) =>
   [page.intro, ...page.sections.flatMap((s) => s.blocks.flatMap((b) => (typeof b === 'string' ? [b] : 'list' in b ? b.list : [])))].join('\n');
 
-test('the policy and the opt-out page name every tool in the Google Tag Manager container (GTM-PQQFZ723, 2026-10-29)', () => {
+test('the policy and the opt-out page name every tool seen through Google Tag Manager (GTM-PQQFZ723: Google Ads, GA4, Meta Pixel, Clarity)', () => {
   for (const page of [privacyPolicy, doNotSell]) {
-    for (const name of ['Meta Pixel', 'Google Analytics', 'Microsoft Clarity']) assert.match(text(page), new RegExp(name), `${page.slug}: ${name}`);
+    for (const name of ['Google Ads', 'Meta Pixel', 'Google Analytics', 'Microsoft Clarity']) assert.match(text(page), new RegExp(name), `${page.slug}: ${name}`);
   }
   assert(doNotSell.sections.some((s) => s.blocks.some((b) => typeof b === 'object' && 'control' in b)), 'the opt-out control is on the page');
   assert.match(text(doNotSell), /Global Privacy Control/);
   // The pixel is advertising: the pages must not say there is no sharing for advertising.
   assert.doesNotMatch(text(doNotSell), /There is nothing you need to opt out of/);
   assert.doesNotMatch(text(privacyPolicy), /We do none of these/);
+});
+
+test('Google Ads local storage (_gcl_ls) is removed with the tool cookies, and nothing else is', () => {
+  assert(isTrackingStorageKey('_gcl_ls'));
+  assert(!isTrackingStorageKey('rw-privacy-optout'));
+  assert(!isTrackingStorageKey('other'));
+  const data = new Map([['_gcl_ls', '1'], ['_gcl_aw', '2'], ['rw-privacy-optout', '1'], ['keep', '3']]);
+  const storage = {
+    get length() { return data.size; },
+    key: (i) => [...data.keys()][i] ?? null,
+    getItem: (k) => data.get(k) ?? null,
+    setItem: (k, v) => data.set(k, v),
+    removeItem: (k) => data.delete(k),
+  };
+  clearTrackingStorage(storage);
+  assert.deepEqual([...data.keys()].sort(), ['keep', 'rw-privacy-optout']);
+  assert.doesNotThrow(() => clearTrackingStorage(null));
+  // The layout also drops _gcl_* storage for a visitor who opted out or sends Global Privacy Control.
+  const layout = readFileSync(new URL('../src/layouts/Document.astro', import.meta.url), 'utf8');
+  assert.match(layout, /\^_gcl_/);
+});
+
+test('the text never says the tools do not receive the form input unless that is confirmed', () => {
+  const strongDenial = /They do not receive what you type into the form/;
+  const all = text(privacyPolicy) + '\n' + text(doNotSell);
+  if (formDataToAdvertisers === 'no') assert.match(all, strongDenial);
+  else assert.doesNotMatch(all, strongDenial);
+  if (formDataToAdvertisers === 'yes') assert.match(all, /hashed/);
+  if (formDataToAdvertisers === 'unconfirmed') assert.match(all, /if they are turned on/);
+  assert.doesNotMatch(all, /three tools/);
+});
+
+test('the privacy policy has what the Texas Data Privacy and Security Act asks for when data is used for targeted advertising', () => {
+  const t = text(privacyPolicy);
+  assert.match(t, /Personal data we share for advertising and measurement/); // categories of data shared
+  assert.match(t, /categories of third parties/);                              // categories of third parties
+  assert.match(t, /targeted advertising/);                                      // targeted advertising named
+  assert.match(t, /Global Privacy Control, as a request to opt out/);           // opt-out signals honoured
+  assert.match(t, /Do not sell or share my personal information/);              // how to opt out
 });

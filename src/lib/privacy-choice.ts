@@ -8,7 +8,12 @@
 export const PRIVACY_OPTOUT_KEY = 'rw-privacy-optout';
 
 /** Cookies those tools set on our own domain; removed when the visitor opts out. */
-export const TRACKING_COOKIE_PATTERNS: RegExp[] = [/^_ga$/, /^_ga_.+$/, /^_gid$/, /^_gat(_.+)?$/, /^_fbp$/, /^_fbc$/, /^_clck$/, /^_clsk$/];
+export const TRACKING_COOKIE_PATTERNS: RegExp[] = [/^_ga$/, /^_ga_.+$/, /^_gid$/, /^_gat(_.+)?$/, /^_gcl_.+$/, /^_fbp$/, /^_fbc$/, /^_clck$/, /^_clsk$/];
+
+/** Browser storage keys those tools use (Google Ads keeps _gcl_ls in local storage); removed when the visitor opts out. */
+export const TRACKING_STORAGE_PATTERNS: RegExp[] = [/^_gcl_.+$/];
+
+export const isTrackingStorageKey = (key: string): boolean => TRACKING_STORAGE_PATTERNS.some((pattern) => pattern.test(key));
 
 export const isTrackingCookie = (name: string): boolean => TRACKING_COOKIE_PATTERNS.some((pattern) => pattern.test(name));
 
@@ -52,6 +57,24 @@ export const cookieDomains = (hostname: string): string[] => {
   const domains = [hostname];
   for (let i = 0; i < parts.length - 1; i++) domains.push('.' + parts.slice(i).join('.'));
   return domains;
+};
+
+interface KeyedStorage extends StorageLike {
+  readonly length: number;
+  key(index: number): string | null;
+}
+
+/** Removes the tools' keys (such as _gcl_ls) from a storage area. */
+export const clearTrackingStorage = (storage: KeyedStorage | null): void => {
+  if (!storage) return;
+  safe(() => {
+    const keys: string[] = [];
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i);
+      if (key && isTrackingStorageKey(key)) keys.push(key);
+    }
+    for (const key of keys) storage.removeItem(key);
+  }, undefined);
 };
 
 /** Expires the tool cookies on this host and its parent domains. */
