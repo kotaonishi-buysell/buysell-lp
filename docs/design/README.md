@@ -8,6 +8,7 @@
 | /home-value | [Home Value DESIGN_SYSTEM.md](home-value/DESIGN_SYSTEM.md) | src/styles/home-value.css と src/components/home-value/ の専用部品 |
 | /silver | [Silver DESIGN_SYSTEM.md](silver/DESIGN_SYSTEM.md) | src/styles/silver.css、src/pages/silver.astro、src/layouts/SilverLayout.astro |
 | /gold | [Gold DESIGN_SYSTEM.md](gold/DESIGN_SYSTEM.md) | src/styles/gold.css、src/pages/gold.astro、src/layouts/GoldLayout.astro、src/scripts/gold.ts |
+| /appraisal | [Appraisal DESIGN_SYSTEM.md](appraisal/DESIGN_SYSTEM.md) | src/styles/appraisal.css、src/pages/appraisal.astro、src/layouts/AppraisalLayout.astro（動きは src/scripts/silver.ts を共用） |
 | /privacy /terms /do-not-sell（共通の法務ページ） | [Legal DESIGN_SYSTEM.md](legal/DESIGN_SYSTEM.md) | src/content/legal.ts、src/components/LegalPage.astro、src/layouts/LegalLayout.astro、src/styles/legal.css |
 
 ## 編集ルール

@@ -14,6 +14,7 @@ test('the draft LPs (/downsizing, /home-value) are not pages of a normal build',
 test('the drafts are routes only in dev or with PUBLIC_DRAFT_LPS=true, and / goes to Silver', () => {
   const config = readFileSync(new URL('astro.config.mjs', root), 'utf8');
   assert.match(config, /command !== 'dev' && env\.PUBLIC_DRAFT_LPS !== 'true'\) return/);
+  assert.doesNotMatch(config, /appraisal/, 'Appraisal is a published page, not an injected draft route');
   assert.match(config, /'\/': '\/silver'/);
   const netlify = readFileSync(new URL('netlify.toml', root), 'utf8');
   assert.match(netlify, /from = "\/"\s+to = "\/silver"/);
