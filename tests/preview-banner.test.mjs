@@ -11,7 +11,7 @@ for (const lp of ['silver', 'appraisal']) {
     assert.doesNotMatch(read(`src/styles/${lp}.css`), /preview-strip|footer-preview/);
   });
 
-  test(`${lp} still tells visitors that its photography is illustrative`, () => {
-    assert.match(read(`src/pages/${lp}.astro`), /<p class="fine footer-note">Illustrative photography\.<\/p>/);
+  test(`${lp} no longer prints the "Illustrative photography" note (removed on request, 2026-11-12)`, () => {
+    assert.doesNotMatch(read(`src/pages/${lp}.astro`), /Illustrative photography/);
   });
 }

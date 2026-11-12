@@ -7,7 +7,7 @@
 - スタイル：`src/styles/appraisal.css`。`silver.css` のコピーに、フォームの外観の範囲（`[data-lp='appraisal']`）と、カテゴリの円の中身（アイコン）の変更を加えたもの。`AppraisalLayout` 以外から読み込まない（`body` `a` `button` `dialog` などに直接指定があるため）。
 - 動き：`src/scripts/silver.ts` を Silver と**共用**する（ページが `import '../scripts/silver'`）。カテゴリのセクションは `.buy-section` のクラスで見つける（Silver は `#silver`、Appraisal は `#items`）。動きを変えるときは、両方のLPを確認する。
 - 文言：meta、フォームの文言、FAQ、カテゴリ一覧は `src/content/lps/appraisal.ts`。それ以外の見出し・本文は `appraisal.astro` に直接書いてある。
-- 共通：問い合わせフォーム、ZIP確認（対応エリアは Silver と同じ）、計測、会社情報（`company.ts`）、法務リンク、支払いの注記（`payment-note.ts`）。
+- 共通：問い合わせフォーム、ZIP確認（対応エリアは Silver と同じ）、計測、会社情報（`company.ts`）、法務リンク、買取の流れの文言（`purchase-flow.ts`）。
 
 ## Silver からの変更点
 - **ヒーロー**：eyebrow「TOO NICE TO TOSS.」、見出し「Not using it. Not tossing it. / Just give us a call.」（光る語は「tossing」）、サブ「Free in-home appraisals for the things that have been sitting around the house.」。ねらいは、「使わないけど高価そうで捨てられない」ものを、「一旦電話して見てもらう」流れ。ヒーローのチップは「Free appraisal / No obligation / One call to start / We come to you」（Silver の「Paid next day」は、04 の約束の節に置く）。
@@ -30,7 +30,7 @@
 - 各カテゴリの名前と範囲（特に「アクセサリー」を、金・プラチナのものとして扱っていること）、買取できない品目（FAQ に書く）
 - 「クリーニングしない」「箱・書類を出す」の案内が、全カテゴリで正しいか
 - OG 画像の差し替え、カテゴリの写真
-- 画面上部の「DESIGN PREVIEW」の帯と、フッターの「Design preview…」の文言は、削除済み（2026-11-12）。フッターの「Illustrative photography.」は、生成画像であることを示す注記なので消さない（実写に替え終えたときだけ外せる）
+- 画面上部の「DESIGN PREVIEW」の帯と、フッターの「Design preview…」の文言は、削除済み（2026-11-12）。フッターの「Illustrative photography.」は、依頼により削除した。
 
 ## 編集のルール
 - Appraisal の見た目の変更は、`appraisal.css` と `appraisal.astro` の中だけで行い、他のLPのスタイルに影響させない。

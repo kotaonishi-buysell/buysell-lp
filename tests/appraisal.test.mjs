@@ -43,13 +43,14 @@ test('the category ribbon lists the main categories first, then the others', () 
   assert.deepEqual(ids.slice(3), ['jewelry', 'antiques', 'cameras', 'gold-coins', 'silverware']);
 });
 
-test('the copy keeps to the payment rule and makes no claim it cannot back', () => {
+test('the copy keeps to the purchase rule (appraisal only at the visit) and makes no claim it cannot back', () => {
   const text = [read('src/pages/appraisal.astro'), read('src/content/lps/appraisal.ts')].join('\n');
   assert.doesNotMatch(text, /same[- ]day|on the spot|before we leave|right away|cash on|paid (today|instantly)/i);
   assert.doesNotMatch(text, /no photos|best price|highest price|guarantee|authenticat/i);
   const payment = appraisalFaq.find((f) => f.id === 'payment');
-  assert.match(payment.a, /bank transfer by the end of the next day/);
-  assert(payment.note);
+  assert.match(payment.a, /Nothing is bought at the visit/);
+  assert.match(payment.a, /collect your items the next day/);
+  assert.doesNotMatch(payment.a, /end of the next day/);
 });
 
 test('the hero uses the agreed copy', () => {

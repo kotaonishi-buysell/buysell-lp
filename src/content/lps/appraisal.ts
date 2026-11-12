@@ -9,7 +9,7 @@
  */
 import type { CustomLandingPage, FaqItem } from '../types.ts';
 import { site } from '../site.ts';
-import { paymentNote } from '../payment-note.ts';
+import { purchaseFlow } from '../purchase-flow.ts';
 
 export const appraisal: CustomLandingPage = {
   slug: 'appraisal',
@@ -141,18 +141,17 @@ export const appraisalFaq: FaqItem[] = [
   {
     id: 'decline',
     q: 'What happens if I decide not to sell?',
-    a: 'You keep your items. There is no fee for declining an offer, and the decision is entirely yours.',
+    a: 'You keep your items. There is no fee for declining, and the decision is entirely yours.',
   },
   {
     id: 'payment',
-    q: 'When and how will I be paid?',
-    a: 'If you accept an offer, we tell you the amount at your home, and we pay you by bank transfer by the end of the next day.',
-    note: paymentNote,
+    q: 'If I decide to sell, what happens next?',
+    a: purchaseFlow.full,
   },
   {
     id: 'id',
     q: 'What ID will I need?',
-    a: "Please have a valid government-issued photo ID, such as a driver license or state ID card, ready at your appointment. Texas law requires us to record details from it, and to keep a record of each purchase that includes photographs of the items we buy. We'll tell you what we need before your visit.",
+    a: "If you decide to sell, we'll need a valid government-issued photo ID, such as a driver license or state ID card. Texas law requires us to record details from it, and to keep a record of each purchase that includes photographs of the items we buy. We'll tell you what we need when we arrange the pickup.",
   },
   {
     id: 'family',

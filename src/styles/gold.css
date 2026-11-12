@@ -1,5 +1,5 @@
 /*
- * Gold LP (/gold): "We come to your home to appraise and buy your gold".
+ * Gold LP (/gold): "We come to your home to appraise your gold".
  * Taken from the designer's static HTML (Reworth_LP_金_案2_2026-11-01, index.html) and kept as it was, apart from:
  *   - the form styles (.rf*) are gone: the page uses the shared contact form, skinned at the end of this file
  *   - the button class .btn is .gbtn (form-support.css, loaded with this file, owns .btn)
