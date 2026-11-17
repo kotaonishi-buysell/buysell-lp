@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createVerify, generateKeyPairSync } from 'node:crypto';
-import { SHEET_COLUMNS, appendRow, resetTokenCache, sheetsConfigured, signJwt, toRow } from '../src/server/sheets.ts';
+import { readFileSync } from 'node:fs';
+import { SHEET_COLUMNS, appendRow, resetTokenCache, sheetsConfigured, signJwt, toDallasTime, toRow } from '../src/server/sheets.ts';
 import { handleContact } from '../src/server/contact.ts';
 import { UTM_KEYS, canFallBack, DeliveryError } from '../src/lib/contact-form.ts';
 
@@ -59,16 +60,18 @@ test('a row has one cell per column, all text, and a message that starts with "=
   const row = toRow(request(), now(), true);
   assert.equal(row.length, SHEET_COLUMNS.length);
   assert(row.every((cell) => typeof cell === 'string'));
-  assert.equal(row[0], '2026-11-17T12:00:00.000Z');
+  assert.equal(row[0], '2026-11-17 06:00:00 CST'); // 12:00 UTC is 6 a.m. in Dallas in November
   assert.equal(row[1], 'silver');
   assert.equal(row[5], 'yes');
   assert.equal(row[6], '2145550123');
   assert.equal(row[8], '=HYPERLINK("http://evil.example","click")');
   assert.equal(row[9], 'yes');
-  assert.equal(row[12], '2026-11-17T11:59:30.000Z');
+  assert.equal(row[10], '2026-11-17 05:59:00 CST'); // SMS agreed at
+  assert.equal(row[12], '2026-11-17 05:59:30 CST'); // submitted at
   assert.equal(row[13], 'google'); // utm_source
   assert.deepEqual(SHEET_COLUMNS.slice(-UTM_KEYS.length), UTM_KEYS);
   assert.equal(toRow(request({ smsConsent: false, smsConsentAt: null, smsConsentText: null }), now(), null)[9], 'no');
+  assert.equal(toRow(request({ smsConsent: false, smsConsentAt: null, smsConsentText: null }), now(), null)[10], '', 'no consent, no time');
   assert.equal(toRow(request(), now(), null)[5], '');
   assert.equal(toRow(request(), now(), false)[5], 'no');
   // control characters cannot get into a cell
@@ -144,6 +147,7 @@ test('an inquiry becomes a row in the sheet, with the service-area answer, and i
   assert.equal(appended(w).length, 1);
   const [row] = JSON.parse(appended(w)[0].options.body).values;
   assert.equal(row.length, SHEET_COLUMNS.length);
+  assert.equal(row[0], '2026-11-17 06:00:00 CST', 'the time that reaches Google is Dallas time');
   assert.equal(row[1], 'silver');
   assert.equal(row[2], 'Maria');
   assert.equal(row[5], 'yes'); // 75201 is in the service area
@@ -193,4 +197,67 @@ test('the browser falls back to Netlify Forms only when the function could not d
   assert.equal(canFallBack(new DeliveryError('rejected', 403)), false);
   assert.equal(canFallBack(new DeliveryError('configuration')), false);
   assert.equal(canFallBack(new TypeError('boom')), true);
+});
+
+// ---------- Dallas time ----------
+
+test('Dallas time: winter is CST (UTC-6), summer is CDT (UTC-5)', () => {
+  assert.equal(toDallasTime('2026-01-15T18:30:00Z'), '2026-01-15 12:30:00 CST');
+  assert.equal(toDallasTime('2026-07-04T18:30:00Z'), '2026-07-04 13:30:00 CDT');
+  assert.equal(toDallasTime(new Date('2026-07-04T18:30:00Z')), '2026-07-04 13:30:00 CDT');
+});
+
+test('Dallas time: the date is the Dallas date, and midnight is 00, not 24', () => {
+  assert.equal(toDallasTime('2026-11-17T06:00:00Z'), '2026-11-17 00:00:00 CST');
+  assert.equal(toDallasTime('2026-11-17T05:59:59Z'), '2026-11-16 23:59:59 CST', 'still the 16th in Dallas');
+  assert.equal(toDallasTime('2026-07-01T04:59:59Z'), '2026-06-30 23:59:59 CDT');
+});
+
+test('Dallas time: the clock changes (March 8 and November 1, 2026), and CST/CDT tells the two 1:30 a.m. apart', () => {
+  assert.equal(toDallasTime('2026-03-08T07:59:59Z'), '2026-03-08 01:59:59 CST');
+  assert.equal(toDallasTime('2026-03-08T08:00:00Z'), '2026-03-08 03:00:00 CDT', '2 a.m. does not exist: the clock jumps to 3');
+  assert.equal(toDallasTime('2026-11-01T06:30:00Z'), '2026-11-01 01:30:00 CDT');
+  assert.equal(toDallasTime('2026-11-01T07:30:00Z'), '2026-11-01 01:30:00 CST', 'the same wall-clock time, an hour later');
+});
+
+test('Dallas time: an empty value stays empty, and text that is not a date is kept (cleaned), not lost', () => {
+  for (const empty of [null, undefined, '']) assert.equal(toDallasTime(empty), '');
+  assert.equal(toDallasTime(new Date('nonsense')), '');
+  assert.equal(toDallasTime('not a date'), 'not a date');
+  assert.equal(toDallasTime('a\u0007b'), 'a b');
+});
+
+test('through the function, "Submitted at" is the server time (the same as "Received at"); the visitor\'s own submittedAt is not used', async () => {
+  resetTokenCache();
+  const w = world();
+  await handleContact(post(request({ submittedAt: '1999-01-01T00:00:00.000Z' })), withTestUrls, { fetch: w.fetch, now });
+  const [row] = JSON.parse(appended(w)[0].options.body).values;
+  assert.equal(row[0], '2026-11-17 06:00:00 CST');
+  assert.equal(row[12], row[0], 'the browser clock did not get into the column');
+  assert.equal(row[10], '2026-11-17 05:59:00 CST', 'the SMS agreement time is the visitor\'s browser clock');
+});
+
+test('the three time columns say Dallas time, and none says UTC any more', () => {
+  const times = SHEET_COLUMNS.filter((title) => /time/i.test(title));
+  assert.deepEqual(times, ['Received at (Dallas time)', 'SMS agreed at (Dallas time)', 'Submitted at (Dallas time)']);
+  assert.equal(SHEET_COLUMNS.some((title) => /UTC/.test(title)), false);
+});
+
+test('the header row written in docs/forms/contact-form.md is exactly SHEET_COLUMNS', () => {
+  const doc = readFileSync(new URL('../docs/forms/contact-form.md', import.meta.url), 'utf8');
+  const header = doc.split('\n').find((line) => line.startsWith('Received at ('));
+  assert(header, 'the header row is in the doc');
+  assert.equal(header, SHEET_COLUMNS.join('\t'));
+});
+
+test('if the runtime cannot do time zones, the module still loads and the time is written in UTC', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const sheets = new URL('../src/server/sheets.ts', import.meta.url).href;
+  const code = `
+    Intl.DateTimeFormat = function () { throw new RangeError('Invalid time zone specified'); };
+    const { toDallasTime } = await import(${JSON.stringify(sheets)});
+    console.log(toDallasTime('2026-11-17T12:00:00Z'));`;
+  const run = spawnSync(process.execPath, ['--experimental-transform-types', '--no-warnings', '--input-type=module', '-e', code], { encoding: 'utf8' });
+  assert.equal(run.status, 0, run.stderr);
+  assert.equal(run.stdout.trim(), '2026-11-17T12:00:00.000Z');
 });

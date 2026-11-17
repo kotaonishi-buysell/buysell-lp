@@ -68,8 +68,14 @@
 **1 行目の見出し（この順番）**
 
 ```
-Received at (UTC)	Landing page	First name	Last name	ZIP code	In service area	Phone	Email	Message	Text messages (SMS)	SMS agreed at (UTC)	SMS wording shown	Submitted at (UTC, visitor clock)	utm_source	utm_medium	utm_campaign	utm_term	utm_content
+Received at (Dallas time)	Landing page	First name	Last name	ZIP code	In service area	Phone	Email	Message	Text messages (SMS)	SMS agreed at (Dallas time)	SMS wording shown	Submitted at (Dallas time)	utm_source	utm_medium	utm_campaign	utm_term	utm_content
 ```
+
+**日時の列（3つ）は、ダラス時間（米国中部時間）です。** `2026-11-17 06:00:00 CST` のように、末尾の **CST（冬時間）または CDT（夏時間）** で、どちらの時刻かを示します。対象の列は、「Received at」（関数が受け取った時刻）、「SMS agreed at」（SMS に同意した時刻。訪問者のブラウザの時計）、「Submitted at」（送信の時刻）です。
+- **「Submitted at」は、サーバーが付ける時刻で、「Received at」と同じ値です**（訪問者のブラウザの時計は使いません）。以前の見出しの「visitor clock」は、実態と合っていなかったため、外しました。
+- **2026-11-17 より前の行は、UTC のままです**（`2026-11-17T12:00:00.000Z` のように、末尾が `Z`）。形式が違うので、見分けられます。必要なら、手で直してください。
+- シートの 1 行目の見出しは、**手で書き換える必要があります**（コードは、見出しの行には触りません）。上の見出しの行を、そのまま貼り付けてください。
+- Netlify Forms に残る記録（予備）と、通知メールの時刻は、UTC のままです。
 
 （`src/server/sheets.ts` の `SHEET_COLUMNS` と同じです。列の順番を変えると、行の中身とずれるので、**列を並べ替えない**でください。「連絡した」「結果」などのメモの列は、**右端（`utm_content` の右）に足してください**。1 行目は、タブの 1 行目にだけ置いてください。）
 

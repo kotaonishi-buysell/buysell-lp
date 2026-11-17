@@ -29,9 +29,13 @@ const SHEETS_URL = 'https://sheets.googleapis.com/v4/spreadsheets';
 const SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 const TIMEOUT_MS = 10_000;
 
-/** Column titles, in the order of a row. Paste them into row 1 of the tab (docs/forms/contact-form.md). */
+/**
+ * Column titles, in the order of a row. Paste them into row 1 of the tab (docs/forms/contact-form.md).
+ * The three time columns are Dallas time (toDallasTime). "Submitted at" is set by the server (buildRequest), so it
+ * equals "Received at"; only "SMS agreed at" can carry the visitor's own browser clock.
+ */
 export const SHEET_COLUMNS = [
-  'Received at (UTC)',
+  'Received at (Dallas time)',
   'Landing page',
   'First name',
   'Last name',
@@ -41,9 +45,9 @@ export const SHEET_COLUMNS = [
   'Email',
   'Message',
   'Text messages (SMS)',
-  'SMS agreed at (UTC)',
+  'SMS agreed at (Dallas time)',
   'SMS wording shown',
-  'Submitted at (UTC, visitor clock)',
+  'Submitted at (Dallas time)',
   ...UTM_KEYS,
 ] as const;
 
@@ -54,13 +58,50 @@ export const sheetsConfigured = (env: SheetsEnv): boolean =>
 /** Strips control characters (other than newline) so a cell cannot carry anything odd. */
 const clean = (value: string): string => value.replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, ' ');
 
+/** Dallas is on U.S. Central Time: CST in winter, CDT in summer (the database name of that zone is America/Chicago). */
+export const DALLAS_TIME_ZONE = 'America/Chicago';
+
+let dallasClock: Intl.DateTimeFormat | null = null;
+
+/** Built on first use, not when the module loads: if this runtime cannot do time zones, only the time text is affected. */
+const clock = (): Intl.DateTimeFormat =>
+  (dallasClock ??= new Intl.DateTimeFormat('en-US', {
+    timeZone: DALLAS_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23', // midnight is 00, not 24
+    timeZoneName: 'short', // CST or CDT
+  }));
+
+/**
+ * A moment as Dallas time, written as text: "2026-11-17 06:00:00 CST". The CST/CDT at the end says which
+ * offset applies, which also tells apart the two 1:30 a.m. of the night the clocks go back. An empty value stays
+ * empty; text that is not a date is kept as it came (cleaned), so nothing a visitor's browser sent is lost.
+ * If the runtime cannot convert time zones, the row still gets written, with the time in UTC ("...Z").
+ */
+export function toDallasTime(value: Date | string | null | undefined): string {
+  if (value === null || value === undefined || value === '') return '';
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return typeof value === 'string' ? clean(value) : '';
+  try {
+    const part = Object.fromEntries(clock().formatToParts(date).map((p) => [p.type, p.value]));
+    return `${part.year}-${part.month}-${part.day} ${part.hour}:${part.minute}:${part.second} ${part.timeZoneName}`;
+  } catch {
+    return date.toISOString();
+  }
+}
+
 /**
  * One request as one row. Everything is text: the values are sent with valueInputOption RAW, which stores them
  * as typed (a message that starts with "=" stays text and is never run as a formula; a phone number keeps its digits).
  */
 export function toRow(request: ContactRequest, receivedAt: Date, inServiceArea: boolean | null): string[] {
   return [
-    receivedAt.toISOString(),
+    toDallasTime(receivedAt),
     request.lp,
     clean(request.firstName),
     clean(request.lastName),
@@ -70,9 +111,9 @@ export function toRow(request: ContactRequest, receivedAt: Date, inServiceArea: 
     clean(request.email),
     clean(request.message),
     request.smsConsent ? 'yes' : 'no',
-    request.smsConsentAt ?? '',
+    toDallasTime(request.smsConsentAt),
     clean(request.smsConsentText ?? ''),
-    request.submittedAt,
+    toDallasTime(request.submittedAt),
     ...UTM_KEYS.map((key) => clean(request.utm[key] ?? '')),
   ];
 }
