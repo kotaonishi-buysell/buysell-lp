@@ -85,3 +85,19 @@ test('the contact email and the effective date are set, and privacy requests go 
   assert.equal(site.legal.privacyEmail, site.company.email);
   assert.equal(site.legal.effectiveDate, 'October 29, 2026');
 });
+
+test('the text-message sign-up page, the consent wording, the Terms and the Privacy Policy agree', async () => {
+  const { smsConsentPage } = await import('../src/content/sms-consent.ts');
+  const { smsConsentText, smsMessageLimit } = await import('../src/content/contact-form.ts');
+  assert(existsSync(new URL('../src/pages/sms.astro', import.meta.url)));
+  const limit = `${smsMessageLimit} messages per month`;
+  assert.match(smsConsentText('Co', 'Brand'), new RegExp(limit));
+  assert.match(smsConsentPage.details.join('\n'), new RegExp(limit));
+  assert.match(text(termsOfUse), new RegExp(limit));
+  assert.match(text(privacyPolicy), new RegExp(limit));
+  // Consent is optional and says so everywhere it is described.
+  assert.match(smsConsentText('Co', 'Brand'), /not a condition/);
+  assert.match(smsConsentPage.details.join('\n'), /not a condition/);
+  // Wording the carriers look for.
+  for (const part of [/STOP/, /HELP/, /Msg & data rates may apply/, /Terms of Use and Privacy Policy/]) assert.match(smsConsentText('Co', 'Brand'), part);
+});

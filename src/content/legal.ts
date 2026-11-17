@@ -12,6 +12,8 @@
  * Tokens filled in by the page: {company} {brand} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
  */
 
+import { smsMessageLimit } from './contact-form.ts';
+
 export type LegalBlock = string | { list: string[] } | { control: 'privacy-choice' };
 
 export interface LegalSection {
@@ -167,9 +169,10 @@ export const privacyPolicy: LegalPageContent = {
       id: 'sms',
       heading: 'Text messages',
       blocks: [
-        'Texting is optional. The box on our form is unticked by default, and you can ask for a visit without ticking it. If you tick it, we may text you about your request. Message frequency varies. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help.',
-        // TODO: confirm that we do not share mobile numbers or text-message consent with third parties for their own marketing, then add that promise here. Nothing is promised until then.
+        `Texting is optional. The box on our form is unticked by default, and you can ask for a visit without ticking it. If you tick it, we may text you about your request, to schedule your visit and, if you decide to sell, about your sale. We send up to ${smsMessageLimit} messages per month. We do not use text messages for advertising. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help.`,
+        // TODO: carriers that review toll-free numbers usually want a promise that mobile numbers and text-message consent are not shared with third parties for their marketing. The business decided NOT to make that promise (it uses Google and Meta advertising tools, which can receive hashed contact details: see formDataToAdvertisers). Nothing is promised, so the review may be rejected; if it is, revisit this together with the Google enhanced conversions and Meta advanced matching settings.
         'We keep a record of when you agreed and the wording you saw.',
+        'Opting out of texts stops the texts only. It does not change the other uses of your information described in this policy; for the advertising tools, see "Do not sell or share my personal information".',
         'More details are in our Terms of Use.',
       ],
     },
@@ -308,13 +311,13 @@ export const termsOfUse: LegalPageContent = {
       id: 'texting',
       heading: 'Text message terms',
       blocks: [
-        'If you tick the text-message box on our request form, you agree to receive text messages from {company} about your inquiry, such as scheduling and appointment messages. Consent is not a condition of asking for an appraisal or selling to us.',
+        '{brand} text messages are sent by {company}. If you tick the text-message box on our request form, you agree to receive text messages from us at the mobile number you gave. The messages are about your inquiry, scheduling and reminders for your visit and, if you decide to sell, follow-up about your sale, such as collecting your items. We do not use text messages for advertising. Consent is not a condition of asking for an appraisal, of any purchase or of selling to us.',
         {
           list: [
-            'Message frequency varies.',
+            `We send up to ${smsMessageLimit} messages per month.`,
             'Message and data rates may apply.',
-            'Reply STOP to stop receiving messages. You may get one last message confirming that you have opted out.',
-            'Reply HELP for help, or call {phone}.',
+            'Reply STOP (or CANCEL, END, QUIT or UNSUBSCRIBE) to stop receiving messages. You may get one last message confirming that you have opted out.',
+            'Reply HELP for help, or call {phone} or email {email}.',
             'Mobile carriers are not liable for delayed or undelivered messages.',
           ],
         },
