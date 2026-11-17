@@ -47,7 +47,7 @@ Node.js 22.12 以上。
 ```sh
 npm install
 npm run dev      # http://localhost:4321/silver と /gold（下書きの /downsizing /home-value も開ける）
-npm run build    # dist/ に静的ファイルを出力（公開用。Silver、Gold と法務ページ）
+npm run build    # dist/ に静的ファイルを出力（公開用。Silver、Gold、Appraisal、`/sms`、法務ページ）
 npm run build:drafts  # 下書きの /downsizing /home-value も含めて出力（確認用。公開しない）
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
@@ -58,7 +58,7 @@ npm test         # 共通フォームの入力チェック、送信処理、受�
 `/` は `/silver` へリダイレクトする（`astro.config.mjs` と `netlify.toml`）。
 
 ## 公開と下書き
-- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Appraisal（`/appraisal`）と法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。
+- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Appraisal（`/appraisal`）、SMS 同意の登録ページ（`/sms`）、法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。`/sms` は、SMS（トールフリー番号）のキャリア審査に出す、同意を取る公開ページで、法務ページと同じレイアウトを使います（[docs/forms/sms-verification.md](docs/forms/sms-verification.md)）。
 - **Downsizing（`/downsizing`）と Home Value（`/home-value`）は下書き**です。コードは残してあり、ページは `src/draft-pages/` に置いています。ここは Astro がページとして扱わないため、通常のビルド（Netlify の本番とプレビュー）には出ません。`npm run dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` が、ルートとして足します。
 - 下書きを公開するとき：ページ（`src/draft-pages/` のファイル）を `src/pages/` に移し、`astro.config.mjs` の `injectRoute` の該当行を消します。Downsizing は、動的ルート（`lp.astro`）なので、`src/pages/[slug].astro` に戻します。
 - Netlify のプレビューで、下書きを確認したいときは、Netlify の環境変数 `PUBLIC_DRAFT_LPS=true` を、そのブランチのデプロイだけに設定します（公開の URL になるので、確認が終わったら外してください）。
@@ -93,13 +93,15 @@ src/
   components/ContactForm.astro  全LP共通の問い合わせフォーム（スキンはLPごと）
   lib/contact-form.ts    フォームの入力チェック・整形・送信処理（テスト済み）
   pages/silver.astro     Silver のページ本体（Codex のマークアップ）
+  pages/sms.astro        SMS 同意の登録ページ（/sms。法務ページと同じレイアウト。文言は content/sms-consent.ts）
   scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ、ZIP判定）
   scripts/silver.ts      Silver 専用の動き（カテゴリのリボン、スクロール演出、FAQ の開閉）
   pages/gold.astro       Gold のページ本体（デザイナーの静的HTMLを取り込んだもの）
   scripts/gold.ts        Gold 専用の動き（カルーセル、タブ、メニュー、追従バー）
   content/lps/gold.ts    Gold：meta、フォーム文言、未確定の事実を含む文（{{TODO}}）
   components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）
-  server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、メール通知）
+  server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、保存先への振り分け、メール通知）
+  server/sheets.ts       Google スプレッドシートへの1行追加（Apps Script の Web アプリ、またはサービス アカウント）
 netlify/functions/       Netlify Functions（POST /api/contact）。設定は netlify.toml
 public/images/           OG 画像（仮）、silver/ は Silver、gold/ は Gold の画像（WebP）
 ```
@@ -118,7 +120,7 @@ public/images/           OG 画像（仮）、silver/ は Silver、gold/ は Gol
 
 ### 問い合わせフォーム（全LP共通）
 
-項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信は全LPで同じ **Netlify Forms**（フォーム名 `contact`）に集まり、通知は Netlify の画面で設定します（メールを関数から送る方式にも切り替えられます）。公開先は Netlify です。設定手順は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
+項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信は、全LPで同じ受付の関数（`/api/contact`）に集まり、**Google スプレッドシートに1行ずつ保存**されます（Apps Script の Web アプリ。鍵のファイルは使いません）。関数が受け取れなかったときは、ブラウザが **Netlify Forms**（フォーム名 `contact`）に切り替えて送るので、問い合わせは失われません。公開先は Netlify です。設定手順は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
 
 ## Silver LP（`/silver`）
 
@@ -224,7 +226,7 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
 - 申込み後の連絡までの営業日数
 - SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
-- Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
+- Google スプレッドシートへの保存の設定（Netlify の環境変数 `GOOGLE_SCRIPT_URL` `GOOGLE_SCRIPT_SECRET`。手順は [docs/forms/contact-form.md](docs/forms/contact-form.md)）と、予備の Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - コールトラッキングツール（GTM コンテナ ID は設定済み）
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ
