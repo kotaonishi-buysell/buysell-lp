@@ -32,6 +32,17 @@
 - STOP した番号には送らない。チェックしていない人には送らない。
 - 広告・販促の内容は送らない（Terms と Privacy に「広告には使わない」と書いてある）。
 
-## 却下されたとき（既知のリスク）
+## 携帯番号を共有しない約束（公開前の条件）
 
-キャリアは通常、「携帯番号と SMS 同意を第三者にマーケティング目的で共有しない」という記載を Terms / Privacy に求めます。このサイトは Google と Meta の広告タグを使うため、**その約束はしていません**（事業の判断）。却下の理由がこれだったら、`src/content/legal.ts` の該当 `// TODO`（Privacy の "Text messages"）と `formDataToAdvertisers`、Google の Enhanced conversions・Meta の Advanced matching の設定を合わせて見直してください。
+キャリアは、Terms / Privacy に「携帯番号と SMS 同意を第三者にマーケティング目的で共有しない」という記載を求めます。Terms、Privacy、`/sms` に次の文を入れました。
+
+> We do not share your mobile number or your text-message consent with any third party or affiliate for their marketing or promotional purposes.
+
+この約束が事実であるために、**公開前に次を確認してください**（詳しくは `docs/design/legal/GTM_CONTAINER.md` の末尾）。
+
+- Google 広告の「拡張コンバージョン」がオフ（GTM のユーザー提供データも）。
+- Meta の「自動の詳細マッチング」がオフ。
+- 本番の Network で、フォーム送信時に `em=`・`ph=`・`ud[...]` が広告のタグに付かない。
+- BuySell グループ会社に、携帯番号をマーケティング目的で渡していない。
+
+広告の計測（Cookie ID、IP、ページ、ボタン操作）は続けられます。止めるのは、フォームに入れた連絡先の読み取りだけです。

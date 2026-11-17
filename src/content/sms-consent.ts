@@ -27,6 +27,7 @@ export const smsConsentPage = {
     'Consent is not a condition of any purchase or service. You can ask for an appraisal without agreeing to texts.',
     'Reply STOP at any time to stop the messages. Reply HELP for help, or call {phone} or email {email}.',
     'We do not use text messages for advertising.',
+    'We do not share your mobile number or your text-message consent with any third party or affiliate for their marketing or promotional purposes.',
   ],
   formHeading: 'Ask for a free appraisal',
   formIntro: 'Fill in the form. Tick the text-message box only if you want text messages.',

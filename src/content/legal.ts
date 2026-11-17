@@ -43,7 +43,13 @@ export interface LegalPageContent {
  *   'no':   confirmed off in GTM, Google Ads and Meta Events Manager: says the tools do not receive the form input.
  * Pick 'yes' or 'no' only after checking (docs/design/legal/GTM_CONTAINER.md, "Form data").
  */
-export const formDataToAdvertisers: 'unconfirmed' | 'yes' | 'no' = 'unconfirmed';
+// 'no' since the text-message promise (below, and in the Terms) needs it: the business turns Google enhanced conversions and Meta
+// advanced matching off, so mobile numbers never reach the advertising tools. Do not publish this while either one is still on.
+export const formDataToAdvertisers: 'unconfirmed' | 'yes' | 'no' = 'no';
+
+/** Promise made to customers and to the carriers that review our text-message program. It is true only while the line above is 'no'. */
+const smsNoSharing =
+  'We do not share your mobile number or your text-message consent with any third party or affiliate for their marketing or promotional purposes. We share your number only with the providers that help us send and manage the texts.';
 
 const formDataTexts = {
   unconfirmed: {
@@ -170,7 +176,8 @@ export const privacyPolicy: LegalPageContent = {
       heading: 'Text messages',
       blocks: [
         `Texting is optional. The box on our form is unticked by default, and you can ask for a visit without ticking it. If you tick it, we may text you about your request, to schedule your visit and, if you decide to sell, about your sale. We send up to ${smsMessageLimit} messages per month. We do not use text messages for advertising. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help.`,
-        // TODO: carriers that review toll-free numbers usually want a promise that mobile numbers and text-message consent are not shared with third parties for their marketing. The business decided NOT to make that promise (it uses Google and Meta advertising tools, which can receive hashed contact details: see formDataToAdvertisers). Nothing is promised, so the review may be rejected; if it is, revisit this together with the Google enhanced conversions and Meta advanced matching settings.
+        smsNoSharing,
+        // TODO: this promise holds only while Google enhanced conversions and Meta advanced matching stay off (formDataToAdvertisers = 'no'), and while no tag sends a phone number or the consent record anywhere. Re-check it with any tag or vendor change, and check the BuySell group line under "Who we share it with" (group companies must not get numbers for their marketing).
         'We keep a record of when you agreed and the wording you saw.',
         'Opting out of texts stops the texts only. It does not change the other uses of your information described in this policy; for the advertising tools, see "Do not sell or share my personal information".',
         'More details are in our Terms of Use.',
@@ -312,6 +319,7 @@ export const termsOfUse: LegalPageContent = {
       heading: 'Text message terms',
       blocks: [
         '{brand} text messages are sent by {company}. If you tick the text-message box on our request form, you agree to receive text messages from us at the mobile number you gave. The messages are about your inquiry, scheduling and reminders for your visit and, if you decide to sell, follow-up about your sale, such as collecting your items. We do not use text messages for advertising. Consent is not a condition of asking for an appraisal, of any purchase or of selling to us.',
+        smsNoSharing,
         {
           list: [
             `We send up to ${smsMessageLimit} messages per month.`,

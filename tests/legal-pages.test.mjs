@@ -101,3 +101,14 @@ test('the text-message sign-up page, the consent wording, the Terms and the Priv
   // Wording the carriers look for.
   for (const part of [/STOP/, /HELP/, /Msg & data rates may apply/, /Terms of Use and Privacy Policy/]) assert.match(smsConsentText('Co', 'Brand'), part);
 });
+
+test('the no-sharing promise for mobile numbers is on every page that describes texting, and the form-data text backs it', async () => {
+  const { smsConsentPage } = await import('../src/content/sms-consent.ts');
+  const { formDataToAdvertisers } = await import('../src/content/legal.ts');
+  const promise = /do not share your mobile number or your text-message consent with any third party or affiliate for their marketing or promotional purposes/;
+  assert.match(text(privacyPolicy), promise);
+  assert.match(text(termsOfUse), promise);
+  assert.match(smsConsentPage.details.join('\n'), promise);
+  // The promise is false while an advertising tool can read the phone number from the form.
+  assert.equal(formDataToAdvertisers, 'no');
+});
