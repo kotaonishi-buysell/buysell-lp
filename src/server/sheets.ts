@@ -1,11 +1,18 @@
 /*
- * Writes one inquiry as one row of a Google Sheet (Google Sheets API, values.append).
+ * Writes one inquiry as one row of a Google Sheet. Two ways, the first one that is set up is used:
  *
- * Authentication is a Google service account (a robot account that is given edit access to the sheet), signed
- * with the Web Crypto API, so there is no dependency. The sheet is "append only" for the site: the function
- * adds rows and never reads or changes existing ones.
+ *   1. Google Apps Script web app (no key file): a small script attached to the sheet (docs/forms/google-apps-script/Code.gs)
+ *      adds the row. We POST the row and a shared secret to its address. Use this when the organisation
+ *      does not allow service account keys.
+ *        GOOGLE_SCRIPT_URL      the web app's address (https://script.google.com/macros/s/<id>/exec)
+ *        GOOGLE_SCRIPT_SECRET   the shared secret, the same text as the script's SECRET property
  *
- * Environment variables (set in the hosting dashboard, never in the repo):
+ *   2. Google Sheets API (values.append) with a service account (a robot account given edit access to the
+ *      sheet), signed with the Web Crypto API, so there is no dependency. Needs a key file.
+ *
+ * The sheet is "append only" for the site: the function adds rows and never reads or changes existing ones.
+ *
+ * Environment variables for the service account way (set in the hosting dashboard, never in the repo):
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL   the service account's address (client_email in its key file)
  *   GOOGLE_PRIVATE_KEY             its private key (private_key in the key file; "\n" written as text is accepted)
  *   GOOGLE_SHEET_ID                the id in the sheet's address: docs.google.com/spreadsheets/d/<ID>/edit
@@ -15,6 +22,8 @@
 import { UTM_KEYS, type ContactRequest } from '../lib/contact-form.ts';
 
 export interface SheetsEnv {
+  GOOGLE_SCRIPT_URL?: string;
+  GOOGLE_SCRIPT_SECRET?: string;
   GOOGLE_SERVICE_ACCOUNT_EMAIL?: string;
   GOOGLE_PRIVATE_KEY?: string;
   GOOGLE_SHEET_ID?: string;
@@ -47,9 +56,16 @@ export const SHEET_COLUMNS = [
   ...UTM_KEYS,
 ] as const;
 
-/** True when every setting needed to write to the sheet is present. */
+/** True when every setting needed to write through the Sheets API (service account) is present. */
 export const sheetsConfigured = (env: SheetsEnv): boolean =>
   Boolean(env.GOOGLE_SERVICE_ACCOUNT_EMAIL && env.GOOGLE_PRIVATE_KEY && env.GOOGLE_SHEET_ID);
+
+/** True when the Apps Script web app is set up. */
+export const scriptConfigured = (env: SheetsEnv): boolean => Boolean(env.GOOGLE_SCRIPT_URL && env.GOOGLE_SCRIPT_SECRET);
+
+/** Which way the sheet is written, or null when neither is set up. The Apps Script way wins when both are. */
+export const sheetDestination = (env: SheetsEnv): 'script' | 'api' | null =>
+  scriptConfigured(env) ? 'script' : sheetsConfigured(env) ? 'api' : null;
 
 /** Strips control characters (other than newline) so a cell cannot carry anything odd. */
 const clean = (value: string): string => value.replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, ' ');
@@ -179,3 +195,41 @@ export async function appendRow(
   }
   if (!response.ok) throw new Error(`Google Sheets answered ${response.status}`);
 }
+
+// ---------- the Apps Script web app ----------
+
+/**
+ * Sends the row to the Apps Script web app. Throws when it does not answer {"ok":true}. The error message holds
+ * no visitor data.
+ *
+ * Apps Script answers a POST with a redirect to the page that holds the script's output; fetch follows it.
+ * When the web app is not shared with "Anyone", Google answers with a sign-in page (HTML), which is reported.
+ */
+export async function appendViaScript(row: string[], env: SheetsEnv, transport: typeof fetch = fetch): Promise<void> {
+  const url = env.GOOGLE_SCRIPT_URL!;
+  if (!/^https:\/\//.test(url)) throw new Error('GOOGLE_SCRIPT_URL must be an https address');
+  const response = await transport(url, {
+    method: 'POST',
+    // text/plain avoids a pre-flight request; the script reads the body as text.
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ secret: env.GOOGLE_SCRIPT_SECRET, row }),
+    redirect: 'follow',
+    signal: AbortSignal.timeout(15_000),
+  });
+  if (!response.ok) throw new Error(`Apps Script answered ${response.status}`);
+  let answer: unknown;
+  try {
+    answer = await response.json();
+  } catch {
+    throw new Error('Apps Script did not answer JSON (is the web app shared with "Anyone"?)');
+  }
+  const ok = typeof answer === 'object' && answer !== null && (answer as { ok?: unknown }).ok === true;
+  if (!ok) {
+    const code = typeof answer === 'object' && answer !== null ? String((answer as { error?: unknown }).error ?? 'unknown').slice(0, 40) : 'unknown';
+    throw new Error(`Apps Script refused the row (${code})`);
+  }
+}
+
+/** Adds the row the way that is set up. Call only when sheetDestination(env) is not null. */
+export const addRow = (row: string[], env: SheetsEnv, transport: typeof fetch = fetch, now: Date = new Date()): Promise<void> =>
+  sheetDestination(env) === 'script' ? appendViaScript(row, env, transport) : appendRow(row, env, transport, now);

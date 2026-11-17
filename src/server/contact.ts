@@ -11,7 +11,8 @@
  *                  4xx/5xx { "accepted": false, "error": "<code>" }
  *
  * Environment variables (set in the hosting dashboard, never in the repo):
- *   GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID, GOOGLE_SHEET_TAB   the Google Sheet (see sheets.ts)
+ *   GOOGLE_SCRIPT_URL, GOOGLE_SCRIPT_SECRET   the Google Sheet through an Apps Script web app (no key file; see sheets.ts)
+ *   or GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID, GOOGLE_SHEET_TAB   through the Sheets API
  *   RESEND_API_KEY            API key of the email provider
  *   CONTACT_TO_EMAIL          who receives inquiries (comma-separated for several people)
  *   CONTACT_FROM_EMAIL        sender, on a domain verified with the provider, e.g. "REWORTH <inquiries@example.com>"
@@ -25,7 +26,7 @@
 import { MESSAGE_MAX, UTM_KEYS, buildRequest, validate, type ContactRequest } from '../lib/contact-form.ts';
 import { serviceAreaZips } from '../content/service-area-zips.ts';
 import { zipAreaStatus } from '../lib/zip-area.ts';
-import { appendRow, sheetsConfigured, toRow, type SheetsEnv } from './sheets.ts';
+import { addRow, sheetDestination, toRow, type SheetsEnv } from './sheets.ts';
 
 export interface ContactEnv extends SheetsEnv {
   RESEND_API_KEY?: string;
@@ -239,7 +240,7 @@ export async function handleContact(request: Request, env: ContactEnv, deps: Con
 
   const { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL } = env;
   const emailOn = Boolean(RESEND_API_KEY && CONTACT_TO_EMAIL && CONTACT_FROM_EMAIL);
-  const sheetOn = sheetsConfigured(env);
+  const sheetOn = sheetDestination(env) !== null;
   if (!emailOn && !sheetOn) {
     console.error('contact: nothing is set up to receive the request (the Google Sheet settings, or RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL)');
     return rejected(500, 'not_configured');
@@ -252,7 +253,7 @@ export async function handleContact(request: Request, env: ContactEnv, deps: Con
     const status = zipAreaStatus(parsed.zip, { zipPrefixes: serviceAreaZips });
     const inArea = status === 'inArea' ? true : status === 'outOfArea' ? false : null;
     tasks.push(
-      appendRow(toRow(parsed, now, inArea), env, transport, now).catch((error: unknown) => {
+      addRow(toRow(parsed, now, inArea), env, transport, now).catch((error: unknown) => {
         console.error('contact: could not add the row to the Google Sheet:', error instanceof Error ? error.message : error);
         throw error;
       }),

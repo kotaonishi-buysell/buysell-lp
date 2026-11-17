@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createVerify, generateKeyPairSync } from 'node:crypto';
-import { SHEET_COLUMNS, appendRow, resetTokenCache, sheetsConfigured, signJwt, toRow } from '../src/server/sheets.ts';
+import { SHEET_COLUMNS, appendRow, appendViaScript, resetTokenCache, scriptConfigured, sheetDestination, sheetsConfigured, signJwt, toRow } from '../src/server/sheets.ts';
+import { readFileSync } from 'node:fs';
 import { handleContact } from '../src/server/contact.ts';
 import { UTM_KEYS, canFallBack, DeliveryError } from '../src/lib/contact-form.ts';
 
@@ -193,4 +194,85 @@ test('the browser falls back to Netlify Forms only when the function could not d
   assert.equal(canFallBack(new DeliveryError('rejected', 403)), false);
   assert.equal(canFallBack(new DeliveryError('configuration')), false);
   assert.equal(canFallBack(new TypeError('boom')), true);
+});
+
+// ---------- the Apps Script way (no key file) ----------
+
+const scriptEnv = { GOOGLE_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxTEST/exec', GOOGLE_SCRIPT_SECRET: 'shh-its-a-secret' };
+
+/** The web app: answers a POST with the given status and body (fetch has followed Apps Script's redirect by then). */
+const scriptServer = (status = 200, body = '{"ok":true}') => {
+  const calls = [];
+  const fetch = async (url, options) => {
+    calls.push({ url: String(url), options });
+    return new Response(body, { status, headers: { 'Content-Type': 'application/json' } });
+  };
+  return { calls, fetch };
+};
+
+test('the Apps Script way is configured by its address and secret; it wins over the service account', () => {
+  assert.equal(scriptConfigured(scriptEnv), true);
+  assert.equal(scriptConfigured({ GOOGLE_SCRIPT_URL: 'https://x' }), false);
+  assert.equal(sheetDestination(scriptEnv), 'script');
+  assert.equal(sheetDestination(env), 'api');
+  assert.equal(sheetDestination({ ...env, ...scriptEnv }), 'script');
+  assert.equal(sheetDestination({}), null);
+});
+
+test('appendViaScript posts the row and the secret as text, and follows the redirect', async () => {
+  const s = scriptServer();
+  await appendViaScript(['a', 'b'], scriptEnv, s.fetch);
+  assert.equal(s.calls.length, 1);
+  assert.equal(s.calls[0].url, scriptEnv.GOOGLE_SCRIPT_URL);
+  assert.equal(s.calls[0].options.method, 'POST');
+  assert.equal(s.calls[0].options.redirect, 'follow');
+  assert.match(s.calls[0].options.headers['Content-Type'], /^text\/plain/);
+  assert.deepEqual(JSON.parse(s.calls[0].options.body), { secret: 'shh-its-a-secret', row: ['a', 'b'] });
+});
+
+test('appendViaScript throws, with no visitor data and no secret in the message, when the script does not take the row', async () => {
+  const cases = [
+    [scriptServer(500), /Apps Script answered 500/],
+    [scriptServer(200, '<html>Sign in</html>'), /did not answer JSON/],
+    [scriptServer(200, '{"ok":false,"error":"unauthorized"}'), /refused the row \(unauthorized\)/],
+    [scriptServer(200, '{"ok":false,"error":"no_tab"}'), /refused the row \(no_tab\)/],
+    [scriptServer(200, 'null'), /refused the row/],
+  ];
+  for (const [server, pattern] of cases) {
+    await assert.rejects(() => appendViaScript(['Maria', '2145550123'], scriptEnv, server.fetch), (error) => {
+      assert.match(error.message, pattern);
+      assert(!/Maria|2145550123|shh-its-a-secret/.test(error.message));
+      return true;
+    });
+  }
+  await assert.rejects(() => appendViaScript(['x'], { ...scriptEnv, GOOGLE_SCRIPT_URL: 'http://insecure' }, scriptServer().fetch), /https/);
+});
+
+test('with the Apps Script set up, an inquiry becomes a row through it (no Google sign-in, no Sheets API)', async () => {
+  const calls = [];
+  const fetch = async (url, options) => { calls.push({ url: String(url), options }); return new Response('{"ok":true}', { status: 200 }); };
+  const res = await handleContact(post(request()), scriptEnv, { fetch, now });
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { accepted: true });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].url, scriptEnv.GOOGLE_SCRIPT_URL);
+  const { row, secret } = JSON.parse(calls[0].options.body);
+  assert.equal(secret, 'shh-its-a-secret');
+  assert.equal(row.length, SHEET_COLUMNS.length);
+  assert.equal(row[2], 'Maria');
+  assert.equal(row[5], 'yes');
+  // the script refuses -> not acknowledged
+  const refused = async () => new Response('{"ok":false,"error":"unauthorized"}', { status: 200 });
+  const bad = await handleContact(post(request()), scriptEnv, { fetch: refused, now });
+  assert.equal(bad.status, 502);
+});
+
+test('the Apps Script file in the repo checks the secret, takes a row, and writes text only', () => {
+  const code = readFileSync(new URL('../docs/forms/google-apps-script/Code.gs', import.meta.url), 'utf8');
+  assert.match(code, /function doPost\(e\)/);
+  assert.match(code, /getProperty\('SECRET'\)/);
+  assert.match(code, /body\.secret !== secret/);
+  assert.match(code, /setNumberFormat\('@'\)/);
+  assert.match(code, /LockService/);
+  assert.match(code, /const TAB = 'Inquiries'/);
 });

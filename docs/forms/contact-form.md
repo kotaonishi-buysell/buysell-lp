@@ -51,30 +51,50 @@
 
 | モード | 設定 | 動き |
 |---|---|---|
-| **自前の関数（`function`）＝今の設定** | `PUBLIC_CONTACT_ENDPOINT=/api/contact` と `PUBLIC_CONTACT_FALLBACK=netlify-forms`（どちらも `netlify.toml` に設定済み） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直して、**Google スプレッドシートに 1 行追加**します（メールの設定もあれば、メールでも通知）。関数が受け取れなかったとき（Google の設定が未完了、障害など）は、ブラウザが **Netlify Forms** に送るので、問い合わせは失われません。下の「Google スプレッドシートに保存する」を見てください。 |
+| **自前の関数（`function`）＝今の設定** | `PUBLIC_CONTACT_ENDPOINT=/api/contact` と `PUBLIC_CONTACT_FALLBACK=netlify-forms`（どちらも `netlify.toml` に設定済み） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直して、**Google スプレッドシートに 1 行追加**します（Apps Script の Web アプリ経由、またはサービス アカウント。メールの設定もあれば、メールでも通知）。関数が受け取れなかったとき（Google の設定が未完了、障害など）は、ブラウザが **Netlify Forms** に送るので、問い合わせは失われません。下の「Google スプレッドシートに保存する」を見てください。 |
 | Netlify Forms のみ | `PUBLIC_CONTACT_MODE=netlify-forms` | ブラウザが、開いているページ自身のURLに、フォームの内容を送ります。Netlify が受け取って保管し、通知は Netlify の画面で設定します。`netlify.toml` の 2 行を、この 1 行に置き換えると、この方式に戻せます。 |
 | プレビュー | どちらも未設定（手元のビルド） | 何も送信せず、「Preview only」と明示します。受付済みとは表示せず、計測の `form_submit` も出しません。 |
 
 ### Google スプレッドシートに保存する（直接送信）
 
-問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。Google のサービスアカウント（機械用のアカウント）でログインし、行を**追加するだけ**です（既存の行を読んだり、変えたりしません）。
+問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。やり方は 2 通りで、**設定してあるほうを使います**（両方あれば、Apps Script）。
+
+| やり方 | 向く場面 | 必要なもの |
+|---|---|---|
+| **A. Apps Script の Web アプリ（鍵のファイルなし）＝今回の設定** | 組織が、サービス アカウントの鍵の作成を禁止しているとき | シートに付けた小さなスクリプト（`docs/forms/google-apps-script/Code.gs`）、Netlify の環境変数 2 つ |
+| B. Google Sheets API ＋ サービス アカウント | 鍵が作れるとき | JSON の鍵、Netlify の環境変数 3 つ |
+
+#### A. Apps Script の Web アプリで追加する（鍵なし）
 
 **あなたが準備すること（最初の 1 回）**
-1. Google Cloud（console.cloud.google.com）で、プロジェクトを作る（または、会社のものを選ぶ）。
-2. 「API とサービス」→「ライブラリ」で、**Google Sheets API** を有効にする。
-3. 「IAM と管理」→「サービスアカウント」で、サービスアカウントを作る（名前の例：`reworth-form`）。ロールは不要。
-4. そのサービスアカウントの「鍵」→「鍵を追加」→「新しい鍵」→ **JSON** で、鍵のファイルをダウンロードする（**このファイルは、誰にも渡さず、リポジトリにも入れない**）。
-5. 受け取り用のスプレッドシートを作る。タブ（シート）の名前は **Inquiries**（変えるときは、環境変数 `GOOGLE_SHEET_TAB`）。
-6. 1 行目に、下の見出しを貼る（1 つのセルから、横に貼り付ける）。
-7. スプレッドシートの「共有」で、サービスアカウントのメールアドレス（鍵のファイルの `client_email`）を、**編集者**として追加する。**ほかの共有は、必要な人だけにする**（電話・メール・SMS の同意記録が入ります）。
-8. Netlify の「Site configuration」→「Environment variables」に、次の 3 つを登録する。
+1. スプレッドシートを作ります。タブ（シート）の名前は **Inquiries** にします。1 行目に、下の「1 行目の見出し」を貼ります。
+2. スプレッドシートで「拡張機能」→「Apps Script」を開き、`Code.gs` の中身を全部消して、**`docs/forms/google-apps-script/Code.gs` を貼り付け**ます。保存します。
+3. 合言葉（秘密の文字列）を作ります。ターミナルで `openssl rand -hex 24` を実行すると、48 文字の文字列ができます（または、パスワード管理ツールで 32 文字以上のランダムな文字列を作ります）。
+4. Apps Script の左の「プロジェクトの設定」（歯車）→「スクリプト プロパティ」→「プロパティを追加」で、名前 **`SECRET`**、値に、手順 3 の文字列を入れて保存します。
+5. 右上の「デプロイ」→「新しいデプロイ」→ 種類の歯車で「**ウェブアプリ**」を選びます。
+   - 「次のユーザーとして実行」：**自分**
+   - 「アクセスできるユーザー」：**全員**
+   - 「デプロイ」を押し、最初に出る許可の画面で、自分のアカウントを選んで許可します（「このアプリは確認されていません」と出たら、「詳細」→「（安全ではないページ）に移動」）。
+6. 出てきた「**ウェブアプリの URL**」（`https://script.google.com/macros/s/…/exec`）をコピーします。
+7. Netlify の「Site configuration」→「Environment variables」に、次の 2 つを登録します。
    | 名前 | 値 |
    |---|---|
-   | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | 鍵のファイルの `client_email` |
-   | `GOOGLE_PRIVATE_KEY` | 鍵のファイルの `private_key`（`-----BEGIN PRIVATE KEY-----` から `-----END PRIVATE KEY-----` まで。改行が `\n` と文字で入っていても動きます） |
-   | `GOOGLE_SHEET_ID` | スプレッドシートの URL の `/d/` と `/edit` の間の文字列 |
-9. サイトを公開し直す（再デプロイ）。
-10. 確認：本番のフォームから、テストを 1 件送り、シートに 1 行増えること、`In service area` などの列が入ることを確かめる。確認用の行は、あとで消す。
+   | `GOOGLE_SCRIPT_URL` | 手順 6 の URL |
+   | `GOOGLE_SCRIPT_SECRET` | 手順 3 の文字列（手順 4 の `SECRET` と同じもの） |
+8. サイトを公開し直す（再デプロイ）。
+9. 確認：本番のフォームから、テストを 1 件送り、シートに 1 行増えることを確かめます。確認用の行は、あとで消します。
+
+**注意（A）**
+- 「アクセスできるユーザー」を「全員」にできない（組織の設定で、「組織内のみ」しか選べない）場合は、この方法は使えません。Google Workspace の管理者に、Apps Script の外部公開の許可を相談してください。
+- Web アプリの URL は、公開されています。誰かが URL を知っても、**合言葉がなければ、行は追加されません**（スクリプトが、合言葉を確かめます）。合言葉と URL は、Netlify の環境変数にだけ置き、チャットやリポジトリに書かないでください。
+- スクリプトを書き換えたときは、「デプロイ」→「デプロイを管理」→ 鉛筆のアイコン →「新バージョン」で、**更新しないと、反映されません**（URL は変わりません）。
+- 合言葉を替えるとき：新しい文字列を作り、Apps Script の `SECRET` と、Netlify の `GOOGLE_SCRIPT_SECRET` の両方を、同じ値に更新して、再デプロイします。
+- スクリプトの 1 日の呼び出し数には、上限があります（無料の Google アカウントで 2 万回程度）。問い合わせの数なら、十分です。
+- 反応は、少し遅いことがあります（スクリプトが起動する時間で、1〜3 秒）。お客様の画面は、「Sending your request…」のあと、「受け付けました」に変わります。
+
+#### B. サービス アカウントの鍵で追加する
+
+組織が鍵の作成を許可している場合の方法です（Google Cloud で、Sheets API を有効にし、サービス アカウントの JSON の鍵を作り、スプレッドシートを、そのアカウントに、編集者として共有します）。Netlify の環境変数は、`GOOGLE_SERVICE_ACCOUNT_EMAIL`（鍵の `client_email`）、`GOOGLE_PRIVATE_KEY`（鍵の `private_key`。改行が `\n` と文字で入っていても動きます）、`GOOGLE_SHEET_ID`（シートの URL の `/d/` と `/edit` の間）の 3 つです。タブ名を変えるときは、`GOOGLE_SHEET_TAB`。鍵の作成が組織ポリシー（`iam.managed.disableServiceAccountKeyCreation`）で止められたときは、管理者に、このプロジェクトだけ、一時的にオフにしてもらうか、A の方法を使います。
 
 **1 行目の見出し（この順番）**
 
@@ -82,7 +102,7 @@
 Received at (UTC)	Landing page	First name	Last name	ZIP code	In service area	Phone	Email	Message	Text messages (SMS)	SMS agreed at (UTC)	SMS wording shown	Submitted at (UTC, visitor clock)	utm_source	utm_medium	utm_campaign	utm_term	utm_content
 ```
 
-（`src/server/sheets.ts` の `SHEET_COLUMNS` と同じです。列の順番を変えると、行の中身とずれるので、**列を並べ替えない**でください。「連絡した」「結果」などのメモの列は、**右端（`utm_content` の右）に足してください**。）
+（`src/server/sheets.ts` の `SHEET_COLUMNS` と同じです。列の順番を変えると、行の中身とずれるので、**列を並べ替えない**でください。「連絡した」「結果」などのメモの列は、**右端（`utm_content` の右）に足してください**。1 行目は、タブの 1 行目にだけ置いてください。）
 
 **動き**
 - ブラウザは、まず自前の関数に送ります。関数は、入力の再チェック、迷惑メール対策（見えない入力欄、入力までの時間、送信元の確認）をしたうえで、シートに追加します。シートが受け付けた後にだけ、「受付済み」と返します。
