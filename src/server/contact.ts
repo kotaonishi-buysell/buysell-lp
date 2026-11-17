@@ -11,14 +11,11 @@
  *                  4xx/5xx { "accepted": false, "error": "<code>" }
  *
  * Environment variables (set in the hosting dashboard, never in the repo):
- *   GOOGLE_SCRIPT_URL, GOOGLE_SCRIPT_SECRET   the Google Sheet through an Apps Script web app (no key file; see sheets.ts)
- *   or GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID, GOOGLE_SHEET_TAB   through the Sheets API
+ *   GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID, GOOGLE_SHEET_TAB   the Google Sheet (see sheets.ts)
  *   RESEND_API_KEY            API key of the email provider
  *   CONTACT_TO_EMAIL          who receives inquiries (comma-separated for several people)
  *   CONTACT_FROM_EMAIL        sender, on a domain verified with the provider, e.g. "REWORTH <inquiries@example.com>"
  *   CONTACT_ALLOWED_ORIGINS   optional, comma-separated extra origins allowed to post (the site's own origin is always allowed)
- *   CONTACT_DRY_RUN           optional, "true" to check the pipeline without email: the request is validated, a redacted
- *                             summary goes to the function log, nothing is emailed, and the browser is told it was a dry run
  *   EMAIL_API_URL             optional, for testing only: replaces the provider's address (default https://api.resend.com/emails)
  *
  * The email provider is isolated in sendEmail(); replace that one function to change provider.
@@ -26,7 +23,7 @@
 import { MESSAGE_MAX, UTM_KEYS, buildRequest, validate, type ContactRequest } from '../lib/contact-form.ts';
 import { serviceAreaZips } from '../content/service-area-zips.ts';
 import { zipAreaStatus } from '../lib/zip-area.ts';
-import { addRow, sheetDestination, toRow, type SheetsEnv } from './sheets.ts';
+import { appendRow, sheetsConfigured, toRow, type SheetsEnv } from './sheets.ts';
 
 export interface ContactEnv extends SheetsEnv {
   RESEND_API_KEY?: string;
@@ -34,7 +31,6 @@ export interface ContactEnv extends SheetsEnv {
   CONTACT_FROM_EMAIL?: string;
   CONTACT_ALLOWED_ORIGINS?: string;
   EMAIL_API_URL?: string;
-  CONTACT_DRY_RUN?: string;
 }
 
 export interface ContactDeps {
@@ -117,32 +113,6 @@ function parseRequest(body: unknown, now: Date): ContactRequest | null {
     now,
   });
 }
-
-/**
- * What the dry run writes to the function log: enough to see that the request arrived and
- * was normalised correctly, without the visitor's name, phone number, email or message.
- */
-export function redactedSummary(request: ContactRequest): Record<string, unknown> {
-  const initial = (name: string) => `${[...name][0] ?? ''}… (${[...name].length} letters)`;
-  const email = request.email;
-  return {
-    lp: request.lp,
-    firstName: initial(request.firstName),
-    lastName: initial(request.lastName),
-    zip: request.zip,
-    phone: `${request.phone.length} digits, ends ${request.phone.slice(-4)}`,
-    email: email ? `…@${email.split('@')[1] ?? '?'}` : '(not given)',
-    messageLength: request.message.length,
-    smsConsent: request.smsConsent,
-    smsConsentAt: request.smsConsentAt,
-    smsConsentTextLength: request.smsConsentText?.length ?? 0,
-    utm: request.utm,
-    elapsedMs: request.elapsedMs,
-    submittedAt: request.submittedAt,
-  };
-}
-
-const isOn = (value: string | undefined): boolean => ['1', 'true', 'yes', 'on'].includes((value ?? '').trim().toLowerCase());
 
 /** Plain-text body of the notification email. */
 export function composeEmail(request: ContactRequest, receivedAt: Date): { subject: string; text: string } {
@@ -232,15 +202,9 @@ export async function handleContact(request: Request, env: ContactEnv, deps: Con
   if (parsed.elapsedMs < MIN_ELAPSED_MS) return rejected(400, 'too_fast');
   if (parsed.message.length > MESSAGE_MAX) return rejected(400, 'invalid_request');
 
-  // Dry run: everything above was checked for real; only the email is skipped.
-  if (isOn(env.CONTACT_DRY_RUN)) {
-    console.info('contact dry run: request received and valid, no email sent.', JSON.stringify(redactedSummary(parsed)));
-    return json(200, { accepted: true, dryRun: true });
-  }
-
   const { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL } = env;
   const emailOn = Boolean(RESEND_API_KEY && CONTACT_TO_EMAIL && CONTACT_FROM_EMAIL);
-  const sheetOn = sheetDestination(env) !== null;
+  const sheetOn = sheetsConfigured(env);
   if (!emailOn && !sheetOn) {
     console.error('contact: nothing is set up to receive the request (the Google Sheet settings, or RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL)');
     return rejected(500, 'not_configured');
@@ -253,7 +217,7 @@ export async function handleContact(request: Request, env: ContactEnv, deps: Con
     const status = zipAreaStatus(parsed.zip, { zipPrefixes: serviceAreaZips });
     const inArea = status === 'inArea' ? true : status === 'outOfArea' ? false : null;
     tasks.push(
-      addRow(toRow(parsed, now, inArea), env, transport, now).catch((error: unknown) => {
+      appendRow(toRow(parsed, now, inArea), env, transport, now).catch((error: unknown) => {
         console.error('contact: could not add the row to the Google Sheet:', error instanceof Error ? error.message : error);
         throw error;
       }),
