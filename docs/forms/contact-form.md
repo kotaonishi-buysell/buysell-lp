@@ -57,12 +57,12 @@
 
 ### Google スプレッドシートに保存する（直接送信）
 
-問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。やり方は 2 通りで、**設定してあるほうを使います**（両方あれば、Apps Script）。
+問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。やり方は 2 通りで、**設定してあるほうを使います**（両方あれば、Apps Script）。**今は、B（サービス アカウントの鍵）で動いています**（2026-11-17、事業側の確認）。
 
 | やり方 | 向く場面 | 必要なもの |
 |---|---|---|
-| **A. Apps Script の Web アプリ（鍵のファイルなし）＝今回の設定** | 組織が、サービス アカウントの鍵の作成を禁止しているとき | シートに付けた小さなスクリプト（`docs/forms/google-apps-script/Code.gs`）、Netlify の環境変数 2 つ |
-| B. Google Sheets API ＋ サービス アカウント | 鍵が作れるとき | JSON の鍵、Netlify の環境変数 3 つ |
+| A. Apps Script の Web アプリ（鍵のファイルなし）＝使っていない、選べる別の方法 | 組織が、サービス アカウントの鍵の作成を禁止しているとき | シートに付けた小さなスクリプト（`docs/forms/google-apps-script/Code.gs`）、Netlify の環境変数 2 つ |
+| **B. Google Sheets API ＋ サービス アカウント＝今の設定** | 鍵が作れるとき | JSON の鍵、Netlify の環境変数 3 つ |
 
 #### A. Apps Script の Web アプリで追加する（鍵なし）
 

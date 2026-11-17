@@ -101,7 +101,7 @@ src/
   content/lps/gold.ts    Gold：meta、フォーム文言、未確定の事実を含む文（{{TODO}}）
   components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）
   server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、保存先への振り分け、メール通知）
-  server/sheets.ts       Google スプレッドシートへの1行追加（Apps Script の Web アプリ、またはサービス アカウント）
+  server/sheets.ts       Google スプレッドシートへの1行追加（今は、サービス アカウントの鍵を使う方式。Apps Script の Web アプリの方式も選べる）
 netlify/functions/       Netlify Functions（POST /api/contact）。設定は netlify.toml
 public/images/           OG 画像（仮）、silver/ は Silver、gold/ は Gold の画像（WebP）
 ```
@@ -120,7 +120,7 @@ public/images/           OG 画像（仮）、silver/ は Silver、gold/ は Gol
 
 ### 問い合わせフォーム（全LP共通）
 
-項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信は、全LPで同じ受付の関数（`/api/contact`）に集まり、**Google スプレッドシートに1行ずつ保存**されます（Apps Script の Web アプリ。鍵のファイルは使いません）。関数が受け取れなかったときは、ブラウザが **Netlify Forms**（フォーム名 `contact`）に切り替えて送るので、問い合わせは失われません。公開先は Netlify です。設定手順は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
+項目、入力チェック、送信処理、送信先は全LPで共通です。見た目（色・余白・角丸）と、見出し・送信ボタン・送信後のメッセージなど少数の文言だけをLPごとに決めます。送信は、全LPで同じ受付の関数（`/api/contact`）に集まり、**Google スプレッドシートに1行ずつ保存**されます（サービス アカウントの鍵で、Google Sheets API を使います）。関数が受け取れなかったときは、ブラウザが **Netlify Forms**（フォーム名 `contact`）に切り替えて送るので、問い合わせは失われません。公開先は Netlify です。設定手順は [docs/forms/contact-form.md](docs/forms/contact-form.md) を見てください。
 
 ## Silver LP（`/silver`）
 
@@ -226,7 +226,7 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
 - 申込み後の連絡までの営業日数
 - SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
-- Google スプレッドシートへの保存の設定（Netlify の環境変数 `GOOGLE_SCRIPT_URL` `GOOGLE_SCRIPT_SECRET`。手順は [docs/forms/contact-form.md](docs/forms/contact-form.md)）と、予備の Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
+- Google スプレッドシートへの保存の設定（Netlify の環境変数 `GOOGLE_SERVICE_ACCOUNT_EMAIL` `GOOGLE_PRIVATE_KEY` `GOOGLE_SHEET_ID` `GOOGLE_SHEET_TAB`。手順は [docs/forms/contact-form.md](docs/forms/contact-form.md)）と、予備の Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - コールトラッキングツール（GTM コンテナ ID は設定済み）
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ
