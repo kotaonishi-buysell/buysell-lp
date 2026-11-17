@@ -101,7 +101,7 @@ src/
   content/lps/gold.ts    Gold：meta、フォーム文言、未確定の事実を含む文（{{TODO}}）
   components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）
   server/contact.ts      フォームの受付サーバー（確認し直し、迷惑メール対策、保存先への振り分け、メール通知）
-  server/sheets.ts       Google スプレッドシートへの1行追加（今は、サービス アカウントの鍵を使う方式。Apps Script の Web アプリの方式も選べる）
+  server/sheets.ts       Google スプレッドシートへの1行追加（サービス アカウントの鍵を使う）
 netlify/functions/       Netlify Functions（POST /api/contact）。設定は netlify.toml
 public/images/           OG 画像（仮）、silver/ は Silver、gold/ は Gold の画像（WebP）
 ```

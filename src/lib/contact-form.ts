@@ -201,9 +201,8 @@ export const DELIVERY_TIMEOUT_MS = 15000;
  *
  * Contract: POST JSON; the endpoint answers 2xx with JSON { "accepted": true }.
  * Anything else is a failure and the visitor's input stays in the form.
- * With no endpoint configured nothing is sent and 'preview' is returned, and the same
- * when the server answers { accepted: true, dryRun: true }. The page must never present
- * either as a received request.
+ * With no endpoint configured nothing is sent and 'preview' is returned. The page must never present
+ * that as a received request.
  */
 export async function deliverContactRequest(
   request: ContactRequest,
@@ -238,8 +237,6 @@ export async function deliverContactRequest(
     if (!body || typeof body !== 'object' || !('accepted' in body) || body.accepted !== true) {
       throw new DeliveryError('invalid_acknowledgement');
     }
-    // A dry run (CONTACT_DRY_RUN on the server) checked the request but sent nothing.
-    if ('dryRun' in body && body.dryRun === true) return 'preview';
     return 'accepted';
   } finally {
     clearTimeout(timer);

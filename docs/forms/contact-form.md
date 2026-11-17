@@ -51,50 +51,19 @@
 
 | モード | 設定 | 動き |
 |---|---|---|
-| **自前の関数（`function`）＝今の設定** | `PUBLIC_CONTACT_ENDPOINT=/api/contact` と `PUBLIC_CONTACT_FALLBACK=netlify-forms`（どちらも `netlify.toml` に設定済み） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直して、**Google スプレッドシートに 1 行追加**します（Apps Script の Web アプリ経由、またはサービス アカウント。メールの設定もあれば、メールでも通知）。関数が受け取れなかったとき（Google の設定が未完了、障害など）は、ブラウザが **Netlify Forms** に送るので、問い合わせは失われません。下の「Google スプレッドシートに保存する」を見てください。 |
+| **自前の関数（`function`）＝今の設定** | `PUBLIC_CONTACT_ENDPOINT=/api/contact` と `PUBLIC_CONTACT_FALLBACK=netlify-forms`（どちらも `netlify.toml` に設定済み） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直して、**Google スプレッドシートに 1 行追加**します（サービス アカウントの鍵で保存。メールの設定もあれば、メールでも通知）。関数が受け取れなかったとき（Google の設定が未完了、障害など）は、ブラウザが **Netlify Forms** に送るので、問い合わせは失われません。下の「Google スプレッドシートに保存する」を見てください。 |
 | Netlify Forms のみ | `PUBLIC_CONTACT_MODE=netlify-forms` | ブラウザが、開いているページ自身のURLに、フォームの内容を送ります。Netlify が受け取って保管し、通知は Netlify の画面で設定します。`netlify.toml` の 2 行を、この 1 行に置き換えると、この方式に戻せます。 |
 | プレビュー | どちらも未設定（手元のビルド） | 何も送信せず、「Preview only」と明示します。受付済みとは表示せず、計測の `form_submit` も出しません。 |
 
 ### Google スプレッドシートに保存する（直接送信）
 
-問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。やり方は 2 通りで、**設定してあるほうを使います**（両方あれば、Apps Script）。**今は、B（サービス アカウントの鍵）で動いています**（2026-11-17、事業側の確認）。
+問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。**Google Sheets API と、サービス アカウントの鍵**を使います（2026-11-17、事業側の確認）。
 
-| やり方 | 向く場面 | 必要なもの |
-|---|---|---|
-| A. Apps Script の Web アプリ（鍵のファイルなし）＝使っていない、選べる別の方法 | 組織が、サービス アカウントの鍵の作成を禁止しているとき | シートに付けた小さなスクリプト（`docs/forms/google-apps-script/Code.gs`）、Netlify の環境変数 2 つ |
-| **B. Google Sheets API ＋ サービス アカウント＝今の設定** | 鍵が作れるとき | JSON の鍵、Netlify の環境変数 3 つ |
+> **削除した方式：** 以前は、鍵のファイルを使わない「Apps Script の Web アプリ」の方式も選べました（`GOOGLE_SCRIPT_URL`、`GOOGLE_SCRIPT_SECRET`、`docs/forms/google-apps-script/Code.gs`）。使っていないため、削除しました（2026-11-17）。組織がサービス アカウントの鍵の作成を禁止したときなど、必要になったら、Git の履歴（コミット `2fecbef` 以前の `src/server/sheets.ts` と `Code.gs`）から、戻せます。
 
-#### A. Apps Script の Web アプリで追加する（鍵なし）
+#### サービス アカウントの鍵で追加する
 
-**あなたが準備すること（最初の 1 回）**
-1. スプレッドシートを用意します（今のシート：URL の `gid=2116123203` のタブに、行が入ります。`Code.gs` の `TAB_GID` がそのタブの番号です。別のタブに替えるときは、番号を替えるか、`null` にして、タブ名を **Inquiries** にします）。そのタブの 1 行目に、下の「1 行目の見出し」を貼ります。
-2. スプレッドシートで「拡張機能」→「Apps Script」を開き、`Code.gs` の中身を全部消して、**`docs/forms/google-apps-script/Code.gs` を貼り付け**ます。保存します。
-3. 合言葉（秘密の文字列）を作ります。ターミナルで `openssl rand -hex 24` を実行すると、48 文字の文字列ができます（または、パスワード管理ツールで 32 文字以上のランダムな文字列を作ります）。
-4. Apps Script の左の「プロジェクトの設定」（歯車）→「スクリプト プロパティ」→「プロパティを追加」で、名前 **`SECRET`**、値に、手順 3 の文字列を入れて保存します。
-5. 右上の「デプロイ」→「新しいデプロイ」→ 種類の歯車で「**ウェブアプリ**」を選びます。
-   - 「次のユーザーとして実行」：**自分**
-   - 「アクセスできるユーザー」：**全員**
-   - 「デプロイ」を押し、最初に出る許可の画面で、自分のアカウントを選んで許可します（「このアプリは確認されていません」と出たら、「詳細」→「（安全ではないページ）に移動」）。
-6. 出てきた「**ウェブアプリの URL**」（`https://script.google.com/macros/s/…/exec`）をコピーします。
-7. Netlify の「Site configuration」→「Environment variables」に、次の 2 つを登録します。
-   | 名前 | 値 |
-   |---|---|
-   | `GOOGLE_SCRIPT_URL` | 手順 6 の URL |
-   | `GOOGLE_SCRIPT_SECRET` | 手順 3 の文字列（手順 4 の `SECRET` と同じもの） |
-8. サイトを公開し直す（再デプロイ）。
-9. 確認：本番のフォームから、テストを 1 件送り、シートに 1 行増えることを確かめます。確認用の行は、あとで消します。
-
-**注意（A）**
-- 「アクセスできるユーザー」を「全員」にできない（組織の設定で、「組織内のみ」しか選べない）場合は、この方法は使えません。Google Workspace の管理者に、Apps Script の外部公開の許可を相談してください。
-- Web アプリの URL は、公開されています。誰かが URL を知っても、**合言葉がなければ、行は追加されません**（スクリプトが、合言葉を確かめます）。合言葉と URL は、Netlify の環境変数にだけ置き、チャットやリポジトリに書かないでください。
-- スクリプトを書き換えたときは、「デプロイ」→「デプロイを管理」→ 鉛筆のアイコン →「新バージョン」で、**更新しないと、反映されません**（URL は変わりません）。
-- 合言葉を替えるとき：新しい文字列を作り、Apps Script の `SECRET` と、Netlify の `GOOGLE_SCRIPT_SECRET` の両方を、同じ値に更新して、再デプロイします。
-- スクリプトの 1 日の呼び出し数には、上限があります（無料の Google アカウントで 2 万回程度）。問い合わせの数なら、十分です。
-- 反応は、少し遅いことがあります（スクリプトが起動する時間で、1〜3 秒）。お客様の画面は、「Sending your request…」のあと、「受け付けました」に変わります。
-
-#### B. サービス アカウントの鍵で追加する
-
-組織が鍵の作成を許可している場合の方法です（Google Cloud で、Sheets API を有効にし、サービス アカウントの JSON の鍵を作り、スプレッドシートを、そのアカウントに、編集者として共有します）。Netlify の環境変数は、`GOOGLE_SERVICE_ACCOUNT_EMAIL`（鍵の `client_email`）、`GOOGLE_PRIVATE_KEY`（鍵の `private_key`。改行が `\n` と文字で入っていても動きます）、`GOOGLE_SHEET_ID`（シートの URL の `/d/` と `/edit` の間）の 3 つです。タブ名を変えるときは、`GOOGLE_SHEET_TAB`。鍵の作成が組織ポリシー（`iam.managed.disableServiceAccountKeyCreation`）で止められたときは、管理者に、このプロジェクトだけ、一時的にオフにしてもらうか、A の方法を使います。
+組織が鍵の作成を許可している必要があります（Google Cloud で、Sheets API を有効にし、サービス アカウントの JSON の鍵を作り、スプレッドシートを、そのアカウントに、編集者として共有します）。Netlify の環境変数は、`GOOGLE_SERVICE_ACCOUNT_EMAIL`（鍵の `client_email`）、`GOOGLE_PRIVATE_KEY`（鍵の `private_key`。改行が `\n` と文字で入っていても動きます）、`GOOGLE_SHEET_ID`（シートの URL の `/d/` と `/edit` の間）の 3 つです。タブ名を変えるときは、`GOOGLE_SHEET_TAB`。鍵の作成が組織ポリシー（`iam.managed.disableServiceAccountKeyCreation`）で止められたときは、管理者に、このプロジェクトだけ、一時的にオフにしてもらうか、A の方法を使います。
 
 **1 行目の見出し（この順番）**
 
@@ -171,28 +140,17 @@ Received at (UTC)	Landing page	First name	Last name	ZIP code	In service area	Pho
    | `CONTACT_TO_EMAIL` | 通知を受け取るアドレス（複数ならカンマ区切り） |
    | `CONTACT_FROM_EMAIL` | 送信元。認証済みドメインのアドレス（例：`BuySell <inquiries@example.com>`） |
    | `CONTACT_ALLOWED_ORIGINS` | 任意。サイト自身以外にPOSTを許すオリジン（カンマ区切り） |
-   | `CONTACT_DRY_RUN` | 任意。`true` にすると「確認モード」になる（下の「メールなしで受信だけ確認する」）。**本番では必ず外す** |
 
 4. デプロイプレビューで、実際にフォームから送信して、メールが届くことを確認します。
 5. 設定が足りないときは、フォームは「送れませんでした」と表示し、受付済みとは表示しません。
 
-### メールなしで受信だけ確認する（確認モード）
-
-メールの設定（Resend）の前に、「フォームの内容が受付サーバーに正しく届くか」だけを確認できます。
-
-1. Netlify の環境変数に、`CONTACT_DRY_RUN` ＝ `true` を追加します（`RESEND_API_KEY` などは不要です）。追加したら、公開し直します。
-2. 公開されたサイトのフォームに、**テスト用のダミーの内容**を入力し、**ページを開いて2秒以上たってから**送信します。
-3. 画面に「Preview only. Your details are valid, but nothing was sent…」と表示されれば、受付サーバーは、リクエストを受け取って、サーバー側のチェックも通しています。メールは送られず、計測の `form_submit` も記録されません。
-4. 受け取った内容は、Netlify の「Logs & metrics」→「Functions」→ `contact` で、「contact dry run: request received and valid」という行を探して見ます。ログには、名前・電話・メール・メッセージの本文は出ません。次のものだけが出ます。
-   - LP名、ZIP（整形後）、名前の頭文字と文字数、電話の桁数と末尾4桁、メールのドメイン、メッセージの文字数
-   - SMS同意の有無・日時・文言の長さ、UTM、ページを開いてから送信までの時間
-5. 確認が済んだら、`CONTACT_DRY_RUN` を**削除**（または `false`）して、メールの設定に進みます。**確認モードのままだと、本物の問い合わせにも、メールが送られません**（画面には「Preview only」と出るので、気づけます）。
+### うまく送れないとき
 
 画面が「We couldn't send your request」になる場合は、サーバーがリクエストを断っています。ログに出る理由で、原因を判断できます（`invalid_request`＝入力の不備、`too_fast`＝2秒未満の送信、`origin_not_allowed`＝別のサイトからの送信）。
 
 ### 手元での確認
 
-- `npm test`：入力チェック、サーバーの処理（メール送信は代用品で確認）、確認モード、Netlify への接続部分をテストします。
+- `npm test`：入力チェック、サーバーの処理（メール送信は代用品で確認）、Netlify への接続部分をテストします。
 - 実物の関数を動かすには、`npx netlify-cli functions:serve --offline --functions netlify/functions` を使います。環境変数 `EMAIL_API_URL`（テスト専用）にダミーの受け口のURLを入れると、メールの代わりにそこへ送られます。
 
 ## 構成
