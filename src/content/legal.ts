@@ -193,7 +193,7 @@ export const privacyPolicy: LegalPageContent = {
         {
           list: [
             // TODO: confirm there is no other category of provider that receives personal information, for example a CRM tool. If there is, add it to this list.
-            'Service providers that work for us under contract: website hosting and form-processing providers, analytics and session-recording providers, and providers of email, text messaging and scheduling.',
+            'Service providers that work for us under contract: website hosting and form-processing providers, cloud spreadsheet and storage providers (where we keep the requests you send us), analytics and session-recording providers, and providers of email, text messaging and scheduling.',
             'Advertising and social media platforms (Meta and Google), through the advertising tools described above, for advertising and ad measurement. You can opt out: see "Do not sell or share my personal information".',
             // TODO: confirm whether and under what terms data goes to BuySell Technologies group companies. Remove this line if it does not.
             'Other companies in the BuySell group, to help run the service.',

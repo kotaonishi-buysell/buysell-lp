@@ -46,12 +46,13 @@ const consentText = smsConsentText(company, site.brand.name);
 const see = copy.smsConsentSee;
 // The wording shown is the stored wording; the Terms and Privacy Policy names in it are links.
 const consentMain = consentText.slice(0, consentText.length - `${see.before}${see.terms}${see.and}${see.privacy}${see.after}`.length - 1);
-const { mode, endpoint, formName } = contactFormConfig;
+const { mode, endpoint, fallback, formName } = contactFormConfig;
 
 const config = {
   lp,
   mode,
   endpoint,
+  fallback,
   formName,
   idPrefix,
   consentText,

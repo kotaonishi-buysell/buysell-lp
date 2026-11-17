@@ -15,8 +15,11 @@ const env = (import.meta as { env?: Record<string, string | undefined> }).env ??
  *   netlify-forms  the browser posts to its own page and Netlify Forms stores the submission
  *                  (notifications are set in the Netlify dashboard). Default on Netlify.
  *   function       the browser posts JSON to PUBLIC_CONTACT_ENDPOINT (src/server/contact.ts,
- *                  e.g. '/api/contact'), which checks it again and emails it. Set the endpoint
- *                  variable and leave PUBLIC_CONTACT_MODE unset to use it.
+ *                  e.g. '/api/contact'), which checks it again and adds a row to a Google Sheet
+ *                  and/or emails it. Set the endpoint variable and leave PUBLIC_CONTACT_MODE unset
+ *                  to use it. With PUBLIC_CONTACT_FALLBACK=netlify-forms, a request the function
+ *                  could not take (not set up yet, or down) goes to Netlify Forms instead, so no
+ *                  inquiry is lost (never after a refusal such as a bad input).
  *   preview        neither is set.
  */
 export const contactFormConfig = {
@@ -27,6 +30,10 @@ export const contactFormConfig = {
       : 'preview') as ContactMode,
   /** Same-origin path (e.g. '/api/contact') or an https:// URL. Used by the 'function' mode only. */
   endpoint: (env.PUBLIC_CONTACT_ENDPOINT || null) as string | null,
+  /** Used by the 'function' mode: where to send a request the function could not take. */
+  fallback: (env.PUBLIC_CONTACT_MODE !== 'netlify-forms' && env.PUBLIC_CONTACT_ENDPOINT && env.PUBLIC_CONTACT_FALLBACK === 'netlify-forms'
+    ? 'netlify-forms'
+    : null) as 'netlify-forms' | null,
   /** Name of the form in Netlify Forms. The same on every LP, so one form collects them all. */
   formName: 'contact',
 };

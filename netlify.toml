@@ -7,11 +7,15 @@
 
 [build.environment]
   NODE_VERSION = "22"
-  # Turns the contact form on in every Netlify build (production and deploy previews): submissions go
-  # to Netlify Forms (form "contact"). Local builds leave it unset, so the form stays in preview mode.
-  # To use the email function in netlify/functions instead, remove this line and set
-  # PUBLIC_CONTACT_ENDPOINT = "/api/contact" (see docs/forms/contact-form.md).
-  PUBLIC_CONTACT_MODE = "netlify-forms"
+  # Turns the contact form on in every Netlify build (production and deploy previews). Local builds leave
+  # these unset, so the form stays in preview mode.
+  # The form posts to our own function (netlify/functions/contact.ts), which adds a row to the Google Sheet
+  # (and emails the team when the email settings are set). If the function cannot take a request (the Google
+  # settings are not in Netlify yet, or it is down), the browser sends it to Netlify Forms (form "contact"),
+  # so no inquiry is lost. See docs/forms/contact-form.md.
+  # To use only Netlify Forms, replace the two lines below with: PUBLIC_CONTACT_MODE = "netlify-forms"
+  PUBLIC_CONTACT_ENDPOINT = "/api/contact"
+  PUBLIC_CONTACT_FALLBACK = "netlify-forms"
 
 [functions]
   directory = "netlify/functions"
