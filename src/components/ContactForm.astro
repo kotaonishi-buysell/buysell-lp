@@ -42,12 +42,13 @@ const {
 
 const id = (name: string) => `${idPrefix}-${name}`;
 const consentText = smsConsentText(company);
-const { mode, endpoint, formName } = contactFormConfig;
+const { mode, endpoint, fallback, formName } = contactFormConfig;
 
 const config = {
   lp,
   mode,
   endpoint,
+  fallback,
   formName,
   idPrefix,
   consentText,

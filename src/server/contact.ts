@@ -3,13 +3,15 @@
  *
  * Web-standard Request in, Response out, so it runs on Vercel Functions and in
  * unit tests alike. It checks everything again (the browser is not trusted),
- * drops obvious bots, and emails the inquiry to the team.
+ * drops obvious bots, and records the inquiry: as a row in a Google Sheet (src/server/sheets.ts) and/or as an
+ * email to the team. Either one is enough; when both are set up, the request is accepted if at least one worked.
  *
  * Contract with the browser (see src/lib/contact-form.ts):
  *   POST JSON  ->  200 { "accepted": true }   only after the email provider accepted the message
  *                  4xx/5xx { "accepted": false, "error": "<code>" }
  *
  * Environment variables (set in the hosting dashboard, never in the repo):
+ *   GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID, GOOGLE_SHEET_TAB   the Google Sheet (see sheets.ts)
  *   RESEND_API_KEY            API key of the email provider
  *   CONTACT_TO_EMAIL          who receives inquiries (comma-separated for several people)
  *   CONTACT_FROM_EMAIL        sender, on a domain verified with the provider, e.g. "REWORTH <inquiries@example.com>"
@@ -21,8 +23,11 @@
  * The email provider is isolated in sendEmail(); replace that one function to change provider.
  */
 import { MESSAGE_MAX, UTM_KEYS, buildRequest, validate, type ContactRequest } from '../lib/contact-form.ts';
+import { serviceAreaZips } from '../content/service-area-zips.ts';
+import { zipAreaStatus } from '../lib/zip-area.ts';
+import { appendRow, sheetsConfigured, toRow, type SheetsEnv } from './sheets.ts';
 
-export interface ContactEnv {
+export interface ContactEnv extends SheetsEnv {
   RESEND_API_KEY?: string;
   CONTACT_TO_EMAIL?: string;
   CONTACT_FROM_EMAIL?: string;
@@ -233,22 +238,40 @@ export async function handleContact(request: Request, env: ContactEnv, deps: Con
   }
 
   const { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL } = env;
-  if (!RESEND_API_KEY || !CONTACT_TO_EMAIL || !CONTACT_FROM_EMAIL) {
-    console.error('contact: email settings are missing (RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL)');
+  const emailOn = Boolean(RESEND_API_KEY && CONTACT_TO_EMAIL && CONTACT_FROM_EMAIL);
+  const sheetOn = sheetsConfigured(env);
+  if (!emailOn && !sheetOn) {
+    console.error('contact: nothing is set up to receive the request (the Google Sheet settings, or RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL)');
     return rejected(500, 'not_configured');
   }
 
-  try {
-    const { subject, text: emailText } = composeEmail(parsed, now);
-    await sendEmail(
-      { subject, text: emailText, replyTo: parsed.email || undefined },
-      { RESEND_API_KEY, CONTACT_TO_EMAIL, CONTACT_FROM_EMAIL, EMAIL_API_URL: env.EMAIL_API_URL },
-      transport,
+  // Every configured destination is tried; the request is accepted if at least one took it. The log holds the
+  // reason only, never the visitor's details.
+  const tasks: Promise<void>[] = [];
+  if (sheetOn) {
+    const status = zipAreaStatus(parsed.zip, { zipPrefixes: serviceAreaZips });
+    const inArea = status === 'inArea' ? true : status === 'outOfArea' ? false : null;
+    tasks.push(
+      appendRow(toRow(parsed, now, inArea), env, transport, now).catch((error: unknown) => {
+        console.error('contact: could not add the row to the Google Sheet:', error instanceof Error ? error.message : error);
+        throw error;
+      }),
     );
-  } catch (error) {
-    // Log the reason only; the log must not contain the visitor's details.
-    console.error('contact: could not send the notification email:', error instanceof Error ? error.message : error);
-    return rejected(502, 'delivery_failed');
   }
+  if (emailOn) {
+    const { subject, text: emailText } = composeEmail(parsed, now);
+    tasks.push(
+      sendEmail(
+        { subject, text: emailText, replyTo: parsed.email || undefined },
+        { RESEND_API_KEY: RESEND_API_KEY!, CONTACT_TO_EMAIL: CONTACT_TO_EMAIL!, CONTACT_FROM_EMAIL: CONTACT_FROM_EMAIL!, EMAIL_API_URL: env.EMAIL_API_URL },
+        transport,
+      ).catch((error: unknown) => {
+        console.error('contact: could not send the notification email:', error instanceof Error ? error.message : error);
+        throw error;
+      }),
+    );
+  }
+  const results = await Promise.allSettled(tasks);
+  if (!results.some((result) => result.status === 'fulfilled')) return rejected(502, 'delivery_failed');
   return json(200, { accepted: true });
 }

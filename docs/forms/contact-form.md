@@ -51,9 +51,50 @@
 
 | モード | 設定 | 動き |
 |---|---|---|
-| **Netlify Forms**（Netlify の標準） | `PUBLIC_CONTACT_MODE=netlify-forms`（`netlify.toml` に設定済み） | ブラウザが、開いているページ自身のURLに、フォームの内容を送ります。Netlify が受け取って保管し、通知は Netlify の画面で設定します。 |
-| メール送信の関数 | `PUBLIC_CONTACT_ENDPOINT=/api/contact`（`PUBLIC_CONTACT_MODE` は未設定） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直してメールで通知します。下の「受付サーバー」を見てください。 |
+| **自前の関数（`function`）＝今の設定** | `PUBLIC_CONTACT_ENDPOINT=/api/contact` と `PUBLIC_CONTACT_FALLBACK=netlify-forms`（どちらも `netlify.toml` に設定済み） | ブラウザが `/api/contact`（`src/server/contact.ts`）に送り、関数が確認し直して、**Google スプレッドシートに 1 行追加**します（メールの設定もあれば、メールでも通知）。関数が受け取れなかったとき（Google の設定が未完了、障害など）は、ブラウザが **Netlify Forms** に送るので、問い合わせは失われません。下の「Google スプレッドシートに保存する」を見てください。 |
+| Netlify Forms のみ | `PUBLIC_CONTACT_MODE=netlify-forms` | ブラウザが、開いているページ自身のURLに、フォームの内容を送ります。Netlify が受け取って保管し、通知は Netlify の画面で設定します。`netlify.toml` の 2 行を、この 1 行に置き換えると、この方式に戻せます。 |
 | プレビュー | どちらも未設定（手元のビルド） | 何も送信せず、「Preview only」と明示します。受付済みとは表示せず、計測の `form_submit` も出しません。 |
+
+### Google スプレッドシートに保存する（直接送信）
+
+問い合わせを、Netlify を経由せず、自前の関数から、Google スプレッドシートに 1 行ずつ追加します（`src/server/sheets.ts`）。Google のサービスアカウント（機械用のアカウント）でログインし、行を**追加するだけ**です（既存の行を読んだり、変えたりしません）。
+
+**あなたが準備すること（最初の 1 回）**
+1. Google Cloud（console.cloud.google.com）で、プロジェクトを作る（または、会社のものを選ぶ）。
+2. 「API とサービス」→「ライブラリ」で、**Google Sheets API** を有効にする。
+3. 「IAM と管理」→「サービスアカウント」で、サービスアカウントを作る（名前の例：`reworth-form`）。ロールは不要。
+4. そのサービスアカウントの「鍵」→「鍵を追加」→「新しい鍵」→ **JSON** で、鍵のファイルをダウンロードする（**このファイルは、誰にも渡さず、リポジトリにも入れない**）。
+5. 受け取り用のスプレッドシートを作る。タブ（シート）の名前は **Inquiries**（変えるときは、環境変数 `GOOGLE_SHEET_TAB`）。
+6. 1 行目に、下の見出しを貼る（1 つのセルから、横に貼り付ける）。
+7. スプレッドシートの「共有」で、サービスアカウントのメールアドレス（鍵のファイルの `client_email`）を、**編集者**として追加する。**ほかの共有は、必要な人だけにする**（電話・メール・SMS の同意記録が入ります）。
+8. Netlify の「Site configuration」→「Environment variables」に、次の 3 つを登録する。
+   | 名前 | 値 |
+   |---|---|
+   | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | 鍵のファイルの `client_email` |
+   | `GOOGLE_PRIVATE_KEY` | 鍵のファイルの `private_key`（`-----BEGIN PRIVATE KEY-----` から `-----END PRIVATE KEY-----` まで。改行が `\n` と文字で入っていても動きます） |
+   | `GOOGLE_SHEET_ID` | スプレッドシートの URL の `/d/` と `/edit` の間の文字列 |
+9. サイトを公開し直す（再デプロイ）。
+10. 確認：本番のフォームから、テストを 1 件送り、シートに 1 行増えること、`In service area` などの列が入ることを確かめる。確認用の行は、あとで消す。
+
+**1 行目の見出し（この順番）**
+
+```
+Received at (UTC)	Landing page	First name	Last name	ZIP code	In service area	Phone	Email	Message	Text messages (SMS)	SMS agreed at (UTC)	SMS wording shown	Submitted at (UTC, visitor clock)	utm_source	utm_medium	utm_campaign	utm_term	utm_content
+```
+
+（`src/server/sheets.ts` の `SHEET_COLUMNS` と同じです。列の順番を変えると、行の中身とずれるので、**列を並べ替えない**でください。「連絡した」「結果」などのメモの列は、**右端（`utm_content` の右）に足してください**。）
+
+**動き**
+- ブラウザは、まず自前の関数に送ります。関数は、入力の再チェック、迷惑メール対策（見えない入力欄、入力までの時間、送信元の確認）をしたうえで、シートに追加します。シートが受け付けた後にだけ、「受付済み」と返します。
+- 値は、すべて**文字として**保存します（`=` から始まるメッセージも、数式として動かず、電話番号の先頭の 0 も消えません）。
+- 関数が**受け取れなかったとき**（Google の設定が未完了、通信の失敗、サーバーのエラー、時間切れ）は、ブラウザが Netlify Forms に送ります。そのため、**設定が終わる前でも、問い合わせは失われません**（今と同じ）。入力の誤りなど、関数が**断った**ときは、Netlify Forms には送らず、お客様に「送れませんでした」と出します。
+- まれに、関数が受け取ったのに、返事が届かなかったときは、Netlify Forms にも、同じ問い合わせが入る（二重）ことがあります。問い合わせが失われるより、二重のほうが安全なので、この動きにしています。
+- メール通知（`RESEND_API_KEY`、`CONTACT_TO_EMAIL`、`CONTACT_FROM_EMAIL`）も設定すると、シートとメールの両方に送ります。**どちらか一方でも成功すれば、受け付けます**。
+- 鍵を替えるとき：Google Cloud で新しい鍵を作り、Netlify の `GOOGLE_PRIVATE_KEY` を差し替えて、古い鍵を削除します。
+
+**個人情報について**
+- シートに入る個人情報は、名前・ZIP・電話・メール・メッセージ・SMS 同意の記録です。共有範囲は、必要な人だけにしてください。
+- Privacy Policy の「service providers」に、保管・フォーム処理の業者の区分が入っています（`legal.ts`）。シートの保存期間は、問い合わせの保存期間（TODO）と、そろえます。
 
 ### Netlify Forms で受け取る
 
@@ -76,9 +117,9 @@
 #### 注意
 - 保管される場所と期間、件数の上限（無料の枠）は、Netlify のプランによります。公式の料金のページで確認してください。上限を超えると、受け取りが止まる場合があります。
 - 個人情報が Netlify に保管されます。プライバシーポリシーへの記載の対象です。
-- このモードで、受付サーバーの関数（`/api/contact`）は使いません。デプロイはされますが、呼ばれません。メールを関数から送る方式に戻すときは、`netlify.toml` の `PUBLIC_CONTACT_MODE` を消し、`PUBLIC_CONTACT_ENDPOINT = "/api/contact"` を設定します。
+- 「Netlify Forms のみ」のモードでは、受付サーバーの関数（`/api/contact`）は使いません。今の設定（自前の関数 ＋ 失敗時の Netlify Forms）では、この節の仕組みは**控え**として働きます：関数が受け取れなかった問い合わせだけが、ここに入ります。Netlify の「Forms」の通知設定は、そのまま使えます。
 
-### メール送信の関数の契約（`function` モード）
+### 受付関数の契約（`function` モード）
 
 - 送信先は `PUBLIC_CONTACT_ENDPOINT`（同じオリジンのパス、または `https://` のURL）です。
 - 送信先は、成功時に **2xx と `{ "accepted": true }`** を返してください。それ以外（2xx以外、空の応答、JSONでない応答、`accepted` が `true` でない応答）は失敗として扱い、入力は残します。15秒でタイムアウトします。
