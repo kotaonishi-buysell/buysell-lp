@@ -105,7 +105,9 @@ test('SMS consent is not required: an otherwise valid form passes without it', (
   assert.deepEqual(validate(valid()), []);
 });
 test('the provisional consent wording names the company', () => {
-  assert.match(smsConsentText('BuySell'), /^I agree to receive text messages from BuySell about my inquiry\. Message frequency varies\. Msg & data rates may apply\. Reply STOP to opt out, HELP for help\.$/);
+  const wording = smsConsentText('BuySell America, Inc.', 'REWORTH');
+  assert.match(wording, /^I agree to receive text messages from REWORTH, a service of BuySell America, Inc\., about my inquiry, scheduling my visit and, if I sell items to you, follow-up about my sale\. /);
+  assert.match(wording, /Up to 10 messages per month\. Msg & data rates may apply\. Consent is not a condition of any purchase or service\. Reply STOP to opt out, HELP for help\. See our Terms of Use and Privacy Policy\.$/);
 });
 test('only allowed UTM parameters are kept', () => {
   assert.deepEqual(readUtm('?utm_source=google&utm_medium=cpc&gclid=abc&utm_campaign=%20tx%20&other=1'), {

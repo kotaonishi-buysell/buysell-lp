@@ -1,0 +1,66 @@
+---
+/*
+ * Text-message sign-up page: the public place where a customer agrees to texts (carrier toll-free review).
+ * It uses the legal layout (no LP stylesheet, no analytics) and the shared contact form with the SMS box unticked.
+ * Copy: src/content/sms-consent.ts. Consent wording: src/content/contact-form.ts.
+ */
+import LegalLayout from '../layouts/LegalLayout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../content/site';
+import { smsConsentPage as page } from '../content/sms-consent';
+import { fill, plain } from '../lib/text';
+
+const tokens = {
+  brand: site.brand.name,
+  company: plain(site.company.name),
+  phone: site.phone.display,
+  email: site.legal.privacyEmail,
+};
+const t = (text: string) => fill(text, tokens);
+const emailLink = tokens.email.includes('{{') ? null : tokens.email;
+const detail = (text: string) => {
+  const out = t(text);
+  return emailLink ? out.replaceAll(emailLink, `<a href="mailto:${emailLink}">${emailLink}</a>`) : out;
+};
+---
+
+<LegalLayout slug={page.slug} title={page.title} description={t(page.description)}>
+  <article class="lg-article">
+    <h1>{page.title}</h1>
+    <p class="lg-intro">{t(page.intro)}</p>
+
+    <section aria-labelledby="sms-what">
+      <h2 id="sms-what">{page.whatHeading}</h2>
+      <ul>{page.what.map((item) => <li>{t(item)}</li>)}</ul>
+    </section>
+
+    <section aria-labelledby="sms-details">
+      <h2 id="sms-details">{page.detailsHeading}</h2>
+      <ul>{page.details.map((item) => <li set:html={detail(item)} />)}</ul>
+      <p class="lg-links">
+        <a href={site.links.terms}>Terms of Use</a>
+        <a href={site.links.privacy}>Privacy Policy</a>
+      </p>
+    </section>
+
+    <section id="consult" aria-labelledby="sms-form">
+      <h2 id="sms-form">{page.formHeading}</h2>
+      <p>{page.formIntro}</p>
+      <div class="lg-form">
+        <ContactForm
+          lp={page.slug}
+          company={plain(site.company.name)}
+          buttonClass="lg-button"
+          submitLabel={page.submitLabel}
+          success={page.success}
+          privacyUrl={site.links.privacy}
+        />
+      </div>
+    </section>
+  </article>
+
+  <script>
+    import { initContactForms } from '../scripts/contact-form';
+    initContactForms();
+  </script>
+</LegalLayout>

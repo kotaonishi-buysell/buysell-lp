@@ -165,3 +165,59 @@ body[data-page="legal"] .lg-button { min-height: 48px; padding: 10px 20px; borde
 body[data-page="legal"] .lg-button:hover { background: #000; }
 body[data-page="legal"] .lg-button:focus-visible { outline: 3px solid var(--lg-link); outline-offset: 3px; }
 body[data-page="legal"] .lg-button[hidden] { display: none; }
+
+/* The shared contact form on /sms: its skin (see contact-form.css for the variables). */
+body[data-page="legal"] {
+  --cf-text: var(--lg-ink);
+  --cf-muted: var(--lg-muted);
+  --cf-border: #8a8f96;
+  --cf-border-width: 1px;
+  --cf-border-width-strong: 2px;
+  --cf-input-bg: #fff;
+  --cf-radius: 6px;
+  --cf-accent: var(--lg-link);
+  --cf-focus: var(--lg-ink);
+  --cf-error: #a12622;
+  --cf-surface: var(--lg-sunk);
+  --cf-gap: 20px;
+  --cf-gap-sm: 6px;
+  --cf-tap: 44px;
+  --cf-pad-x: 12px;
+  --cf-pad-y: 8px;
+  --cf-checkbox: 22px;
+  --cf-focus-width: 3px;
+  --cf-focus-offset: 3px;
+  --cf-weight-strong: 600;
+}
+body[data-page="legal"] .lg-form {
+  margin-top: 16px;
+  padding: 20px;
+  border: 1px solid var(--lg-line);
+  border-radius: 8px;
+  background: #fff;
+}
+body[data-page="legal"] .lg-button {
+  min-height: 48px;
+  padding: 10px 24px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--lg-link);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+body[data-page="legal"] .lg-button:focus-visible {
+  outline: 3px solid var(--lg-ink);
+  outline-offset: 3px;
+}
+body[data-page="legal"] .lg-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+body[data-page="legal"] .cf-input {
+  box-sizing: border-box;
+}
+body[data-page="legal"] .lg-links a + a {
+  margin-left: 16px;
+}

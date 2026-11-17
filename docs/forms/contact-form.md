@@ -10,7 +10,7 @@
 | 2 | Last name | text、`autocomplete="family-name"` | 必須 | 同上 |
 | 3 | ZIP code | text、`autocomplete="postal-code"` | 必須 | 5桁、または ZIP+4（`12345-6789`）。ハイフンなしの9桁も受け付け、`12345-6789` に整える |
 | 4 | Phone number | `type="tel"`、`autocomplete="tel"` | 必須 | 米国の10桁。`(555) 123-4567`、`555-123-4567`、`555.123.4567`、先頭の `1` や `+1` も許容。保存は数字のみ（10桁） |
-| 5 | SMS 同意チェックボックス | checkbox | 任意 | 初期値はオフ。オフでも送信できる。同意の有無、チェックした日時、画面に出した文言を保存 |
+| 5 | SMS 同意チェックボックス | checkbox | 任意 | 初期値はオフ。オフでも送信できる。同意の有無、チェックした日時、画面に出した文言（Terms と Privacy へのリンクの文を含む）を保存。文言は `src/content/contact-form.ts`（月の上限は `smsMessageLimit` = 10。Terms・Privacy・`/sms` も同じ値を使う） |
 | 6 | Email | `type="email"`、`autocomplete="email"` | 任意 | 入力したときだけ一般的な形式をチェック |
 | 7 | How can we help you? | textarea | 任意 | 1,000文字まで。残り文字数を表示。前後の空白は保存時に除く |
 
@@ -39,7 +39,7 @@
 }
 ```
 
-- `lp` でどのLPから来たかを区別します。
+- `lp` でどのLPから来たかを区別します。`/sms`（SMS同意の専用ページ）からは `sms` が入ります。
 - `smsConsent` が `false` のとき、`smsConsentAt` と `smsConsentText` は `null` です。
 - 日時はブラウザの時計によるUTCです。受け取る側でも、受信日時を記録してください。
 - `utm` には `utm_source` `utm_medium` `utm_campaign` `utm_term` `utm_content` だけが入ります（他のパラメータは送りません）。

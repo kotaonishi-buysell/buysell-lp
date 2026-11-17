@@ -9,6 +9,7 @@ import '../styles/contact-form.css';
 import { contactFormConfig, contactFormCopy as copy, smsConsentText } from '../content/contact-form';
 import { MESSAGE_MAX, NAME_MAX, UTM_KEYS } from '../lib/contact-form';
 import { fill, rich } from '../lib/text';
+import { site } from '../content/site';
 
 interface Props {
   /** Identifies the LP in every request, e.g. "downsizing". */
@@ -41,7 +42,10 @@ const {
 } = Astro.props;
 
 const id = (name: string) => `${idPrefix}-${name}`;
-const consentText = smsConsentText(company);
+const consentText = smsConsentText(company, site.brand.name);
+const see = copy.smsConsentSee;
+// The wording shown is the stored wording; the Terms and Privacy Policy names in it are links.
+const consentMain = consentText.slice(0, consentText.length - `${see.before}${see.terms}${see.and}${see.privacy}${see.after}`.length - 1);
 const { mode, endpoint, fallback, formName } = contactFormConfig;
 
 const config = {
@@ -158,7 +162,10 @@ const mark = (required: boolean) => (required ? copy.required : copy.optional);
     <div class="cf-field cf-field--wide cf-field--consent">
       <label class="cf-check" for={id('sms')}>
         <input class="cf-checkbox" id={id('sms')} name="smsConsent" type="checkbox" value="yes" data-cf-sms />
-        <span>{consentText}</span>
+        <span>
+          {consentMain}{' '}
+          {see.before}<a class="cf-link" href={site.links.terms}>{see.terms}</a>{see.and}<a class="cf-link" href={site.links.privacy}>{see.privacy}</a>{see.after}
+        </span>
       </label>
     </div>
 

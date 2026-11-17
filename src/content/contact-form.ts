@@ -38,6 +38,9 @@ export const contactFormConfig = {
   formName: 'contact',
 };
 
+/** Most text messages we send one person in a month. Stated in the consent wording, the Terms and the Privacy Policy. */
+export const smsMessageLimit = 10;
+
 export const contactFormCopy = {
   fields: {
     firstName: 'First name',
@@ -57,9 +60,13 @@ export const contactFormCopy = {
   /** {count} is replaced with the number of characters left. */
   remaining: '{count} characters left',
   remainingOne: '1 character left',
-  // TODO: provisional wording, replace after legal review (TCPA). {company} is the LP's company name.
+  // TODO: provisional wording, replace after legal review (TCPA). {brand} and {company} are filled in by smsConsentText.
+  // Toll-free verification asks for: who sends, what kinds of messages, how often, rates, STOP/HELP, "consent is not a
+  // condition", and links to the Terms and Privacy Policy. Keep all of them.
   smsConsent:
-    'I agree to receive text messages from {company} about my inquiry. Message frequency varies. Msg & data rates may apply. Reply STOP to opt out, HELP for help.',
+    `I agree to receive text messages from {brand}, a service of {company}, about my inquiry, scheduling my visit and, if I sell items to you, follow-up about my sale. Up to ${smsMessageLimit} messages per month. Msg & data rates may apply. Consent is not a condition of any purchase or service. Reply STOP to opt out, HELP for help.`,
+  /** Sentence after the consent wording; the two names are links to the Terms and the Privacy Policy. */
+  smsConsentSee: { before: 'See our ', terms: 'Terms of Use', and: ' and ', privacy: 'Privacy Policy', after: '.' },
   submit: 'Send my request',
   sending: 'Sending your request…',
   edit: 'Edit my details',
@@ -100,5 +107,11 @@ export const contactFormCopy = {
 
 export type ContactFormCopy = typeof contactFormCopy;
 
-/** Fills the {company} token of the consent wording. */
-export const smsConsentText = (company: string): string => contactFormCopy.smsConsent.replace('{company}', company);
+/**
+ * The full consent wording, as stored with each request. It must read exactly as shown next to the checkbox:
+ * the text, then "See our Terms of Use and Privacy Policy." (ContactForm renders those two names as links).
+ */
+export const smsConsentText = (company: string, brand: string): string => {
+  const see = contactFormCopy.smsConsentSee;
+  return `${contactFormCopy.smsConsent.replace('{brand}', brand).replace('{company}', company)} ${see.before}${see.terms}${see.and}${see.privacy}${see.after}`;
+};

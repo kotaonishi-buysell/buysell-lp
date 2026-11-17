@@ -12,6 +12,8 @@
  * Tokens filled in by the page: {company} {brand} {address} {phone} {hoursSuffix} {email} {registration} {regulator}
  */
 
+import { smsMessageLimit } from './contact-form.ts';
+
 export type LegalBlock = string | { list: string[] } | { control: 'privacy-choice' };
 
 export interface LegalSection {
@@ -41,7 +43,13 @@ export interface LegalPageContent {
  *   'no':   confirmed off in GTM, Google Ads and Meta Events Manager: says the tools do not receive the form input.
  * Pick 'yes' or 'no' only after checking (docs/design/legal/GTM_CONTAINER.md, "Form data").
  */
-export const formDataToAdvertisers: 'unconfirmed' | 'yes' | 'no' = 'unconfirmed';
+// 'no' since the text-message promise (below, and in the Terms) needs it: the business turns Google enhanced conversions and Meta
+// advanced matching off, so mobile numbers never reach the advertising tools. Do not publish this while either one is still on.
+export const formDataToAdvertisers: 'unconfirmed' | 'yes' | 'no' = 'no';
+
+/** Promise made to customers and to the carriers that review our text-message program. It is true only while the line above is 'no'. */
+const smsNoSharing =
+  'We do not share your mobile number or your text-message consent with any third party or affiliate for their marketing or promotional purposes. We share your number only with the providers that help us send and manage the texts.';
 
 const formDataTexts = {
   unconfirmed: {
@@ -167,9 +175,11 @@ export const privacyPolicy: LegalPageContent = {
       id: 'sms',
       heading: 'Text messages',
       blocks: [
-        'Texting is optional. The box on our form is unticked by default, and you can ask for a visit without ticking it. If you tick it, we may text you about your request. Message frequency varies. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help.',
-        // TODO: confirm that we do not share mobile numbers or text-message consent with third parties for their own marketing, then add that promise here. Nothing is promised until then.
+        `Texting is optional. The box on our form is unticked by default, and you can ask for a visit without ticking it. If you tick it, we may text you about your request, to schedule your visit and, if you decide to sell, about your sale. We send up to ${smsMessageLimit} messages per month. We do not use text messages for advertising. Message and data rates may apply. Reply STOP at any time to opt out, or HELP for help.`,
+        smsNoSharing,
+        // TODO: this promise holds only while Google enhanced conversions and Meta advanced matching stay off (formDataToAdvertisers = 'no'), and while no tag sends a phone number or the consent record anywhere. Re-check it with any tag or vendor change, and check the BuySell group line under "Who we share it with" (group companies must not get numbers for their marketing).
         'We keep a record of when you agreed and the wording you saw.',
+        'Opting out of texts stops the texts only. It does not change the other uses of your information described in this policy; for the advertising tools, see "Do not sell or share my personal information".',
         'More details are in our Terms of Use.',
       ],
     },
@@ -308,13 +318,14 @@ export const termsOfUse: LegalPageContent = {
       id: 'texting',
       heading: 'Text message terms',
       blocks: [
-        'If you tick the text-message box on our request form, you agree to receive text messages from {company} about your inquiry, such as scheduling and appointment messages. Consent is not a condition of asking for an appraisal or selling to us.',
+        '{brand} text messages are sent by {company}. If you tick the text-message box on our request form, you agree to receive text messages from us at the mobile number you gave. The messages are about your inquiry, scheduling and reminders for your visit and, if you decide to sell, follow-up about your sale, such as collecting your items. We do not use text messages for advertising. Consent is not a condition of asking for an appraisal, of any purchase or of selling to us.',
+        smsNoSharing,
         {
           list: [
-            'Message frequency varies.',
+            `We send up to ${smsMessageLimit} messages per month.`,
             'Message and data rates may apply.',
-            'Reply STOP to stop receiving messages. You may get one last message confirming that you have opted out.',
-            'Reply HELP for help, or call {phone}.',
+            'Reply STOP (or CANCEL, END, QUIT or UNSUBSCRIBE) to stop receiving messages. You may get one last message confirming that you have opted out.',
+            'Reply HELP for help, or call {phone} or email {email}.',
             'Mobile carriers are not liable for delayed or undelivered messages.',
           ],
         },
