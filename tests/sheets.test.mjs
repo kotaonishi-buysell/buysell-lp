@@ -275,4 +275,6 @@ test('the Apps Script file in the repo checks the secret, takes a row, and write
   assert.match(code, /setNumberFormat\('@'\)/);
   assert.match(code, /LockService/);
   assert.match(code, /const TAB = 'Inquiries'/);
+  assert.match(code, /const TAB_GID = 2116123203;/);
+  assert.match(code, /getSheetId\(\) === TAB_GID/);
 });
