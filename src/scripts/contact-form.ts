@@ -8,6 +8,7 @@ import {
   DeliveryError,
   FIELD_ORDER,
   buildRequest,
+  canFallBack,
   deliverContactRequest,
   deliverToNetlifyForms,
   messageRemaining,
@@ -22,6 +23,7 @@ interface FormConfig {
   lp: string;
   mode: 'preview' | 'netlify-forms' | 'function';
   endpoint: string | null;
+  fallback?: 'netlify-forms' | null;
   formName: string;
   idPrefix: string;
   consentText: string;
@@ -183,10 +185,20 @@ function initForm(form: HTMLFormElement): void {
         honeypot: trap?.value ?? '',
         elapsedMs: Date.now() - loadedAt,
       });
-      const result =
-        config.mode === 'netlify-forms'
-          ? await deliverToNetlifyForms(request, config.formName, window.location.pathname)
-          : await deliverContactRequest(request, config.mode === 'function' ? config.endpoint : null);
+      const viaNetlifyForms = () => deliverToNetlifyForms(request, config.formName, window.location.pathname);
+      let result: 'accepted' | 'preview';
+      if (config.mode === 'netlify-forms') {
+        result = await viaNetlifyForms();
+      } else {
+        try {
+          result = await deliverContactRequest(request, config.mode === 'function' ? config.endpoint : null);
+        } catch (error) {
+          // Our own function could not take the request (not set up yet, or down): Netlify Forms keeps it, so
+          // the inquiry is not lost. A refusal (a 4xx) is not retried elsewhere.
+          if (config.fallback === 'netlify-forms' && canFallBack(error)) result = await viaNetlifyForms();
+          else throw error;
+        }
+      }
 
       form.hidden = true;
       if (result === 'accepted') {

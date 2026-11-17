@@ -173,10 +173,26 @@ export function readUtm(search: string): Record<string, string> {
 export type DeliveryCategory = 'network' | 'timeout' | 'rejected' | 'invalid_acknowledgement' | 'configuration';
 
 export class DeliveryError extends Error {
-  constructor(public category: DeliveryCategory) {
+  constructor(
+    public category: DeliveryCategory,
+    /** HTTP status of the answer, when there was one. */
+    public status?: number,
+  ) {
     super(category);
   }
 }
+
+/**
+ * Should the browser try the fallback (Netlify Forms) after this failure of our own receiving function?
+ * Yes when the function could not be reached or could not do its job (no answer, a timeout, a server error, an
+ * answer that is not ours). No when it understood the request and refused it (a 4xx: the input or the origin is
+ * wrong, and sending the same request elsewhere would not be right).
+ */
+export const canFallBack = (error: unknown): boolean => {
+  if (!(error instanceof DeliveryError)) return true;
+  if (error.category === 'network' || error.category === 'timeout' || error.category === 'invalid_acknowledgement') return true;
+  return error.category === 'rejected' && (error.status ?? 500) >= 500;
+};
 
 export const DELIVERY_TIMEOUT_MS = 15000;
 
@@ -212,7 +228,7 @@ export async function deliverContactRequest(
     } catch {
       throw new DeliveryError(abort.signal.aborted ? 'timeout' : 'network');
     }
-    if (!response.ok) throw new DeliveryError('rejected');
+    if (!response.ok) throw new DeliveryError('rejected', response.status);
     let body: unknown;
     try {
       body = await response.json();
