@@ -6,7 +6,7 @@
  *   - colours: gold #C9A86A, dark brown #382C11, cream #FBF7F0, body text #4A4A55
  *   - fonts: Instrument Serif and Open Sans, self-hosted from /fonts (both SIL OFL)
  *   - every class starts with g2-, because form-support.css (loaded with this file) owns names such as .btn
- *   - photographs are empty slots (.g2-photo[data-slot]) until the exports from Figma arrive
+ *   - photographs sit in .g2-photo[data-slot] frames (the pictures /gold uses, copied to public/images/gold-v2/); the sand colour shows only while one loads
  * Loaded only by layouts/GoldV2Layout.astro: it has rules on body, a and button, so it must not meet base.css, silver.css
  * or gold.css.
  */

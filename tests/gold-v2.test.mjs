@@ -52,10 +52,18 @@ test('payment is never promised the same day or "before we leave", and no paymen
   assert.doesNotMatch(goldV2Copy.step4 + goldV2Copy.payment, /end of the next day/);
 });
 
-test('photo slots are empty figures with a data-slot name, and any image put in one has alt text', () => {
+test('every photo slot holds a picture that exists, with alt text and its size', () => {
   const page = read('src/pages/gold-v2.astro');
-  const slots = [...page.matchAll(/<figure[^>]*data-slot="([^"]+)"/g)].map((m) => m[1]);
+  const slots = [...page.matchAll(/<figure[^>]*data-slot="([^"]+)">(.*?)<\/figure>/g)];
   assert.equal(slots.length, 13, 'hero, company, four steps and seven cards');
-  assert.equal(new Set(slots).size, slots.length, 'slot names are unique');
+  assert.equal(new Set(slots.map((m) => m[1])).size, 13, 'slot names are unique');
+  for (const [, slot, body] of slots) {
+    const img = body.match(/<img\b[^>]*>/)?.[0] ?? '';
+    assert(img, `${slot} is empty`);
+    assert.match(img, /\balt="[^"]+"/, `${slot} needs alt text`);
+    assert.match(img, /\bwidth="\d+" height="\d+"/, `${slot} needs its size`);
+    const src = img.match(/\bsrc="([^"]+)"/)?.[1] ?? '';
+    assert(src.startsWith('/images/gold-v2/') && existsSync(new URL(`public${src}`, root)), `${slot}: ${src} is missing`);
+  }
   assert.doesNotMatch(page, /<img\b(?![^>]*\balt=)/);
 });

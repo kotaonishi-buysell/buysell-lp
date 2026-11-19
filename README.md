@@ -4,7 +4,7 @@
 
 - **Downsizing LP（`/downsizing`）**：共通の部品とデザインシステムで組んだ型。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
 - **Silver LP（`/silver`）**：Codex で作ったモックを取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Silver LP](#silver-lp-silver)。
-- **Gold LP 第2案（`/gold-v2`）**：Figma のスマホ幅のデザインから新しく作った、専用ページ・専用CSSのLP（`/gold` とは別。**公開中**）。PCでも同じスマホ幅の1列で表示する。写真は、書き出しが届くまで空の枠。詳しくは [Gold v2 DESIGN_SYSTEM.md](docs/design/gold-v2/DESIGN_SYSTEM.md)。
+- **Gold LP 第2案（`/gold-v2`）**：Figma のスマホ幅のデザインから新しく作った、専用ページ・専用CSSのLP（`/gold` とは別。**公開中**）。PCでも同じスマホ幅の1列で表示する。写真は `/gold` と同じ画像（`public/images/gold-v2/` にコピー）。詳しくは [Gold v2 DESIGN_SYSTEM.md](docs/design/gold-v2/DESIGN_SYSTEM.md)。
 - **Gold LP（`/gold`）**：デザイナーの静的HTML（金の買取、案2）を取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Gold LP](#gold-lp-gold)。
 - **Appraisal LP（`/appraisal`）**：総合買取（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）のLP。**公開ページ**。Silver と同じ骨格・動きで、専用のCSSとページを持つ。詳しくは [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md)。
 - **Home Value LP（`/home-value`）**：専用ページ・専用CSS・専用デザイン仕様のLP（初期実装）。フォーム・計測の部品は共通。詳しくは下の「新LP: Home Value」。
