@@ -1,0 +1,140 @@
+---
+/*
+ * Second Gold LP (/gold-v2): the Figma design "バイセルUS_GOLD_LP" (SP_W390_A). One mobile layout, shown at the same
+ * width (a centred column) on wide screens. DRAFT: this page lives in src/draft-pages/ and is a route only in `astro dev`,
+ * `npm run build:drafts` and Netlify deploy previews; /gold is untouched. See docs/design/gold-v2/DESIGN_SYSTEM.md.
+ * Copy that is shared with the LP machinery is in src/content/lps/gold-v2.ts, company facts in src/content/company.ts
+ * (through site.ts). Everything that is a call or a request goes through the shared pieces:
+ *   - phone buttons are tel: links with data-cta (tracked by scripts/cta.ts)
+ *   - "Get my free appraisal" buttons carry data-booking and scroll to the shared contact form (ContactForm)
+ *   - the page's own behaviour (menu, carousel buttons, sticky bar) is in src/scripts/gold-v2.ts
+ * Photographs: every photo slot (a figure with the class g2-photo and a data-slot name) is empty until the exports from Figma arrive.
+ */
+import GoldV2Layout from '../layouts/GoldV2Layout.astro';
+import ContactForm from '../components/ContactForm.astro';
+import BrandLogo from '../components/BrandLogo.astro';
+import { goldV2, goldV2Copy } from '../content/lps/gold-v2';
+import { site } from '../content/site';
+import { company } from '../content/company';
+import { fill, plain, rich } from '../lib/text';
+
+const telHref = `tel:${site.phone.e164}`;
+const hoursLine = site.company.hours ? rich(fill(site.phone.hoursLine, { hours: site.company.hours })) : null;
+const year = new Date().getFullYear();
+const footerLinks = [
+  { label: site.ui.footer.privacy, href: site.links.privacy },
+  { label: site.ui.footer.terms, href: site.links.terms },
+  { label: site.ui.footer.doNotSell, href: site.links.doNotSell },
+];
+---
+
+<GoldV2Layout page={goldV2}>
+<div class="g2-page">
+<div class="g2-ann">Free in-home appraisals in Dallas–Fort Worth and Houston*</div>
+<header class="g2-hd">
+  <button class="g2-menu" type="button" aria-expanded="false" aria-controls="g2-drawer" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+  <a class="g2-logo" href="#top" aria-label={company.brand}><BrandLogo decorative /></a>
+  <a class="g2-hd-tel" href={telHref} data-cta="header" data-cta-method="phone" aria-label={`Call ${site.phone.display}`}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a>
+</header>
+<nav class="g2-nav" aria-label="On this page"><a href="#how">How it works</a><a href="#items">What we buy</a><a href="#area">Areas</a><a href="#faq">FAQ</a></nav>
+<nav class="g2-drawer" id="g2-drawer" hidden aria-label="Menu"><a href="#how">How it works</a><a href="#items">What we buy</a><a href="#area">Areas</a><a href="#faq">FAQ</a><a href={telHref} data-cta="header" data-cta-method="phone">Call <span data-phone-number>{site.phone.display}</span></a></nav>
+<main id="main">
+<section class="g2-hero" id="top">
+  <figure class="g2-photo g2-hero-photo" data-slot="hero"></figure>
+  <div class="g2-hero-body g2-callbox">
+    <p class="g2-eyebrow">Free in-home appraisal</p>
+    <h1 class="g2-h1">We come to <span class="g2-ul">your home</span> to appraise your gold.</h1>
+    <a class="g2-btn g2-btn-gold" href="#consult" data-booking data-cta="hero" data-cta-method="form"><span>Get my free appraisal</span></a>
+    <a class="g2-tel" href={telHref} data-cta="hero" data-cta-method="phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>or call <span data-phone-number>{site.phone.display}</span></span></a>
+    <ul class="g2-pts">
+      <li><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 22L24 8l17 14"/><path d="M11 19v22h26V19"/><path d="M20 41V29h8v12"/><path d="M31 13v-4h5v8"/></svg><span>In-home gold appraisal</span></li>
+      <li><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="22" cy="22" r="15"/><path d="M33 33l10 10"/><path d="M26.5 16.5c-1-1.4-2.6-2-4.5-2-2.6 0-4.5 1.3-4.5 3.4 0 2.2 2 2.9 4.5 3.5s4.5 1.3 4.5 3.5c0 2.1-1.9 3.4-4.5 3.4-2 0-3.7-.7-4.7-2.2M22 11.5v3M22 29.5v3"/></svg><span>Every item priced <span class="g2-nowrap">on-site</span></span></li>
+      <li><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="24" cy="24" r="17"/><text x="24" y="30" text-anchor="middle" font-size="17" font-weight="600" font-family="Open Sans, Arial, sans-serif" fill="currentColor" stroke="none">$0</text></svg><span>Free appraisal. No obligation.</span></li>
+    </ul>
+    <p class="g2-auth">{site.company.registration && <Fragment><b>{site.company.registration.label} <Fragment set:html={rich(site.company.registration.value)} /></b> • </Fragment>}Part of {company.group.name} (Tokyo: 7685)</p>
+  </div>
+</section>
+<section class="g2-sec g2-how" id="how">
+  <h2 class="g2-h2">From your first message to <span class="g2-ul">payment</span></h2>
+  <div class="g2-steps">
+    <article class="g2-step"><figure class="g2-photo " data-slot="how-1"></figure><div class="g2-step-b"><div class="g2-step-h"><span class="g2-num" aria-hidden="true">01</span><h3>First, tell us what you have</h3></div><p>Send the short form or call. Pick a day and tell us roughly what you have.</p></div></article><article class="g2-step"><figure class="g2-photo " data-slot="how-2"></figure><div class="g2-step-b"><div class="g2-step-h"><span class="g2-num" aria-hidden="true">02</span><h3>Then we come to your home</h3></div><p>We come to your home at the time we arranged.</p></div></article><article class="g2-step"><figure class="g2-photo " data-slot="how-3"></figure><div class="g2-step-b"><div class="g2-step-h"><span class="g2-num" aria-hidden="true">03</span><h3>We appraise at your table</h3></div><p>Gold, silver, watches, jewelry: everything is checked and appraised in front of you.</p></div></article><article class="g2-step"><figure class="g2-photo " data-slot="how-4"></figure><div class="g2-step-b"><div class="g2-step-h"><span class="g2-num" aria-hidden="true">04</span><h3>You choose what to sell</h3></div><p>{goldV2Copy.step4}</p></div></article>
+  </div>
+  <a class="g2-btn" href="#consult" data-booking data-cta="mid" data-cta-method="form"><span>Get my free appraisal</span></a>
+</section>
+<section class="g2-co">
+  <figure class="g2-photo g2-co-photo" data-slot="company"></figure>
+  <p class="g2-who">Who we are</p>
+  <h2 class="g2-h2 g2-h2-w">Backed by in-home buying in Japan</h2>
+  <p>We're part of {company.group.name} (Tokyo Stock Exchange: 7685).</p>
+</section>
+<section class="g2-sec" id="items">
+  <h2 class="g2-h2">Have any of these <span class="g2-ul">at home?</span></h2>
+  <p class="g2-lead">Gold chains, rings, bracelets and earrings. Broken or single pieces too. Watches and silver as well.</p>
+  <div class="g2-car">
+    <div class="g2-car-vp" tabindex="0" aria-label="What we appraise">
+      <article class="g2-card"><figure class="g2-photo " data-slot="item-chains"></figure><div class="g2-card-b"><p class="g2-card-l">Chains &amp; necklaces</p><p class="g2-card-n">Chains, necklaces &amp; bracelets</p><p class="g2-card-s">Even if tangled or broken</p></div></article><article class="g2-card"><figure class="g2-photo " data-slot="item-rings"></figure><div class="g2-card-b"><p class="g2-card-l">Rings</p><p class="g2-card-n">Rings &amp; wedding bands</p></div></article><article class="g2-card"><figure class="g2-photo " data-slot="item-earrings"></figure><div class="g2-card-b"><p class="g2-card-l">Earrings</p><p class="g2-card-n">Earrings, even single ones</p></div></article><article class="g2-card"><figure class="g2-photo " data-slot="item-broken"></figure><div class="g2-card-b"><p class="g2-card-l">Broken pieces</p><p class="g2-card-n">Broken &amp; unwanted pieces</p></div></article><article class="g2-card"><figure class="g2-photo " data-slot="item-gold"></figure><div class="g2-card-b"><p class="g2-card-l">Is it gold?</p><p class="g2-card-n">Look for 10K, 14K, 18K, 585 or 750 inside the band or on the clasp. No mark? We'll check it.</p></div></article><article class="g2-card"><figure class="g2-photo " data-slot="item-watches"></figure><div class="g2-card-b"><p class="g2-card-l">Watches</p><p class="g2-card-n">In the same visit, we appraise these too</p></div></article><article class="g2-card"><figure class="g2-photo " data-slot="item-silver"></figure><div class="g2-card-b"><p class="g2-card-l">Sterling silver</p><p class="g2-card-n">In the same visit, we appraise these too</p></div></article>
+    </div>
+    <div class="g2-car-nav"><button type="button" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" data-dir="1" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></div>
+  </div>
+  <p class="g2-note">Not sure about something?<br>Set it out. We'll tell you what we can buy.</p>
+  <a class="g2-btn" href="#consult" data-booking data-cta="mid" data-cta-method="form"><span>Get my free appraisal</span></a>
+</section>
+<section class="g2-sec g2-cream g2-benefit">
+  <h2 class="g2-h2">No cost, no obligation <span class="g2-ul">to sell</span></h2>
+  <p class="g2-lead">Four things that are always true when we visit.</p>
+  <ul class="g2-bl">
+    <li><span class="g2-bi" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22L24 9l16 13"/><path d="M12 19v20h24V19"/><path d="M20 39V28h8v11"/><path d="M30 14v-4h4v7"/></svg></span><span>There's no charge for the visit or the appraisal.</span></li><li><span class="g2-bi" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="30" height="30" rx="2"/><path d="M17 24.5l5 5 9-10"/></svg></span><span>You decide what to sell, if anything.</span></li><li><span class="g2-bi" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="15" r="6"/><circle cx="32" cy="19" r="4"/><path d="M5 38c0-7 5-12 12-12s12 5 12 12"/><path d="M30 29c6 0 11 4 12 9"/></svg></span><span>Family is welcome to sit in.</span></li><li><span class="g2-bi" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8h14v32H12z"/><path d="M12 8v32"/><circle cx="22" cy="24" r=".8" fill="currentColor"/><path d="M30 24h12M38 20l4 4-4 4"/></svg></span><span>Don't want to sell? We simply leave.</span></li>
+  </ul>
+  <a class="g2-btn" href="#consult" data-booking data-cta="mid" data-cta-method="form"><span>Get my free appraisal</span></a>
+</section>
+<section class="g2-sec" id="area">
+  <h2 class="g2-h2">We visit homes in Dallas–Fort Worth and <span class="g2-ul">Houston</span></h2>
+  <div class="g2-areas">
+    <div class="g2-acard"><p class="g2-kick">Now visiting</p><p class="g2-city">Dallas–Fort Worth</p><p>Home visits in selected cities now.*</p><svg class="g2-map" viewBox="0 0 294 102" fill="none" stroke="#E9D5B3" stroke-opacity=".4" stroke-width="1.2" aria-hidden="true"><path d="M0 30h294M0 70h294M60 0v102M147 0v102M234 0v102M0 98L112 0M160 102L294 22"/><path d="M28 0c18 38 64 56 120 66s92 28 128 36" stroke-width="3" stroke="#E9D5B3" stroke-opacity=".6"/><path d="M147 62s-11-9.5-11-17.5a11 11 0 0 1 22 0c0 8-11 17.5-11 17.5z" fill="#C9A86A" stroke="#382C11" stroke-opacity="1" stroke-width="1.4"/><circle cx="147" cy="44.5" r="3.6" fill="#382C11" stroke="none"/></svg><a class="g2-zip" href="#consult" data-booking data-cta="mid" data-cta-method="form"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Send us your ZIP code</span></a></div><div class="g2-acard"><p class="g2-kick">Now visiting</p><p class="g2-city">Houston</p><p>Home visits in selected cities now.*</p><svg class="g2-map" viewBox="0 0 294 102" fill="none" stroke="#E9D5B3" stroke-opacity=".4" stroke-width="1.2" aria-hidden="true"><path d="M0 30h294M0 70h294M60 0v102M147 0v102M234 0v102M0 98L112 0M160 102L294 22"/><path d="M28 0c18 38 64 56 120 66s92 28 128 36" stroke-width="3" stroke="#E9D5B3" stroke-opacity=".6"/><path d="M147 62s-11-9.5-11-17.5a11 11 0 0 1 22 0c0 8-11 17.5-11 17.5z" fill="#C9A86A" stroke="#382C11" stroke-opacity="1" stroke-width="1.4"/><circle cx="147" cy="44.5" r="3.6" fill="#382C11" stroke="none"/></svg><a class="g2-zip" href="#consult" data-booking data-cta="mid" data-cta-method="form"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Send us your ZIP code</span></a></div>
+  </div>
+  <p class="g2-zipnote">*Not every city in the Dallas–Fort Worth and Houston areas is covered yet. Send us your ZIP code and we'll tell you if we can come.</p>
+  <p class="g2-office">Office: <Fragment set:html={rich(site.company.address)} />{site.company.hours && <Fragment>, <Fragment set:html={rich(site.company.hours)} /></Fragment>}.</p>
+</section>
+<section class="g2-sec g2-cream g2-faq" id="faq">
+  <h2 class="g2-h2">Questions people ask</h2>
+  <details class="g2-qa" open data-faq-id="how-to-book"><summary><span>How do I book?</span><svg class="g2-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="g2-a"><p>Fill out the short form or call us. We'll ask your ZIP code and what you have, then pick a day.</p></div></details>
+  <details class="g2-qa" data-faq-id="how-paid"><summary><span>If I decide to sell, what happens next?</span><svg class="g2-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="g2-a"><p>{goldV2Copy.payment}</p></div></details>
+  <details class="g2-qa" data-faq-id="id-needed"><summary><span>Do I need an ID?</span><svg class="g2-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary><div class="g2-a"><p>If you sell, yes. Texas law requires us to check a photo ID.</p></div></details>
+</section>
+<section class="g2-final" id="book">
+  <h2 class="g2-h2 g2-h2-w">Find out what your gold is worth.</h2>
+  <p class="g2-fin-p">It costs nothing to ask.</p>
+  <a class="g2-fin-tel" href={telHref} data-cta="final" data-cta-method="phone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><span>or call <span data-phone-number>{site.phone.display}</span></span></a>
+  {hoursLine && <p class="g2-fin-h" set:html={hoursLine} />}
+  <div class="g2-panel" id="consult">
+    <h3 class="g2-panel-h">Or send us a request online</h3>
+    <p class="g2-panel-p">Takes about a minute.<br>We'll contact you to pick a day.</p>
+    <ContactForm
+      lp={goldV2.slug}
+      company={plain(site.company.name)}
+      buttonClass="g2-btn"
+      submitLabel={goldV2.form.submitLabel}
+      success={goldV2.form.success}
+      afterSubmit={goldV2.form.afterSubmit}
+      privacyUrl={site.links.privacy}
+    />
+  </div>
+</section>
+<footer class="g2-foot">
+  <div class="g2-foot-logo"><BrandLogo /></div>
+  <p><b>{site.company.name}</b><br /><Fragment set:html={rich(site.company.address)} /><br />{site.phone.display}<br /><a href={`mailto:${site.company.email}`}>{site.company.email}</a></p>
+  {site.company.registration && <p>{site.company.registration.label} <Fragment set:html={rich(site.company.registration.value)} /></p>}
+  <p>{company.brand} is operated by {site.company.name}, part of {company.group.name} (Tokyo Stock Exchange: 7685).</p>
+  {site.regulator && <p>{site.regulator.label}<br /><Fragment set:html={rich(site.regulator.value)} /></p>}
+  <p class="g2-foot-links">{footerLinks.map((link) => <a href={link.href}>{link.label}</a>)}</p>
+  <p>Images are for illustration.</p>
+  <p class="g2-copy">© {year} {site.company.name}</p>
+</footer>
+</main>
+<div class="g2-sticky" data-hide="true"><a class="g2-btn" href="#consult" data-booking data-cta="sticky" data-cta-method="form"><span>Get my free appraisal</span></a><a class="g2-st-tel" href={telHref} data-cta="sticky" data-cta-method="phone" aria-label={`Call ${site.phone.display}`}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a></div>
+</div>
+
+<script>
+  import '../scripts/gold-v2';
+</script>
+</GoldV2Layout>
