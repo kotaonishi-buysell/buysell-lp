@@ -4,7 +4,7 @@
 
 - **Downsizing LP（`/downsizing`）**：共通の部品とデザインシステムで組んだ型。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
 - **Silver LP（`/silver`）**：Codex で作ったモックを取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Silver LP](#silver-lp-silver)。
-- **Gold LP 第2案（`/gold-v2`、下書き）**：Figma のスマホ幅のデザインから新しく作った、専用ページ・専用CSSのLP（`/gold` とは別）。公開サイトには出ず、デプロイプレビューで見る。詳しくは [Gold v2 DESIGN_SYSTEM.md](docs/design/gold-v2/DESIGN_SYSTEM.md)。
+- **Gold LP 第2案（`/gold-v2`）**：Figma のスマホ幅のデザインから新しく作った、専用ページ・専用CSSのLP（`/gold` とは別。**公開中**）。PCでも同じスマホ幅の1列で表示する。写真は、書き出しが届くまで空の枠。詳しくは [Gold v2 DESIGN_SYSTEM.md](docs/design/gold-v2/DESIGN_SYSTEM.md)。
 - **Gold LP（`/gold`）**：デザイナーの静的HTML（金の買取、案2）を取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Gold LP](#gold-lp-gold)。
 - **Appraisal LP（`/appraisal`）**：総合買取（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）のLP。**公開ページ**。Silver と同じ骨格・動きで、専用のCSSとページを持つ。詳しくは [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md)。
 - **Home Value LP（`/home-value`）**：専用ページ・専用CSS・専用デザイン仕様のLP（初期実装）。フォーム・計測の部品は共通。詳しくは下の「新LP: Home Value」。
@@ -59,7 +59,7 @@ npm test         # 共通フォームの入力チェック、送信処理、受�
 `/` は `/silver` へリダイレクトする（`astro.config.mjs` と `netlify.toml`）。
 
 ## 公開と下書き
-- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Appraisal（`/appraisal`）、Downsizing（`/downsizing`）、Home Value（`/home-value`）、SMS 同意の登録ページ（`/sms`）、法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページ**です（すべて `src/pages/`）。Downsizing は、`src/pages/[slug].astro` が、LP の一覧（`src/content/lps/index.ts` の `landingPages`）から作ります。`/sms` は、SMS（トールフリー番号）のキャリア審査に出す、同意を取る公開ページで、法務ページと同じレイアウトを使います（[docs/forms/sms-verification.md](docs/forms/sms-verification.md)）。
+- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Gold 第2案（`/gold-v2`）、Appraisal（`/appraisal`）、Downsizing（`/downsizing`）、Home Value（`/home-value`）、SMS 同意の登録ページ（`/sms`）、法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページ**です（すべて `src/pages/`）。Downsizing は、`src/pages/[slug].astro` が、LP の一覧（`src/content/lps/index.ts` の `landingPages`）から作ります。`/sms` は、SMS（トールフリー番号）のキャリア審査に出す、同意を取る公開ページで、法務ページと同じレイアウトを使います（[docs/forms/sms-verification.md](docs/forms/sms-verification.md)）。
 - **2026-11-19 に、Downsizing と Home Value を、下書きから公開しました。** 今は、下書きは、ありません。
 - **Downsizing は、事業側の回答待ちの部分を、外した形で公開しています**（[docs/requirements/downsizing-open-questions.md](docs/requirements/downsizing-open-questions.md)）：「What we look at」（品目のカテゴリと、受け付けられない品目）、FAQ「What happens to the things I sell?」、ヒーローの写真（今は文字だけのヒーロー）、OG 画像（共有時の画像。なし）、連絡までの営業日数。回答が来たら、`src/content/lps/downsizing.ts` の `confirmed` のフラグを `true` にし、内容を入れます。
 - **下書きの仕組みは、残してあります**（今後の新しい LP のため）。下書きは、`src/draft-pages/` にページを置き、`astro.config.mjs` の `draftRoutes` に、ルートを書きます。**通常のビルド（Netlify の本番とプレビュー）には、出ません。** `npm run dev` と `npm run build:drafts` のときだけ、ルートとして足されます。公開するときは、ページを `src/pages/` に移し、`draftRoutes` の該当行を消します。
@@ -99,7 +99,7 @@ src/
   scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ、ZIP判定）
   scripts/silver.ts      Silver 専用の動き（カテゴリのリボン、スクロール演出、FAQ の開閉）
   pages/gold.astro       Gold のページ本体（デザイナーの静的HTMLを取り込んだもの）
-  draft-pages/gold-v2.astro  Gold 第2案（下書き。Figma のスマホ幅デザイン。astro.config.mjs の draftRoutes と、デプロイプレビューでだけ出る）
+  pages/gold-v2.astro    Gold 第2案のページ本体（Figma のスマホ幅デザイン。PCでも同じ幅の1列）
   scripts/gold.ts        Gold 専用の動き（カルーセル、タブ、メニュー、追従バー）
   content/lps/gold.ts    Gold：meta、フォーム文言、未確定の事実を含む文（{{TODO}}）
   components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）

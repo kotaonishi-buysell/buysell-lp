@@ -17,11 +17,6 @@
   PUBLIC_CONTACT_ENDPOINT = "/api/contact"
   PUBLIC_CONTACT_FALLBACK = "netlify-forms"
 
-# Deploy previews also build the draft LPs (src/draft-pages/, see astro.config.mjs), so a draft such as /gold-v2 can be
-# reviewed on its pull request's preview. The production site is built by [build] above and does not publish them.
-[context.deploy-preview]
-  command = "npm run build:drafts && npm run check:public"
-
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
