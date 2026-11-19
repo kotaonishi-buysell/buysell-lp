@@ -9,12 +9,12 @@
 | Silver | `/silver` | 公開中 |
 | Gold | `/gold` | 公開中 |
 | Appraisal | `/appraisal` | 公開中 |
-| Downsizing | `/downsizing` | 下書き（非公開） |
-| Home Value | `/home-value` | 下書き（非公開） |
+| Downsizing | `/downsizing` | 公開中（2026-11-19 から。事業側の回答待ちの部分は外してある） |
+| Home Value | `/home-value` | 公開中（2026-11-19 から） |
 
 プライバシーポリシー・利用規約・個人情報の販売／共有の拒否（`/privacy` `/terms` `/do-not-sell`）は、全LP共通の1組のページです。
 
-**取り込んだLPは、まず非公開の「下書き」として確認し、公開前のチェックを通ってから公開します**（本書の 6.）。
+**取り込んだLPは、PR（変更の提案）のデプロイプレビュー（本番とは別の URL）で確認し、公開前のチェックを通ってから、マージして公開します**（本書の 6.）。マージするまでは、本番には出ません。
 **問い合わせフォームは弊社の共通フォームを使います。** フォームのHTML・入力チェック・送信は弊社側で組み込むため、制作側では作らないでください。見た目（色・形）だけ、このLPに合わせて決めていただきます。
 
 `<slug>` は URL になる英小文字とハイフンの名前です（例：`brand-goods`）。着手前に弊社と決めます。
@@ -141,26 +141,25 @@
 
 ## 5. 納品の方法
 - ZIP（上記の構成）を、弊社が指定する共有場所に置いてください。
-- リポジトリへの直接のプッシュはしていただきません。弊社が取り込み、確認用のURL（Netlify のデプロイプレビュー）を共有します。**取り込み直後は、非公開の下書きです。** 確認用のURLは、弊社が共有します（下書きのページは、通常のプレビューには出ないため、弊社が確認用の設定をします）。
+- リポジトリへの直接のプッシュはしていただきません。弊社が取り込み、確認用のURL（PR の Netlify のデプロイプレビュー）を共有します。**このURLは、本番とは別で、PR をマージするまで、本番には出ません。** ただし、URL を知っていれば、誰でも開けます。
 - 修正のやりとりは、確認用URLを見ながら、箇所を指定して依頼する形にします。
 
 ## 6. 公開までの流れと、弊社が確認すること（参考）
-1. **下書きとして取り込む。** 確認用のURLで、見た目と動きを確認します。
-2. **未確定の事項を解消する。** `NOTES.md` の一覧を、事業側の回答で埋めます。
+1. **PR として取り込む。** デプロイプレビューのURLで、見た目と動きを確認します。
+2. **未確定の事項を解消する。** `NOTES.md` の一覧を、事業側の回答で埋めます。回答が間に合わない部分は、ページから外します（公開ページに TODO を出せず、TODO が残ると、プレビューのビルドも失敗するため）。
 3. **公開前のチェックを通す。**
    - `npm run check`、`npm run build`、`npm run todos`、`npm test`
    - **`npm run check:public`**：公開ページに TODO が残っていないこと（Netlify のビルドでも実行され、残っていると、デプロイが失敗します）
-   - `npm run build:drafts`：下書きの `/downsizing` と `/home-value` が、引き続き生成されること
-   - `/silver`、`/gold`、`/appraisal`、法務ページ3つ、404 が生成されること。`/` が `/silver` へ転送されること
+      - `/silver`、`/gold`、`/appraisal`、`/downsizing`、`/home-value`、`/sms`、法務ページ3つ、404 が生成されること。`/` が `/silver` へ転送されること
    - フォームの入力チェック、送信、Google スプレッドシートへの保存（と、予備の Netlify Forms への切り替え）。スマホ・PCの表示、キーボード操作、横スクロールなし
-4. **公開する。** ページを下書きから公開用の場所へ移します（本書の 7.）。
+4. **公開する。** PR をマージします。
 
 公開の前に、法務ページの弁護士の確認や、広告・計測の設定の確認が、別に必要になることがあります。
 
 ## 7. 弊社の側の取り込み手順（社内用メモ）
 Silver、Gold、Appraisal と同じ方法です。詳しくは README の「Silver LP」と「公開と下書き」を参照してください。
-0. **まず下書きとして置く。** ページは `src/draft-pages/<slug>.astro` に置き、`astro.config.mjs` の `draftPages` に、`injectRoute({ pattern: '/<slug>', entrypoint: './src/draft-pages/<slug>.astro' })` を足す（`astro dev` と `npm run build:drafts` のときだけ出る）。公開するときに、ページを `src/pages/` に移し、この1行を消す。
-1. `src/pages/<slug>.astro`（下書きの間は `src/draft-pages/`）：`index.html` の本文を移す。`<!-- CONTACT_FORM -->` を `<ContactForm lp="<slug>" company={...} buttonClass="button" ... />` に置き換える。差し込み記号を、`company.ts`、`site.ts`、`purchase-flow.ts` の値に置き換える（`{{EMAIL}}` は `company.email`、`{{SERVICE_AREA}}` は `site.serviceArea.summary`）。訪問後の流れ、登録の表示、比較・口コミ・実績の扱いが、上のルールに合っているかも確認する。
+0. **ブランチを切り、ページを `src/pages/` に置いて、PR にする。** PR のデプロイプレビューが、確認用のURL（本番とは別）になり、マージまで、本番には出ません。本番とは別に、手元だけで試したいときや、複数回に分けて作るときは、下書きの仕組みも使えます（`src/draft-pages/<slug>.astro` に置き、`astro.config.mjs` の `draftRoutes` に `{ pattern: '/<slug>', entrypoint: './src/draft-pages/<slug>.astro' }` を足す。`npm run dev` のときだけ出る。公開するときは、`src/pages/` に移し、この行を消す）。
+1. `src/pages/<slug>.astro`：`index.html` の本文を移す。`<!-- CONTACT_FORM -->` を `<ContactForm lp="<slug>" company={...} buttonClass="button" ... />` に置き換える。差し込み記号を、`company.ts`、`site.ts`、`purchase-flow.ts` の値に置き換える（`{{EMAIL}}` は `company.email`、`{{SERVICE_AREA}}` は `site.serviceArea.summary`）。訪問後の流れ、登録の表示、比較・口コミ・実績の扱いが、上のルールに合っているかも確認する。
 2. `src/layouts/<Name>Layout.astro`：`SilverLayout.astro` を元に作る。`tokens.css`、`form-support.css`、LP専用CSS を読み込み、**`base.css` は読まない**。`Document` に `bodyAttrs={{ 'data-lp': slug }}` を渡す。
 3. `src/styles/<slug>.css`：`styles.css` と `form-skin.css`。`script.js` は `src/scripts/<slug>.ts` へ。
 4. `src/content/lps/<slug>.ts`：meta とフォームの文言（送信ボタン、ボタン下の一文、送信後のメッセージ）。

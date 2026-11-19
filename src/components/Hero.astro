@@ -10,10 +10,12 @@ interface Props {
 
 const { section, lp } = Astro.props;
 const headingId = `${section.id}-title`;
+// No photo and no placeholder note: the hero is text only, in one column.
+const hasMedia = Boolean(section.image || section.imagePlaceholder);
 ---
 
 <section id={section.id} class="hero scene" aria-labelledby={headingId} data-hero>
-  <div class="container hero__inner">
+  <div class:list={['container', 'hero__inner', { 'hero__inner--text': !hasMedia }]}>
     <div class="hero__text">
       <p class="t-label muted">{section.eyebrow}</p>
       <h1 id={headingId} class="t-display-xl">{section.headline}</h1>
@@ -27,26 +29,28 @@ const headingId = `${section.id}-title`;
         />
       </div>
     </div>
-    <div class="hero__media">
-      {
-        section.image ? (
-          <img
-            class="hero__image"
-            src={section.image.src}
-            width={section.image.width}
-            height={section.image.height}
-            alt={section.imageAlt}
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-          />
-        ) : (
-          <div class="hero__image hero__placeholder" role="img" aria-label={section.imageAlt}>
-            <p class="t-meta" set:html={rich(section.imagePlaceholder)} />
-          </div>
-        )
-      }
-    </div>
+    {
+      hasMedia && (
+        <div class="hero__media">
+          {section.image ? (
+            <img
+              class="hero__image"
+              src={section.image.src}
+              width={section.image.width}
+              height={section.image.height}
+              alt={section.imageAlt}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+            />
+          ) : (
+            <div class="hero__image hero__placeholder" role="img" aria-label={section.imageAlt}>
+              <p class="t-meta" set:html={rich(section.imagePlaceholder)} />
+            </div>
+          )}
+        </div>
+      )
+    }
   </div>
 </section>
 
@@ -103,6 +107,17 @@ const headingId = `${section.id}-title`;
       align-items: center;
       gap: var(--space-8);
       padding-block: var(--space-8) var(--section-pad);
+    }
+  }
+
+  /* No photo yet: the text takes one column, at a readable width. */
+  .hero__inner--text .hero__text {
+    max-width: var(--measure);
+  }
+
+  @media (min-width: 1024px) {
+    .hero__inner--text {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

@@ -23,7 +23,7 @@ const { slug, meta, bodyAttrs = {}, preloadFonts } = Astro.props;
 const title = plain(meta.title);
 const description = plain(meta.description);
 const canonical = absoluteUrl(`/${slug}`, Astro.site);
-const ogImage = absoluteUrl(meta.ogImage, Astro.site);
+const ogImage = meta.ogImage ? absoluteUrl(meta.ogImage, Astro.site) : null;
 const gtmId = site.analytics.gtmId;
 
 const structuredData = {

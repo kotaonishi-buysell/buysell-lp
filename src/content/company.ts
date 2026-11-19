@@ -5,7 +5,7 @@
  * for Home Value). Do not type these facts into an LP's own content or page.
  *
  * null = not confirmed. Downsizing and Silver then show a {{TODO: ...}} placeholder for the
- * address, email and phone (draft pages only: `npm run check:public` fails a build that
+ * address, email and phone (only on a draft page: `npm run check:public` fails a build that
  * prints one on a published page). If the OCCC registration number or notice is null, it is
  * simply left out of every page, so no page claims a registration we do not hold.
  * Home Value shows nothing or its explicit preview state, and never a dummy value.
