@@ -3,7 +3,7 @@
 `/gold-v2` は、Figma で作られた Gold LP のデザイン（ファイル「バイセルUS_GOLD_LP」、フレーム `SP_W390_A`、幅390px）を、`/gold` とは別に新しく作ったLPです。**`/gold` には一切手を入れていません。** 他のLPのデザインシステムは使いません。**見た目の正本は Figma と `src/styles/gold-v2.css` です。**
 
 - Figma：ファイルキー `D9ezRBg2LGvlPx8KS3D7xY`、フレーム `29:412`（`SP_W390_A`）
-- **公開ページです**（`src/pages/gold-v2.astro`）。`/gold` とは別のページで、`/gold` は置き換えも変更もしていません。写真は、書き出しが届くまで空の枠です（下の「写真」）。
+- **公開ページです**（`src/pages/gold-v2.astro`）。`/gold` とは別のページで、`/gold` は置き換えも変更もしていません。写真は `/gold` と同じ画像です（下の「写真」）。
 
 ## スマホ幅だけ
 Figma にはスマホ幅（390px）のデザインしかありません。そのため、**PC でも同じスマホ幅の1列**で表示します。
@@ -29,7 +29,7 @@ Figma の画面から色を読み取りました。`/gold` のチャコール `#
 | `--gold` | `#C9A86A` | お知らせ帯、ヒーローのボタン、会社と申込みの背景、カードの枠 |
 | `--cream` | `#FBF7F0` | 手順のカード、安心・FAQ・フッターの背景 |
 | `--text` | `#4A4A55` | 本文 |
-| `--sand` | `#EAE1CD` | 写真が入る前の空の枠 |
+| `--sand` | `#EAE1CD` | 写真が読み込まれるまでの背景 |
 | `--serif` / `--sans` | Instrument Serif / Open Sans | 見出し / 本文（`/gold` と同じ自前ホスト） |
 
 ## セクション（Figma のフレームとの対応）
@@ -48,21 +48,22 @@ Figma の画面から色を読み取りました。`/gold` のチャコール `#
 
 `/gold` の「画像だけの流れるバー（mq）」「PC 用の2列レイアウト」「手順のアニメーション」「比較表」は、Figma にないため含めていません。
 
-## 写真（空の枠）
-Figma から書き出した写真は、まだありません。**公開中のページでも、すべての写真の枠は、空です**（砂色の背景。ヒーローは茶色のグラデーション）。写真が届いたら、`public/images/gold-v2/` に置き、該当の `<figure class="g2-photo" data-slot="…">` の中に `<img>`（`alt` つき）を入れます。
+## 写真
+写真は、`/gold` で使っている画像と同じものです（Figma の画面の写真と、ほぼ同じ内容）。`/gold` とは切り離すため、`public/images/gold-v2/` にコピーして使います（合計約0.5MB）。Figma から新しく書き出した写真が届いたら、同じ名前のファイルを差し替えるだけで済みます。
 
-| `data-slot` | 場所 | 表示サイズ | 書き出しの目安（2倍） |
+| `data-slot` | 場所 | ファイル | 表示サイズ |
 |---|---|---|---|
-| `hero` | ヒーローの背景（下はクリームへ薄くなる） | 幅いっぱい × 480px | 780 × 960 |
-| `how-1` 〜 `how-4` | 手順の写真 | 340 × 160 | 680 × 320 |
-| `company` | Who we are（オフィスの写真） | 342 × 192 | 684 × 384 |
-| `item-chains`、`item-rings`、`item-earrings`、`item-broken`、`item-gold`、`item-watches`、`item-silver` | 品目のカード | 224 × 224 | 448 × 448 |
+| `hero` | ヒーローの背景（下はクリームへ薄くなる） | `hero-gold.webp`（`hero-gold-780.webp` も） | 幅いっぱい × 480px |
+| `how-1` 〜 `how-4` | 手順の写真 | `S1.webp` 〜 `S4.webp` | 340 × 160 |
+| `company` | Who we are（オフィスの写真） | `company-office.webp` | 342 × 192 |
+| `item-chains`、`item-rings`、`item-earrings`、`item-broken`、`item-gold`、`item-watches`、`item-silver` | 品目のカード | `G1`、`G2`、`G3`、`G4`、`G5`、`P5`、`P1`（`.webp`） | 224 × 224 |
 
-- WebP で書き出してください。`company`（オフィスの写真）は、使用許諾の確認が必要です。
-- 写真がすべて生成画像の場合は、フッターの「Images are for illustration.」を残します。
+- 各枠は、`<figure class="g2-photo" data-slot="…">` の中の `<img>` です（`alt`、`width`、`height`つき。ヒーロー以外は `loading="lazy"`）。写真の切り取り位置は、`style="object-position:…"` で決めています。
+- Figma から書き出す場合の目安（2倍）：ヒーロー 780 × 960、手順 680 × 320、会社 684 × 384、品目 448 × 448。WebP で。
+- `company`（オフィスの写真）は、使用許諾の確認が必要です。
+- 写真がすべて生成画像のため、フッターの「Images are for illustration.」を残します。
 
 ## 公開前に確認が必要なもの
-- 写真の書き出しと配置（上の表）。
 - 申込み後の連絡までの営業日数（今は日数を約束しない文。`gold-v2.ts` の `// TODO:`）。Figma も日数を書いていません。
 - 買取できる品目の一覧（Figma のカードは、チェーン、指輪、イヤリング、壊れたもの、時計、スターリングシルバー）。
 - 訪問までの日数、保険の表記（今は載せていません）。

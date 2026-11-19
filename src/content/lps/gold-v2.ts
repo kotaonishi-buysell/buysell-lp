@@ -37,7 +37,7 @@ export const goldV2: CustomLandingPage = {
  * TODO: how soon after the request we visit ("We visit within N days").
  * TODO: the full list of items we buy (the Figma cards name chains, rings, earrings, broken pieces, watches and sterling silver).
  * TODO: the insurance wording ("Insured ...").
- * TODO: the photographs: they come from Figma as exports; until then the photo slots are empty (docs/design/gold-v2/DESIGN_SYSTEM.md).
+ * TODO: the photographs are the ones /gold uses (copied to public/images/gold-v2/); replace a file when Figma's own export arrives (docs/design/gold-v2/DESIGN_SYSTEM.md).
  */
 export const goldV2Copy = {
   step4: `Nothing is bought at the visit. ${purchaseFlow.afterYes}`,
