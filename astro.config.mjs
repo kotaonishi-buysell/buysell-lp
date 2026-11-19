@@ -9,9 +9,9 @@ const env = /** @type {any} */ (globalThis).process?.env ?? {};
 // pages by itself) and list its route below. It is then a route only in `astro dev`, or in a build with
 // PUBLIC_DRAFT_LPS=true (npm run build:drafts); a normal build, so the Netlify production site, does not publish it.
 // To publish a draft, move the page into src/pages/ and remove its line here (README.md).
-// There are no drafts now: /downsizing and /home-value were published on 2026-11-19.
+// Drafts now: /gold-v2 (the second Gold design, from Figma). /downsizing and /home-value were published on 2026-11-19.
 /** @type {{ pattern: string; entrypoint: string }[]} */
-const draftRoutes = [];
+const draftRoutes = [{ pattern: '/gold-v2', entrypoint: './src/draft-pages/gold-v2.astro' }];
 
 /** @type {import('astro').AstroIntegration} */
 const draftPages = {
