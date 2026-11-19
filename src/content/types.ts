@@ -18,6 +18,8 @@ export type CtaLocation = 'header' | 'hero' | 'mid' | 'final' | 'sticky' | 'comp
 export interface Link {
   label: string;
   href: string;
+  /** Shown as a button that opens the request form, not as a plain link. */
+  booking?: boolean;
 }
 
 export interface SectionHeaderContent {
@@ -73,7 +75,7 @@ export interface HeroSection {
   /** null until photography arrives: a neutral placeholder block is shown. */
   image: ImageContent | null;
   imageAlt: string;
-  /** Visible note on the placeholder block while image is null. */
+  /** Visible note on the placeholder block while image is null. '' = no block: the hero is text only. */
   imagePlaceholder: string;
 }
 
@@ -180,6 +182,7 @@ export interface LandingPage {
     title: string;
     description: string;
     /** Path under public/, 1200×630. */
+    /** Path of the share image. '' = none: no og:image tag is written. */
     ogImage: string;
   };
   cta: {

@@ -19,7 +19,7 @@ Validation errors, sending/duplicate prevention, explicit preview outcome, servi
 - Page copy: index.ts in this directory.
 - Company facts (brand, name, address, phone, hours, group name): src/content/company.ts, shared by every LP. Enter them there, not here.
 - Integration and Home Value-specific values: config.ts in this directory, which builds on company.ts. Confirmed values are populated; unavailable values are null.
-- Route: src/draft-pages/home-value.astro (a draft, not published; see README.md).
+- Route: src/pages/home-value.astro (published on 2026-11-19; see README.md).
 - Contact actions and the form panel: src/components/home-value/. The form itself is the shared src/components/ContactForm.astro.
 - Validation and delivery boundary (shared): src/lib/contact-form.ts. Endpoint and form copy (shared): src/content/contact-form.ts.
 - Browser behavior and local measurement: src/scripts/home-value.ts (the shared form logic is src/scripts/contact-form.ts).

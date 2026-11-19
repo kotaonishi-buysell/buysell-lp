@@ -34,7 +34,7 @@ test('the purchase count is stated only when its source is approved; the listing
 });
 
 test('the page carries no draft or preview wording, and takes its canonical URL from the site address', () => {
-  const page = read('src/draft-pages/home-value.astro');
+  const page = read('src/pages/home-value.astro');
   const copy = read('src/content/lps/home-value/index.ts');
   assert.doesNotMatch(`${page}\n${copy}`, /real photography will replace|preview asset|Client-supplied|require confirmation before public launch|Sample illustration/);
   assert.match(page, /absoluteUrl\('\/home-value', Astro\.site\)/);
@@ -42,5 +42,5 @@ test('the page carries no draft or preview wording, and takes its canonical URL 
 });
 
 test('the "phone pending" text for screen readers exists only while there is no callable phone number', () => {
-  assert.match(read('src/draft-pages/home-value.astro'), /\{!config\.phone && <p id="phone-pending"/);
+  assert.match(read('src/pages/home-value.astro'), /\{!config\.phone && <p id="phone-pending"/);
 });

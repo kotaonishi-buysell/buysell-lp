@@ -10,10 +10,10 @@
 
 ## 新LP: Home Value
 
-- URL: `/home-value`（**下書き。公開していません**。下の「公開と下書き」）。`/` は `/silver` へリダイレクトします。
+- URL: `/home-value`（**公開中**。2026-11-19 に下書きから公開）。`/` は `/silver` へリダイレクトします。
 - 文言・事業設定・制作メモ: [src/content/lps/home-value/](src/content/lps/home-value/README.md)
 - 機能・コピー要件: [home-value.en.md](docs/requirements/home-value.en.md)
-- 専用ページ: `src/draft-pages/home-value.astro`（下書き。既存LPのダミー情報・フォーム送信スタブを読み込まない）
+- 専用ページ: `src/pages/home-value.astro`（既存LPのダミー情報・フォーム送信スタブを読み込まない）
 - 新デザイン仕様: [Home Value DESIGN_SYSTEM.md](docs/design/home-value/DESIGN_SYSTEM.md)
 - 開発ルール: [AGENTS.md](AGENTS.md)
 - 専用スタイル: `src/styles/home-value.css`（`body[data-lp="home-value"]` に限定）
@@ -46,9 +46,9 @@ Node.js 22.12 以上。
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/silver と /gold（下書きの /downsizing /home-value も開ける）
+npm run dev      # http://localhost:4321/silver ほか、公開しているページ（下書きがあれば、それも開ける）
 npm run build    # dist/ に静的ファイルを出力（公開用。Silver、Gold、Appraisal、`/sms`、法務ページ）
-npm run build:drafts  # 下書きの /downsizing /home-value も含めて出力（確認用。公開しない）
+npm run build:drafts  # 下書き（src/draft-pages/）も含めて出力（確認用。公開しない。今は下書きなし）
 npm run preview  # build 結果を確認
 npm run check    # 型チェック（astro check）
 npm run todos    # 未確定の事業情報（TODO）の一覧
@@ -58,10 +58,11 @@ npm test         # 共通フォームの入力チェック、送信処理、受�
 `/` は `/silver` へリダイレクトする（`astro.config.mjs` と `netlify.toml`）。
 
 ## 公開と下書き
-- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Appraisal（`/appraisal`）、SMS 同意の登録ページ（`/sms`）、法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページだけ**です（`src/pages/`）。`/sms` は、SMS（トールフリー番号）のキャリア審査に出す、同意を取る公開ページで、法務ページと同じレイアウトを使います（[docs/forms/sms-verification.md](docs/forms/sms-verification.md)）。
-- **Downsizing（`/downsizing`）と Home Value（`/home-value`）は下書き**です。コードは残してあり、ページは `src/draft-pages/` に置いています。ここは Astro がページとして扱わないため、通常のビルド（Netlify の本番とプレビュー）には出ません。`npm run dev` と `npm run build:drafts` のときだけ、`astro.config.mjs` が、ルートとして足します。
-- 下書きを公開するとき：ページ（`src/draft-pages/` のファイル）を `src/pages/` に移し、`astro.config.mjs` の `injectRoute` の該当行を消します。Downsizing は、動的ルート（`lp.astro`）なので、`src/pages/[slug].astro` に戻します。
-- Netlify のプレビューで、下書きを確認したいときは、Netlify の環境変数 `PUBLIC_DRAFT_LPS=true` を、そのブランチのデプロイだけに設定します（公開の URL になるので、確認が終わったら外してください）。
+- **公開しているのは、Silver（`/silver`）、Gold（`/gold`）、Appraisal（`/appraisal`）、Downsizing（`/downsizing`）、Home Value（`/home-value`）、SMS 同意の登録ページ（`/sms`）、法務ページ（`/privacy` `/terms` `/do-not-sell`）、404 ページ**です（すべて `src/pages/`）。Downsizing は、`src/pages/[slug].astro` が、LP の一覧（`src/content/lps/index.ts` の `landingPages`）から作ります。`/sms` は、SMS（トールフリー番号）のキャリア審査に出す、同意を取る公開ページで、法務ページと同じレイアウトを使います（[docs/forms/sms-verification.md](docs/forms/sms-verification.md)）。
+- **2026-11-19 に、Downsizing と Home Value を、下書きから公開しました。** 今は、下書きは、ありません。
+- **Downsizing は、事業側の回答待ちの部分を、外した形で公開しています**（[docs/requirements/downsizing-open-questions.md](docs/requirements/downsizing-open-questions.md)）：「What we look at」（品目のカテゴリと、受け付けられない品目）、FAQ「What happens to the things I sell?」、ヒーローの写真（今は文字だけのヒーロー）、OG 画像（共有時の画像。なし）、連絡までの営業日数。回答が来たら、`src/content/lps/downsizing.ts` の `confirmed` のフラグを `true` にし、内容を入れます。
+- **下書きの仕組みは、残してあります**（今後の新しい LP のため）。下書きは、`src/draft-pages/` にページを置き、`astro.config.mjs` の `draftRoutes` に、ルートを書きます。**通常のビルド（Netlify の本番とプレビュー）には、出ません。** `npm run dev` と `npm run build:drafts` のときだけ、ルートとして足されます。公開するときは、ページを `src/pages/` に移し、`draftRoutes` の該当行を消します。
+- **Netlify のプレビューで下書きを見ることは、今はできません。** 環境変数 `PUBLIC_DRAFT_LPS=true` を設定しても、下書きの TODO を、公開前の検査（`check:public`）が見つけて、ビルドが失敗します。下書きは、手元（`npm run dev`）で確認します。
 
 ## 構成
 
@@ -217,7 +218,7 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 
 ## 未確定の事業情報
 
-`npm run todos` で一覧を出せる（ソースの `// TODO:` コメントと `{{TODO}}` を拾う）。**公開ページ（Silver、法務ページ、404）には TODO を出さない**：未確認の事実は、項目ごと出さないか、約束にならない書き方にして、確認事項は `// TODO:` コメントで残す。`npm run check:public` が、公開ビルドに TODO が残っていないかを確かめる（Netlify のビルドでも実行）。下書きの Downsizing は、今も点線の枠で表示される。主なもの：
+`npm run todos` で一覧を出せる（ソースの `// TODO:` コメントと `{{TODO}}` を拾う）。**公開ページ（Silver、Gold、Appraisal、Downsizing、Home Value、`/sms`、法務ページ、404）には TODO を出さない**：未確認の事実は、項目ごと出さないか、約束にならない書き方にして、確認事項は `// TODO:` コメントで残す。`npm run check:public` が、公開ビルドに TODO が残っていないかを確かめる（Netlify のビルドでも実行）。下書きのページだけは、点線の枠で表示される。主なもの：
 
 - 営業時間、電話番号の受付日（すべて `src/content/company.ts` に入力する。全LPに反映される）
 - **OCCC：登録番号（2600083284-237004）と OCCC の連絡先（住所・電話・サイト）は、`company.ts` に登録済み（2026-11-04）。** ヘッダー、フッター、会社情報、Privacy の「Our registration」、Silver・Gold の登録の表示、構造化データに出る。**未確定：登録に必要な表記の文言（苦情窓口の案内など）が、サイトに要るかどうか（弁護士に確認）。** 番号を `null` に戻すと、登録の表示はすべて消える
