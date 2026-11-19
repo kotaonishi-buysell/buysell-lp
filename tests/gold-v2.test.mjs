@@ -10,12 +10,12 @@ const walk = (dir) =>
     e.isDirectory() ? walk(`${dir}${e.name}/`) : [`${dir}${e.name}`],
   );
 
-test('/gold-v2 is a draft: its page is in src/draft-pages, listed as a draft route, and not in src/pages', () => {
-  assert(existsSync(new URL('src/draft-pages/gold-v2.astro', root)));
-  assert.equal(existsSync(new URL('src/pages/gold-v2.astro', root)), false);
+test('/gold-v2 is a published page: it is in src/pages, not a draft route, and /gold is a separate page', () => {
+  assert(existsSync(new URL('src/pages/gold-v2.astro', root)));
+  assert.equal(existsSync(new URL('src/draft-pages/gold-v2.astro', root)), false);
   assert.equal(goldV2.slug, 'gold-v2');
-  assert.match(read('astro.config.mjs'), /pattern: '\/gold-v2', entrypoint: '\.\/src\/draft-pages\/gold-v2\.astro'/);
-  assert.match(read('netlify.toml'), /\[context\.deploy-preview\][\s\S]*build:drafts/);
+  assert.match(read('astro.config.mjs'), /const draftRoutes[^=]*= \[\];/, 'no draft routes: /gold-v2 is not one');
+  assert(existsSync(new URL('src/pages/gold.astro', root)), '/gold stays');
   assert(existsSync(new URL(`public${goldV2.meta.ogImage}`, root)), 'OG image');
 });
 
@@ -36,7 +36,7 @@ test('the design is one mobile layout: a column of at most 430px, and no width-d
 });
 
 test('the page uses the shared contact form, brand logo and company facts, not its own copies', () => {
-  const page = read('src/draft-pages/gold-v2.astro');
+  const page = read('src/pages/gold-v2.astro');
   assert.match(page, /<ContactForm/);
   assert.match(page, /<BrandLogo/);
   assert.doesNotMatch(page, /<form\b/, 'no form of its own');
@@ -46,14 +46,14 @@ test('the page uses the shared contact form, brand logo and company facts, not i
 });
 
 test('payment is never promised the same day or "before we leave", and no payment time is promised at all', () => {
-  const text = [read('src/draft-pages/gold-v2.astro'), JSON.stringify(goldV2Copy)].join('\n');
+  const text = [read('src/pages/gold-v2.astro'), JSON.stringify(goldV2Copy)].join('\n');
   assert.doesNotMatch(text, /(paid|pay|payment)\b[^.]{0,40}(right away|on the spot|same[- ]day)|same[- ]day|before we leave/i);
   assert.match(goldV2Copy.step4 + goldV2Copy.payment, /Payment is by bank transfer/);
   assert.doesNotMatch(goldV2Copy.step4 + goldV2Copy.payment, /end of the next day/);
 });
 
 test('photo slots are empty figures with a data-slot name, and any image put in one has alt text', () => {
-  const page = read('src/draft-pages/gold-v2.astro');
+  const page = read('src/pages/gold-v2.astro');
   const slots = [...page.matchAll(/<figure[^>]*data-slot="([^"]+)"/g)].map((m) => m[1]);
   assert.equal(slots.length, 13, 'hero, company, four steps and seven cards');
   assert.equal(new Set(slots).size, slots.length, 'slot names are unique');

@@ -1,8 +1,7 @@
 /*
  * Gold LP, second design (/gold-v2): the Figma design "バイセルUS_GOLD_LP" (SP_W390_A), a single mobile layout that is also
- * used, at the same width, on wide screens. It is a draft: the page is src/draft-pages/gold-v2.astro, a route only in
- * `astro dev`, `npm run build:drafts` and Netlify deploy previews (astro.config.mjs, netlify.toml), not on the live site.
- * /gold is untouched. This file holds what is shared with the other LPs' machinery (meta and the copy of the shared
+ * used, at the same width, on wide screens. It is a published page (src/pages/gold-v2.astro) next to /gold, which it does
+ * not replace or change. This file holds what is shared with the other LPs' machinery (meta and the copy of the shared
  * contact form) and the copy that follows the company-wide sales flow. Company facts (phone, address, registration)
  * come from ../site.ts, which reads ../company.ts. Like /gold, the page never prints a TODO: an unconfirmed fact is left
  * out and the open question is a `// TODO:` comment beside it, listed by `npm run todos`.
