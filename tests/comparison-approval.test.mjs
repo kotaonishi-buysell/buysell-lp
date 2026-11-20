@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { silverComparison } from '../src/content/lps/silver-comparison.ts';
 import { goldComparison } from '../src/content/lps/gold-comparison.ts';
+import { replacePwshpComparison } from '../src/content/lps/replace-pwshp-comparison.ts';
 
-const comparisons = { silver: silverComparison, gold: goldComparison };
+const comparisons = { silver: silverComparison, gold: goldComparison, 'replace-pwshp': replacePwshpComparison };
 
 test('a competitor comparison is shown only after legal has approved it', () => {
   for (const [lp, flag] of Object.entries(comparisons)) {
