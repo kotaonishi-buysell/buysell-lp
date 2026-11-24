@@ -216,6 +216,8 @@ Use this as client-supplied draft copy. Before public launch, confirm the offici
 
 Do not invent exchange details, ticker symbols, registration numbers, certifications, security standards, staff credentials, insurance, or background-check claims. Do not claim that public listing itself proves a specific security control. Link to the approved privacy information when supplied; precise corporate governance wording requires supplied company material.
 
+> **Amendment, November 24, 2026:** In Section 4 the three cards (“Just curious is welcome.”, “Choose item by item.”, “Hear what is possible.”) were replaced by a block, “A professional appraiser works out the value on the day.”, with portraits of the two appraisers (the same people and photos as /silver). In Section 5 the example inquiries were removed; the “About the BuySell group” note stays, under the appraisers. The page is now six content sections plus the final contact section. A mobile-only bar (Request a Visit and Call) follows the visitor between the hero and the request form.
+
 ### Section 6 — Process and FAQ
 
 **Purpose:** Explain what happens after contact, including the payout timing.

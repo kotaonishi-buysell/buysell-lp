@@ -139,3 +139,31 @@ body[data-lp="home-value"] {
 [data-lp="home-value"] .hv-logo { display: block; width: auto; height: 52px; }
 [data-lp="home-value"] .hv-logo--footer { height: 44px; }
 @media (max-width: 720px) { [data-lp="home-value"] .hv-header .hv-logo { height: 44px; } }
+
+/* "A professional appraiser works out the value on the day": the portraits of the people who visit. */
+[data-lp="home-value"] .hv-appraisers { display: grid; gap: 32px; margin-top: 40px; align-items: center; }
+[data-lp="home-value"] .hv-appraisers-copy h3 { max-width: 560px; }
+[data-lp="home-value"] .hv-people { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+[data-lp="home-value"] .hv-person { padding: 12px; background: var(--hv-white); min-width: 0; }
+[data-lp="home-value"] .hv-person img { aspect-ratio: 4 / 5; object-fit: cover; object-position: center 16%; border-radius: 20px; }
+[data-lp="home-value"] .hv-person-name { margin-top: 16px; padding-inline: 4px; color: var(--hv-green); font-size: clamp(17px, 4.6vw, 22px); font-weight: 800; line-height: 1.2; letter-spacing: -.01em; }
+[data-lp="home-value"] .hv-person .hv-small { margin-top: 4px; padding-inline: 4px; color: var(--hv-muted); }
+[data-lp="home-value"] .hv-blue .hv-group { margin-top: 48px; background: var(--hv-white); }
+
+/* The bar that follows the visitor on a phone. */
+[data-lp="home-value"] .hv-sticky { display: none; }
+@media (max-width: 719.98px) {
+  [data-lp="home-value"] .hv-sticky {
+    position: fixed; inset: auto 0 0; z-index: 20; display: flex; gap: 12px;
+    padding: 10px var(--hv-gutter) calc(10px + env(safe-area-inset-bottom));
+    background: var(--hv-cream); border-top: 1px solid var(--hv-border); box-shadow: 0 -8px 24px rgba(32, 35, 31, .10);
+    transform: translateY(0); transition: transform .2s ease, visibility 0s;
+  }
+  [data-lp="home-value"] .hv-sticky[data-visible="false"] { transform: translateY(110%); visibility: hidden; transition: transform .2s ease, visibility 0s .2s; }
+  [data-lp="home-value"] .hv-sticky .hv-button { min-height: 52px; padding: 8px 16px; flex: 1 1 0; }
+  [data-lp="home-value"] .hv-sticky .hv-button--primary { flex: 2 1 0; }
+}
+@media (min-width: 720px) {
+  [data-lp="home-value"] .hv-appraisers { grid-template-columns: 1fr 1fr; gap: 48px; }
+  [data-lp="home-value"] .hv-people { gap: 24px; max-width: 520px; justify-self: end; width: 100%; }
+}

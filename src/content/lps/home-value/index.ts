@@ -10,6 +10,7 @@ export const homeValue = {
   contact: {
     call: `Call ${config.brand}`,
     request: 'Request a Visit',
+    stickyCall: 'Call',
     phonePending: 'Phone number pending.',
     preference: 'Send a request and our team will contact you to arrange a visit.',
   },
@@ -45,24 +46,20 @@ export const homeValue = {
   decision: {
     heading: 'Know the value. Then decide.',
     body: 'Hear the appraisal and the offer before choosing what to do. Keep the things you want to keep, consider selling others, or simply learn more about what you have.',
-    cards: [
-      { title: 'Just curious is welcome.', body: 'You can request a visit without having decided to sell.' },
-      { title: 'Choose item by item.', body: 'You do not have to sell everything together.' },
-      { title: 'Hear what is possible.', body: 'We may explain that an item cannot be purchased. Appraisal and travel are free.' },
+  },
+  // The people who visit. Photos are the same portraits /silver uses (public/images/silver/).
+  appraisers: {
+    heading: 'A professional appraiser works out the value on the day.',
+    body: 'Your appraiser looks at your items at home and tells you the appraised amount during the visit.',
+    people: [
+      { name: 'Yosuke Matsuda', experience: '5 years of experience', image: '/images/silver/yosuke-matsuda.webp', alt: 'Portrait of Yosuke Matsuda, an appraisal professional.' },
+      { name: 'Koki Iguchi', experience: '4 years of experience', image: '/images/silver/koki-iguchi.webp', alt: 'Portrait of Koki Iguchi, an appraisal professional.' },
     ],
   },
-  inquiries: {
-    heading: "You don't have to have it all figured out.",
-    label: 'Example inquiries',
-    examples: [
-      'I have an unused bag and some tableware. Can you look at both?',
-      "I have a few things from an old hobby, but I don't know what they're worth.",
-      "I'd like to start with one item and show you a few other things at home.",
-    ],
-    disclaimer: 'Illustrative inquiries, not customer reviews.',
-    groupHeading: 'About the BuySell group',
-    // The purchase count is stated only once its source and reporting period are confirmed (config.group.approved).
-    groupBody:
+  // The group note under the appraisers. The purchase count is stated only once its source and reporting period are confirmed (config.group.approved).
+  group: {
+    heading: 'About the BuySell group',
+    body:
       `${config.group.name} is publicly listed in Japan.` +
       (config.group.approved ? ` The group has completed ${config.group.purchaseCount} purchases across ${config.group.regions}.` : ''),
   },

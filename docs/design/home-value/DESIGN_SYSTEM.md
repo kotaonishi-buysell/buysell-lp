@@ -750,6 +750,10 @@ This is one of the most important messages on the website.
 
 ---
 
+> **Update, 2026-11-24:** Sections 15 and 16 are no longer shown as written. The three-step cards in section 15 became "A professional appraiser works out the value on the day." with two portrait cards (white cards, 4:5 portraits, name and years of experience). The consultation examples of section 16 were removed from the page. On phones a fixed bar (Request a Visit, Call) follows the visitor after the hero and hides at the request form.
+
+---
+
 # 16. Consultation Examples
 
 Instead of traditional testimonials, show realistic customer situations.

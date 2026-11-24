@@ -31,6 +31,20 @@ function initHomeValue(): void {
     if (name === 'error') measure(enabled, 'visit_request_error', category ?? 'network');
   });
 
+  initStickyBar();
   initContactForms();
+}
+
+// The phone bar shows once the hero has scrolled away and hides while the request form section is on screen.
+function initStickyBar(): void {
+  const bar = document.querySelector<HTMLElement>('[data-hv-sticky]');
+  const hero = document.querySelector('#top');
+  const end = document.querySelector('#get-started');
+  if (!bar || !hero || !end || !('IntersectionObserver' in window)) return;
+  let heroInView = true;
+  let endInView = false;
+  const update = () => { bar.dataset.visible = String(!heroInView && !endInView); };
+  new IntersectionObserver((entries) => { heroInView = entries[entries.length - 1].isIntersecting; update(); }).observe(hero);
+  new IntersectionObserver((entries) => { endInView = entries[entries.length - 1].isIntersecting; update(); }).observe(end);
 }
 initHomeValue();

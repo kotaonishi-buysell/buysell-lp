@@ -8,7 +8,7 @@
 - Home Value now has an independent page, configuration, form and stylesheet. It does not import the legacy company placeholders, consent copy, scripts or submit stub.
 
 ## Implemented
-Seven sections in the required order; brand identification; nine categories; ten FAQs; examples labeled as illustrative; group-wide purchase history labeled client-supplied draft.
+Seven sections in the required order; brand identification; nine categories; ten FAQs; the appraisers block (two portraits, shared with /silver) in place of the example inquiries and the three cards (2026-11-24); a mobile-only follow-me bar (src/components/home-value/StickyBar.astro); the group note without a draft label.
 Confirmed copy includes Dallas–Fort Worth and surrounding areas, free appraisal and travel, one-item visits, additional items during the visit, value-only inquiries and bank-transfer payment by the end of the next calendar day after the customer agrees to sell.
 Primary phone actions are explicitly unavailable while the approved number is absent. All request actions lead to the same inline form.
 
