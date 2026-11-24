@@ -19,9 +19,11 @@ test('no published page or its copy says we buy at the customer\'s home, or prom
     'src/pages/silver.astro',
     'src/pages/gold.astro',
     'src/pages/appraisal.astro',
+    'src/pages/replace-pwshp.astro',
     'src/content/lps/silver.ts',
     'src/content/lps/gold.ts',
     'src/content/lps/appraisal.ts',
+    'src/content/lps/replace-pwshp.ts',
     'src/content/legal.ts',
   ];
   for (const file of files) {
