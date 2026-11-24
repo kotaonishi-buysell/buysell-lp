@@ -103,6 +103,8 @@ The copy below is the implementation baseline. Minor editorial changes may impro
 
 The page must contain the following seven sections in this order. Include brand identification and access to contact actions, as well as the factual footer content listed below. Do not import unrelated sections from the existing silver page.
 
+> **Amendment, November 24, 2026:** The goal is visit-request form submissions, so in the header, the opening section and the final section **“Request a Visit” is the primary (filled) action and “Call” is the secondary (outlined) one**, in that order. Wherever this document says “Primary action: Call” and “Secondary action: Request a Visit”, read it the other way round. Both are still counted as conversions.
+
 ### Section 1 — Opening Proposition
 
 **Purpose:** Immediately identify the service, service area, and reason to inquire.
