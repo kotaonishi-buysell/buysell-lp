@@ -26,7 +26,7 @@ test('the page prints the OCCC registration and contact line from the shared com
 test('the purchase count is stated only when its source is approved; the listing alone is stated meanwhile', () => {
   assert.equal(buildHomeValueConfig(company).group.approved, false);
   const copy = read('src/content/lps/home-value/index.ts');
-  const body = copy.slice(copy.indexOf('groupBody:'), copy.indexOf('process:'));
+  const body = copy.slice(copy.indexOf('group: {'), copy.indexOf('process:'));
   assert.match(body, /is publicly listed in Japan\./);
   // The count and "purchases" appear only inside the branch that runs when the source is approved.
   assert.match(body, /config\.group\.approved \? ` The group has completed \$\{config\.group\.purchaseCount\} purchases/);
@@ -43,4 +43,22 @@ test('the page carries no draft or preview wording, and takes its canonical URL 
 
 test('the "phone pending" text for screen readers exists only while there is no callable phone number', () => {
   assert.match(read('src/pages/home-value.astro'), /\{!config\.phone && <p id="phone-pending"/);
+});
+
+test('the page has no example-inquiry cards; the appraisers (names and years) sit in the "Know the value" section', () => {
+  const page = read('src/pages/home-value.astro');
+  const copy = read('src/content/lps/home-value/index.ts');
+  assert.doesNotMatch(`${page}\n${copy}`, /Example inquiries|consultation-examples|Just curious is welcome|Choose item by item|Hear what is possible/);
+  assert.match(copy, /A professional appraiser works out the value on the day\./);
+  assert.match(copy, /Yosuke Matsuda[\s\S]*5 years of experience[\s\S]*Koki Iguchi[\s\S]*4 years of experience/);
+  // The visit is an appraisal only: the appraised amount is told, nothing is bought at the home.
+  assert.doesNotMatch(copy.slice(copy.indexOf('appraisers: {'), copy.indexOf('group: {')), /\b(buy|bought|paid|pay)\b/i);
+});
+
+test('the phone bar follows the visitor: a request button, a call button only with a real number, and the shared click hooks', () => {
+  const bar = read('src/components/home-value/StickyBar.astro');
+  assert.match(bar, /data-visit-open/);
+  assert.match(bar, /\{phone && <a[^>]*data-phone-call/);
+  assert.match(read('src/pages/home-value.astro'), /<StickyBar \/>/);
+  assert.match(read('src/scripts/home-value.ts'), /initStickyBar\(\)/);
 });

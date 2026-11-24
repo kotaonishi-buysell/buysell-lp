@@ -6,6 +6,7 @@ import BrandLogo from '../components/BrandLogo.astro';
 import Favicon from '../components/Favicon.astro';
 import ContactActions from '../components/home-value/ContactActions.astro';
 import VisitRequestPanel from '../components/home-value/VisitRequestPanel.astro';
+import StickyBar from '../components/home-value/StickyBar.astro';
 import { absoluteUrl } from '../lib/site-url';
 // The site's own address (Netlify's URL, or a custom domain once set). Without one (a local build) there is no canonical and the page is noindex.
 const canonical = absoluteUrl('/home-value', Astro.site);
@@ -79,16 +80,18 @@ const canonical = absoluteUrl('/home-value', Astro.site);
         <div class="hv-container">
           <p class="hv-eyebrow">Appraise first</p><h2 id="decision-title">{c.decision.heading}</h2>
           <p class="hv-lead hv-measure">{c.decision.body}</p>
-          <div class="hv-three-grid">{c.decision.cards.map((card) => <div class="hv-card"><h3>{card.title}</h3><p>{card.body}</p></div>)}</div>
-        </div>
-      </section>
-      <section class="hv-section" id="consultation-examples" aria-labelledby="examples-title">
-        <div class="hv-container">
-          <p class="hv-eyebrow">{c.inquiries.label}</p><h2 id="examples-title">{c.inquiries.heading}</h2>
-          <div class="hv-three-grid">{c.inquiries.examples.map((text) => <blockquote class="hv-card"><p class="hv-lead">“{text}”</p></blockquote>)}</div>
-          <p class="hv-small hv-section-note">{c.inquiries.disclaimer}</p>
+          <div class="hv-appraisers">
+            <div class="hv-appraisers-copy"><h3>{c.appraisers.heading}</h3><p class="hv-lead">{c.appraisers.body}</p></div>
+            <ul class="hv-people" role="list">{c.appraisers.people.map((person) => (
+              <li class="hv-card hv-person">
+                <img src={person.image} alt={person.alt} width="900" height="1200" loading="lazy" decoding="async" />
+                <p class="hv-person-name">{person.name}</p>
+                <p class="hv-small">{person.experience}</p>
+              </li>
+            ))}</ul>
+          </div>
           <aside class="hv-group" aria-labelledby="group-title">
-            <h3 id="group-title">{c.inquiries.groupHeading}</h3><p>{c.inquiries.groupBody}</p>
+            <h3 id="group-title">{c.group.heading}</h3><p>{c.group.body}</p>
           </aside>
         </div>
       </section>
@@ -121,6 +124,7 @@ const canonical = absoluteUrl('/home-value', Astro.site);
       </nav>
       <p class="hv-small">© {new Date().getFullYear()} {config.localOperator?.name ?? config.brand}</p>
     </footer>
+    <StickyBar />
     <script type="application/json" data-hv-config set:html={JSON.stringify({ measurementEnabled: config.measurementEnabled })} />
     <script>import '../scripts/home-value';</script>
   </body>

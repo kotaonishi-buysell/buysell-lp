@@ -1,0 +1,11 @@
+---
+// Mobile-only bar that follows the visitor. src/scripts/home-value.ts shows it once the hero is out of view
+// and hides it again when the request form section is reached. Hidden (and out of the tab order) until then.
+import { homeValueConfig, approvedPhone } from '../../content/lps/home-value/config';
+import { homeValue as copy } from '../../content/lps/home-value';
+const phone = approvedPhone(homeValueConfig.phone);
+---
+<div class="hv-sticky" data-hv-sticky data-visible="false" role="region" aria-label="Quick contact">
+  <a class="hv-button hv-button--primary" href="#visit-request" data-visit-open>{copy.contact.request}</a>
+  {phone && <a class="hv-button hv-button--secondary" href={`tel:${phone.e164}`} data-phone-call aria-label={`${copy.contact.call} at ${phone.display}`}>{copy.contact.stickyCall}</a>}
+</div>
