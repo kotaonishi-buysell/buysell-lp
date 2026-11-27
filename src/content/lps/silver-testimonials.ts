@@ -4,7 +4,7 @@
 /**
  * Customer testimonials ("A few words from the kitchen table"). HIDDEN: no verified customer reviews yet.
  *
- * The design (src/pages/silver.astro, .voices in silver.css) is kept. To bring the section back:
+ * The design (src/pages/silver.astro, .voices in silver-family.css) is kept. To bring the section back:
  *   1. Replace `items` with real reviews. Each needs the customer's permission and a `source`
  *      (where it was collected, e.g. "Google review, 2026-11-02" or "Email, permission on file").
  *   2. Set `enabled: true`.

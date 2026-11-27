@@ -6,11 +6,11 @@
 |---|---|---|
 | /downsizing | [Downsizing DESIGN_SYSTEM.md](downsizing/DESIGN_SYSTEM.md) | src/styles/tokens.css、base.css、fonts.css と既存部品 |
 | /home-value | [Home Value DESIGN_SYSTEM.md](home-value/DESIGN_SYSTEM.md) | src/styles/home-value.css と src/components/home-value/ の専用部品 |
-| /silver | [Silver DESIGN_SYSTEM.md](silver/DESIGN_SYSTEM.md) | src/styles/silver.css、src/pages/silver.astro、src/layouts/SilverLayout.astro |
+| /silver | [Silver DESIGN_SYSTEM.md](silver/DESIGN_SYSTEM.md) | src/styles/silver-family.css（Silver系3本の共通の土台）、src/styles/silver.css、src/pages/silver.astro、src/layouts/SilverLayout.astro |
 | /gold | [Gold DESIGN_SYSTEM.md](gold/DESIGN_SYSTEM.md) | src/styles/gold.css、src/pages/gold.astro、src/layouts/GoldLayout.astro、src/scripts/gold.ts |
 | /gold-v2 | [Gold v2 DESIGN_SYSTEM.md](gold-v2/DESIGN_SYSTEM.md) | src/styles/gold-v2.css、src/pages/gold-v2.astro、src/layouts/GoldV2Layout.astro、src/scripts/gold-v2.ts（スマホ幅のFigmaデザインを、PCでも同じ幅で表示。写真は /gold と同じ画像） |
-| /appraisal | [Appraisal DESIGN_SYSTEM.md](appraisal/DESIGN_SYSTEM.md) | src/styles/appraisal.css、src/pages/appraisal.astro、src/layouts/AppraisalLayout.astro（動きは src/scripts/silver.ts を共用） |
-| /replace-pwshp | [Replace-pwshp DESIGN_SYSTEM.md](replace-pwshp/DESIGN_SYSTEM.md) | src/styles/replace-pwshp.css、src/pages/replace-pwshp.astro、src/layouts/ReplacePwshpLayout.astro（動きは src/scripts/silver.ts を共用。色・書体は Silver と同じ） |
+| /appraisal | [Appraisal DESIGN_SYSTEM.md](appraisal/DESIGN_SYSTEM.md) | src/styles/silver-family.css（共通の土台）、src/styles/appraisal.css、src/pages/appraisal.astro、src/layouts/AppraisalLayout.astro（動きは src/scripts/silver.ts を共用） |
+| /replace-pwshp | [Replace-pwshp DESIGN_SYSTEM.md](replace-pwshp/DESIGN_SYSTEM.md) | src/styles/silver-family.css（共通の土台）、src/styles/replace-pwshp.css、src/pages/replace-pwshp.astro、src/layouts/ReplacePwshpLayout.astro（動きは src/scripts/silver.ts を共用。色・書体は Silver と同じ） |
 | /privacy /terms /do-not-sell（共通の法務ページ） | [Legal DESIGN_SYSTEM.md](legal/DESIGN_SYSTEM.md) | src/content/legal.ts、src/components/LegalPage.astro、src/layouts/LegalLayout.astro、src/styles/legal.css |
 
 ## 編集ルール

@@ -75,10 +75,11 @@ src/
   styles/base.css        リセット、文字スタイル（.t-display-xl など）、レイアウト
   styles/form-support.css  フォームが使う部品（ボタン、リンク、.muted、.todo、[hidden] など）。base.css から分離（理由は Silver LP の節）
   styles/fonts.css       自前ホストのフォント（public/fonts/、OFL）
-  styles/silver.css      Silver LP 専用。/silver だけが読み込む
+  styles/silver-family.css  Silver 系3本（/silver /appraisal /replace-pwshp）の共通の土台。骨格、動き、配色、フォームの外観。この3つのレイアウトだけが読み込む
+  styles/silver.css      Silver LP 専用の差分だけ（カテゴリの円の写真スプライト）。/silver だけが読み込む（土台の後）
   styles/gold.css        Gold LP 専用。/gold だけが読み込む
-  styles/appraisal.css   Appraisal LP 専用（silver.css のコピー）。/appraisal だけが読み込む
-  layouts/AppraisalLayout.astro  Document ＋ tokens / form-support / appraisal.css
+  styles/appraisal.css   Appraisal LP 専用の差分だけ（カテゴリの円のアイコン）。/appraisal だけが読み込む（土台の後）
+  layouts/AppraisalLayout.astro  Document ＋ tokens / form-support / silver-family.css / appraisal.css
   pages/appraisal.astro          Appraisal のページ本体
   content/lps/appraisal.ts       Appraisal：meta、フォーム文言、FAQ、カテゴリ一覧
   content/company.ts     全LP共通の会社情報（唯一の入力元）：ブランド名、会社名、グループ名、住所、受付電話、営業時間、OCCC登録番号・表記。未確定は null
@@ -90,8 +91,8 @@ src/
   components/            仕様の section 4 の部品（1部品1ファイル）＋ PhoneButton / CtaGroup / Section
   layouts/Document.astro    全LP共通の HTML（meta、OG、LocalBusiness 構造化データ、GTM、共通スクリプト）。CSS は読まない
   layouts/BaseLayout.astro  Document ＋ tokens / base / form-support（Downsizing 系）
-  layouts/SilverLayout.astro  Document ＋ tokens / form-support / silver.css（base.css は読まない）
-  layouts/GoldLayout.astro    Document ＋ tokens / form-support / gold.css（base.css と silver.css は読まない）
+  layouts/SilverLayout.astro  Document ＋ tokens / form-support / silver-family.css / silver.css（base.css は読まない）
+  layouts/GoldLayout.astro    Document ＋ tokens / form-support / gold.css（base.css、silver.css、silver-family.css は読まない）
   pages/[slug].astro     content/lps/*.ts の sections を順に描画
   content/contact-form.ts   全LP共通：問い合わせフォームの送信先、英語の共通文言、SMS同意の仮文言
   components/ContactForm.astro  全LP共通の問い合わせフォーム（スキンはLPごと）
@@ -141,11 +142,12 @@ Codex で作ったモック（`BuySell-Silver-source-2026-10-20`）を取り込�
 
 ### CSS が他とぶつからないようにしている仕組み
 
-- Silver のCSSは `body` / `a` / `button` / `img` / `h1`〜`h3` / `dialog` などに直接指定がある（モックのまま）。そのため **`silver.css` は `SilverLayout.astro` だけが読み込み、`base.css` と同じページに載せない**。Astro はCSSをページ単位でまとめるので、`/downsizing` には `silver.css` が入らない。
+- Silver 系のCSSは `body` / `a` / `button` / `img` / `h1`〜`h3` / `dialog` などに直接指定がある（モックのまま）。そのため **`silver-family.css` は Silver / Appraisal / Replace-pwshp の3つのレイアウトだけが読み込み、`base.css` と同じページに載せない**。LPごとのファイル（`silver.css` `appraisal.css` `replace-pwshp.css`）は、それぞれ自分のレイアウトだけが、土台の後に読み込む。Astro はCSSをページ単位でまとめるので、`/downsizing` や `/gold` にはどれも入らない（`tests/silver-family-css.test.mjs` が確認する）。
+- **土台と差分の分け方：** 3本で同じものは `silver-family.css` に1つだけ置く。LPごとに違うものだけを、LPのファイルに書く（今は、Silver のカテゴリ写真、Appraisal と Replace-pwshp のカテゴリのアイコン、Replace-pwshp の4ステップなど）。3本に同じ変更を入れたいときは、土台を1か所直す。
 - フォームが `base.css` に頼っていた部品（`.btn`、`.link`、`.muted`、`.todo`、`.visually-hidden`、`[hidden]`、`.t-lead`）は `form-support.css` に移した。`base.css` は変更前と同じ見た目（ピクセル単位で一致を確認済み）。
-- 共通フォームの見た目は、`silver.css` の末尾にある `[data-lp='silver']` のブロック（`--cf-*` 変数）で、Silver の配色（アイボリー、緑、角なし）に合わせている。フォームの見た目を変えたいときはこのブロックを触る。リンクや TODO の表示など `form-support.css` の部品は、同じファイルの `:root` のトークン上書きで合わせている。
+- 共通フォームの見た目は、`silver-family.css` の末尾近くにある `[data-lp]` のブロック（`--cf-*` 変数）で、Silver 系の配色（アイボリー、緑、角なし）に合わせている。フォームの見た目を変えたいときはこのブロックを触る。リンクや TODO の表示など `form-support.css` の部品は、同じファイルの `:root` のトークン上書きで合わせている。
 - 予約ダイアログ（`<dialog id="booking-dialog">`）の中に共通フォームを入れている。ボタンの `data-booking` で開き、`cta.ts` が最初の入力欄にフォーカスする。
-- `silver.css` の先頭コメントに、モックからの変更点を書いてある。モックを更新して取り込み直すときは、そこを見て同じ変更を当てる。
+- `silver-family.css` の先頭コメントに、モックからの変更点を書いてある。モックを更新して取り込み直すときは、そこを見て同じ変更を当てる。
 
 ### 取り込み時の変更点
 
