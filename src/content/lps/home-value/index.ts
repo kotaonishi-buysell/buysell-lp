@@ -1,5 +1,6 @@
 import { homeValueConfig as config } from './config';
 import { purchaseFlow } from '../../purchase-flow';
+import { homeValueItems, homeValueItemsText } from '../../items';
 
 export const homeValue = {
   slug: 'home-value',
@@ -29,17 +30,7 @@ export const homeValue = {
   },
   categories: {
     heading: 'Different kinds of belongings. One visit.',
-    items: [
-      { name: 'Bags', image: 'bags', alt: 'Illustration of a handbag.' },
-      { name: 'Watches', image: 'watches', alt: 'Illustration of a wristwatch.' },
-      { name: 'Jewelry and accessories', image: 'jewelry', alt: 'Illustration of a necklace and earrings.' },
-      { name: 'Tableware', image: 'tableware', alt: 'Illustration of a cup and plates.' },
-      { name: 'Cameras', image: 'cameras', alt: 'Illustration of a camera.' },
-      { name: 'Musical instruments', image: 'instruments', alt: 'Illustration of a guitar.' },
-      { name: 'Coins and stamps', image: 'coins-stamps', alt: 'Illustration of coins and a postage stamp.' },
-      { name: 'Art and antiques', image: 'art-antiques', alt: 'Illustration of framed art and a vase.' },
-      { name: 'Other belongings you would like us to assess', image: 'other', alt: 'Illustration of a vase and a storage box.' },
-    ],
+    items: homeValueItems,
     body: "Start with the items you have in mind. If something else comes to mind while we're there, you can show us that, too.",
     qualification: 'We can assess your items and explain whether we can make a purchase offer.',
   },
@@ -74,7 +65,7 @@ export const homeValue = {
     faqHeading: 'A few things you may be wondering.',
     faqs: [
       { q: 'Can I request a visit for just one item?', a: 'Yes. Visits are available for one item.' },
-      { q: 'Can you assess different types of items in the same visit?', a: 'Yes. You can show us bags, watches, jewelry and accessories, tableware, cameras, musical instruments, coins and stamps, art and antiques, and other belongings.' },
+      { q: 'Can you assess different types of items in the same visit?', a: `Yes. You can show us ${homeValueItemsText}.` },
       { q: 'Can I show you more items during the visit?', a: "Yes. If you think of something else while we're there, you can ask us to assess it." },
       { q: 'What if I only want to know the value?', a: "That's welcome. You do not need to decide to sell before requesting an appraisal." },
       { q: 'How much does the visit cost?', a: 'Appraisal and travel are free.' },

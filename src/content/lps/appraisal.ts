@@ -10,6 +10,7 @@
 import type { CustomLandingPage, FaqItem } from '../types.ts';
 import { site } from '../site.ts';
 import { purchaseFlow } from '../purchase-flow.ts';
+import { appraisalItems, appraisalItemsText, type ItemCard } from '../items.ts';
 
 export const appraisal: CustomLandingPage = {
   slug: 'appraisal',
@@ -30,74 +31,11 @@ export const appraisal: CustomLandingPage = {
   },
 };
 
-export interface AppraisalCategory {
-  id: string;
-  /** Visible label. <br> is allowed. */
-  label: string;
-  /** Accessible description of the icon (and, later, of the photo that replaces it). */
-  alt: string;
-  /** Inner markup of a 48x48 stroke icon. Shown in the category circle until the photographs exist. */
-  icon: string;
-}
-
 /**
- * The ribbon, main categories first (accessories, designer goods, watches), then the rest.
- * TODO: confirm the exact wording and scope of each category with the business. In particular: "accessories" is
- * read as gold and platinum accessories (the main category); silver pieces belong to the Silver LP and gold bullion
- * to the Gold LP, and here they appear only as "silverware" and "gold coins".
- * TODO: confirm what is not accepted (counterfeits, damaged items, firearms, ...) and put it in the FAQ.
- * TODO: replace each icon with a generated photograph (public/images/appraisal/): see docs/design/appraisal/DESIGN_SYSTEM.md.
+ * The ribbon. The items (wording, icon, scope questions) are defined once, in ../items.ts, and shared with the other
+ * LPs that list the same things; this name stays so the page and its tests keep one import.
  */
-export const appraisalCategories: AppraisalCategory[] = [
-  {
-    id: 'accessories',
-    label: 'Gold &amp; platinum<br>accessories',
-    alt: 'A gold chain necklace with a pendant',
-    icon: '<path d="M9 8c0 15 6 24 15 24s15-9 15-24"/><circle cx="24" cy="38" r="4.5"/>',
-  },
-  {
-    id: 'designer-goods',
-    label: 'Designer<br>handbags &amp; goods',
-    alt: 'A leather handbag',
-    icon: '<path d="M10 18h28l3 22H7l3-22Z"/><path d="M17 18v-4a7 7 0 0 1 14 0v4M17 25v1M31 25v1"/>',
-  },
-  {
-    id: 'watches',
-    label: 'Watches',
-    alt: 'A wristwatch',
-    icon: '<circle cx="24" cy="24" r="10"/><path d="M24 18v6l4 3M19 14l1.5-7h7L29 14M19 34l1.5 7h7L29 34"/>',
-  },
-  {
-    id: 'jewelry',
-    label: 'Fine jewelry',
-    alt: 'A cut gemstone',
-    icon: '<path d="M17 10h14l6 8-13 20L11 18l6-8Z"/><path d="M11 18h26M20 10l4 8 4-8M24 18v20"/>',
-  },
-  {
-    id: 'antiques',
-    label: 'Antiques',
-    alt: 'An antique mantel clock',
-    icon: '<path d="M10 41h28M13 41V24a11 11 0 0 1 22 0v17"/><circle cx="24" cy="24" r="6"/><path d="M24 21v3l2 1.5"/>',
-  },
-  {
-    id: 'cameras',
-    label: 'Cameras',
-    alt: 'A camera',
-    icon: '<path d="M7 16h8l3-5h12l3 5h8v22H7V16Z"/><circle cx="24" cy="26" r="7"/><path d="M36 21h1"/>',
-  },
-  {
-    id: 'gold-coins',
-    label: 'Gold coins',
-    alt: 'A stack of coins',
-    icon: '<ellipse cx="22" cy="14" rx="12" ry="5"/><path d="M10 14v7c0 2.8 5.4 5 12 5s12-2.2 12-5v-7M10 21v7c0 2.8 5.4 5 12 5s12-2.2 12-5v-7"/><circle cx="35" cy="34" r="8"/><path d="M35 30v8M32.5 32.5c0-1.4 1-2 2.5-2s2.5.6 2.5 2-1 2-2.5 2-2.5.6-2.5 2 1 2 2.5 2 2.5-.6 2.5-2"/>',
-  },
-  {
-    id: 'silverware',
-    label: 'Silverware',
-    alt: 'A fork and a spoon',
-    icon: '<path d="M12 6v8a4 4 0 0 0 8 0V6M16 6v8M16 18v24"/><ellipse cx="32" cy="13" rx="5" ry="8"/><path d="M32 21v21"/>',
-  },
-];
+export const appraisalCategories: ItemCard[] = appraisalItems;
 
 /** Shown in the page's FAQ. */
 export const appraisalFaq: FaqItem[] = [
@@ -109,7 +47,7 @@ export const appraisalFaq: FaqItem[] = [
   {
     id: 'what-can-i-show',
     q: 'What can I show you?',
-    a: "We appraise gold and platinum accessories, designer handbags and goods, watches, fine jewelry, antiques, cameras, gold coins and silverware. Not sure whether something qualifies? Show us anyway. We'll tell you what we can appraise.",
+    a: `We appraise ${appraisalItemsText}. Not sure whether something qualifies? Show us anyway. We'll tell you what we can appraise.`,
   },
   {
     id: 'not-sure',

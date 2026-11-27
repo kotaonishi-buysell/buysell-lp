@@ -6,7 +6,7 @@
 - ページ：`src/pages/appraisal.astro`、レイアウト：`src/layouts/AppraisalLayout.astro`（`base.css` `silver.css` `gold.css` は読み込まない。土台の `silver-family.css` を読み、その後に `appraisal.css` を読む）。
 - スタイル：`src/styles/silver-family.css`（共通の土台）の後に、`src/styles/appraisal.css`（Appraisal だけの差分。今は、カテゴリの円の中身＝アイコンのみ）を読む。`appraisal.css` は `AppraisalLayout` 以外から読み込まない（`body` `a` `button` `dialog` などに直接指定があるため）。2026-11 に、以前の「`silver.css` のコピー」を、共通の土台と小さな差分に分けた（見た目は変わらないことを、計算済みスタイルとスクリーンショットで確認済み）。
 - 動き：`src/scripts/silver.ts` を Silver と**共用**する（ページが `import '../scripts/silver'`）。カテゴリのセクションは `.buy-section` のクラスで見つける（Silver は `#silver`、Appraisal は `#items`）。動きを変えるときは、両方のLPを確認する。
-- 文言：meta、フォームの文言、FAQ、カテゴリ一覧は `src/content/lps/appraisal.ts`。それ以外の見出し・本文は `appraisal.astro` に直接書いてある。
+- 文言：meta、フォームの文言、FAQ は `src/content/lps/appraisal.ts`。カテゴリ一覧（名前、アイコン、説明）は、Replace-pwshp と Home Value の一覧と一緒に `src/content/items.ts` の1か所にある。それ以外の見出し・本文は `appraisal.astro` に直接書いてある。
 - 共通：問い合わせフォーム、ZIP確認（対応エリアは Silver と同じ）、計測、会社情報（`company.ts`）、法務リンク、買取の流れの文言（`purchase-flow.ts`）。
 
 ## Silver からの変更点
@@ -18,7 +18,7 @@
 - **非表示の節**：お客様の声と競合比較は、Silver と同じく、本物の声と法務の確認がそろうまで置かない。比較の表の CSS は残してある。
 
 ## 画像（暫定）
-- **カテゴリの円**：写真ではなく、アイコン（`appraisalCategories` の `icon`）。時計、バッグ、金貨などの商品写真は、まだない。生成した写真（白背景の商品写真を3×2に並べたスプライト。`silver-categories.webp` と同じ形式）に差し替える予定。差し替えるときは、`appraisal.css` の `.category-image svg` を、スプライトを背景にするルールに戻す（`silver.css` の `.category-image::before` と同じ）。ブランド品、時計、カメラは、ロゴ・ブランド名・モノグラムが写らないものにする。
+- **カテゴリの円**：写真ではなく、アイコン（`src/content/items.ts` の `icon`）。時計、バッグ、金貨などの商品写真は、まだない。生成した写真（白背景の商品写真を3×2に並べたスプライト。`silver-categories.webp` と同じ形式）に差し替える予定。差し替えるときは、`appraisal.css` の `.category-image svg` を、スプライトを背景にするルールに戻す（`silver.css` の `.category-image::before` と同じ）。ブランド品、時計、カメラは、ロゴ・ブランド名・モノグラムが写らないものにする。
 - 生成途中のもの：Figma のファイル（Sj4SpBXXIutlwbrKGfLYkb）のノード 1:2 に、1枚目の試作がある（未取り込み）。
 - **そのほかの画像**（ヒーロー、手順のイラスト、スタッフの写真、価値の説明の画像）：Silver の `public/images/silver/` を読む。差し替えるときは、`public/images/appraisal/` に置く。
 - OG 画像は、Silver のもの（`og-silver-reworth.jpg`）を、暫定で使う。
