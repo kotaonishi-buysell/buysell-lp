@@ -67,3 +67,12 @@ test('every photo slot holds a picture that exists, with alt text and its size',
   }
   assert.doesNotMatch(page, /<img\b(?![^>]*\balt=)/);
 });
+
+test('/gold-v2 is not indexed by search engines: noindex flag, Document writes the robots tag and no canonical, /gold stays indexable', () => {
+  assert.equal(goldV2.meta.noindex, true);
+  const doc = read('src/layouts/Document.astro');
+  assert.match(doc, /<meta name="robots" content="noindex, nofollow"/);
+  assert.match(doc, /const canonical = noindex \? null :/);
+  assert.doesNotMatch(read('src/content/lps/gold.ts'), /noindex/, '/gold stays indexable');
+  assert(!existsSync(new URL('public/robots.txt', root)), 'a robots.txt block would hide the noindex from crawlers');
+});

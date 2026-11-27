@@ -12,7 +12,7 @@ import { PRIVACY_OPTOUT_KEY } from '../lib/privacy-choice';
 
 interface Props {
   slug: string;
-  meta: { title: string; description: string; ogImage: string; ogImageAlt?: string };
+  meta: { title: string; description: string; ogImage: string; ogImageAlt?: string; noindex?: boolean };
   /** Attributes for <body>, e.g. data-scene. */
   bodyAttrs?: Record<string, string>;
   /** Font files under public/fonts/ used above the fold. */
@@ -22,7 +22,9 @@ interface Props {
 const { slug, meta, bodyAttrs = {}, preloadFonts } = Astro.props;
 const title = plain(meta.title);
 const description = plain(meta.description);
-const canonical = absoluteUrl(`/${slug}`, Astro.site);
+// A page that search engines must not index has no canonical link either (the two would contradict each other).
+const noindex = meta.noindex === true;
+const canonical = noindex ? null : absoluteUrl(`/${slug}`, Astro.site);
 const ogImage = meta.ogImage ? absoluteUrl(meta.ogImage, Astro.site) : null;
 const gtmId = site.analytics.gtmId;
 
@@ -60,6 +62,7 @@ const gtmScript = gtmId
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     {canonical && <link rel="canonical" href={canonical} />}
     <Favicon />
 

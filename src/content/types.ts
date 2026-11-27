@@ -184,6 +184,8 @@ export interface LandingPage {
     /** Path under public/, 1200×630. */
     /** Path of the share image. '' = none: no og:image tag is written. */
     ogImage: string;
+    /** true = search engines are told not to index the page (<meta name="robots">), and it has no canonical link. */
+    noindex?: boolean;
   };
   cta: {
     /** First line of the phone button; the LP's own wording. */

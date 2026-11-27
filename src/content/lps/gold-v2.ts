@@ -17,6 +17,10 @@ export const goldV2: CustomLandingPage = {
     description:
       'We come to your home in Dallas–Fort Worth and Houston to appraise gold jewelry, chains, rings and broken gold. Free appraisal, no obligation to sell.',
     ogImage: '/images/og-gold.jpg',
+    // /gold is the primary Gold page (decided 2026-11-27). /gold-v2 stays reachable by its address, for ads or tests that
+    // point at it, but search engines are told not to index it, so it does not compete with /gold. Do not block it in a
+    // robots.txt: a crawler must be able to fetch the page to read the noindex.
+    noindex: true,
     ogImageAlt: 'An appraiser in white gloves looks at gold jewelry with a loupe at a customer’s dining table. Illustrative image.',
   },
   form: {
