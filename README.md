@@ -84,6 +84,7 @@ src/
   content/lps/appraisal.ts       Appraisal：meta、フォーム文言、FAQ、カテゴリ一覧
   content/company.ts     全LP共通の会社情報（唯一の入力元）：ブランド名、会社名、グループ名、住所、受付電話、営業時間、OCCC登録番号・表記。未確定は null
   content/site.ts        Downsizing / Silver 用：company.ts から組み立てた会社情報に、対応エリア、法定リンク、共通UI文言、GTM を加えたもの。company.ts が null の項目は {{TODO}} 表示
+  content/items.ts       品物の一覧の唯一の置き場所。Appraisal のリボン、Replace-pwshp のカード、Home Value の9カテゴリと、FAQ の「どの品物か」の文もここから作る。品物を足す・直すときはここだけ
   content/lps/*.ts       LPごと：meta、ボタン文言、セクションの並び順と全コピー、FAQ、フォームの選択肢
   content/lps/index.ts   LPの一覧（1件 = 1ページ /<slug>）。Silver は専用ページなのでここには入れない
   content/lps/silver.ts  Silver：meta、フォーム文言、FAQ

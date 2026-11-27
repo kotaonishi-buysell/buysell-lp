@@ -12,6 +12,7 @@
 import type { CustomLandingPage, FaqItem } from '../types.ts';
 import { site } from '../site.ts';
 import { purchaseFlow } from '../purchase-flow.ts';
+import { replacePwshpItems, type ItemCard } from '../items.ts';
 
 export const replacePwshp: CustomLandingPage = {
   slug: 'replace-pwshp',
@@ -34,76 +35,8 @@ export const replacePwshp: CustomLandingPage = {
   },
 };
 
-export interface ReplacePwshpCategory {
-  id: string;
-  /** Visible label. <br> is allowed. */
-  label: string;
-  /** Accessible description of the icon. */
-  alt: string;
-  /** Inner markup of a 48x48 stroke icon. */
-  icon: string;
-}
-
-/**
- * The cards of "Items we buy". Only categories that other published LPs already confirm (Appraisal: gold and platinum
- * accessories, designer handbags and goods, watches, fine jewelry, antiques, cameras, gold coins, silverware),
- * plus one catch-all card that promises nothing.
- * TODO: the spec (open question 2) also lists apparel, musical instruments, stamps, tableware other than silverware and
- * art. They are NOT shown until the business confirms that the Texas team buys them. When confirmed, add a card for each
- * here (apparel and "brand items beyond bags" also need new icons).
- * TODO: the spec's card "Brand items" is shown as "Designer handbags & goods", the wording Appraisal already uses;
- * "Coins and stamps" is shown as "Gold coins", and "Art and antiques" as "Antiques", for the same reason.
- */
-export const replacePwshpCategories: ReplacePwshpCategory[] = [
-  {
-    id: 'designer-goods',
-    label: 'Designer<br>handbags &amp; goods',
-    alt: 'A leather handbag',
-    icon: '<path d="M10 18h28l3 22H7l3-22Z"/><path d="M17 18v-4a7 7 0 0 1 14 0v4M17 25v1M31 25v1"/>',
-  },
-  {
-    id: 'watches',
-    label: 'Watches',
-    alt: 'A wristwatch',
-    icon: '<circle cx="24" cy="24" r="10"/><path d="M24 18v6l4 3M19 14l1.5-7h7L29 14M19 34l1.5 7h7L29 34"/>',
-  },
-  {
-    id: 'jewelry',
-    label: 'Jewelry &amp;<br>accessories',
-    alt: 'A cut gemstone',
-    icon: '<path d="M17 10h14l6 8-13 20L11 18l6-8Z"/><path d="M11 18h26M20 10l4 8 4-8M24 18v20"/>',
-  },
-  {
-    id: 'cameras',
-    label: 'Cameras',
-    alt: 'A camera',
-    icon: '<path d="M7 16h8l3-5h12l3 5h8v22H7V16Z"/><circle cx="24" cy="26" r="7"/><path d="M36 21h1"/>',
-  },
-  {
-    id: 'antiques',
-    label: 'Antiques',
-    alt: 'An antique mantel clock',
-    icon: '<path d="M10 41h28M13 41V24a11 11 0 0 1 22 0v17"/><circle cx="24" cy="24" r="6"/><path d="M24 21v3l2 1.5"/>',
-  },
-  {
-    id: 'gold-coins',
-    label: 'Gold coins',
-    alt: 'A stack of coins',
-    icon: '<ellipse cx="22" cy="14" rx="12" ry="5"/><path d="M10 14v7c0 2.8 5.4 5 12 5s12-2.2 12-5v-7M10 21v7c0 2.8 5.4 5 12 5s12-2.2 12-5v-7"/><circle cx="35" cy="34" r="8"/><path d="M35 30v8M32.5 32.5c0-1.4 1-2 2.5-2s2.5.6 2.5 2-1 2-2.5 2-2.5.6-2.5 2 1 2 2.5 2 2.5-.6 2.5-2"/>',
-  },
-  {
-    id: 'silverware',
-    label: 'Silverware',
-    alt: 'A fork and a spoon',
-    icon: '<path d="M12 6v8a4 4 0 0 0 8 0V6M16 6v8M16 18v24"/><ellipse cx="32" cy="13" rx="5" ry="8"/><path d="M32 21v21"/>',
-  },
-  {
-    id: 'other',
-    label: 'Other belongings you would<br>like us to assess',
-    alt: 'An open box with a few items inside',
-    icon: '<path d="M7 20h34v20H7V20ZM7 20l5-8h24l5 8M19 20v6h10v-6"/>',
-  },
-];
+/** The cards of "Items we buy". Defined once in ../items.ts (the confirmed Appraisal items, plus a catch-all). */
+export const replacePwshpCategories: ItemCard[] = replacePwshpItems;
 
 /** Shown in the page's FAQ. Answers marked "same as the other LPs" are the Silver / Appraisal wording. */
 export const replacePwshpFaq: FaqItem[] = [
