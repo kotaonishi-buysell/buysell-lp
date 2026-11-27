@@ -3,8 +3,8 @@
 `/replace-pwshp` は、「持ち込み不要。自宅で査定してもらえる」ことを伝える出張買取（house call）のLPです（**公開ページ**。`src/pages/`）。店頭に品物を持ち込んで売ろうとしている人に、出張査定という選択肢を示し、電話またはWEBフォームの申込みにつなげます。仕様書は [docs/lp-house-call-spec.md](../../lp-house-call-spec.md)。他のLPのデザインシステムは使いません。**見た目の正本は `src/styles/replace-pwshp.css` です。**
 
 ## 実装
-- ページ：`src/pages/replace-pwshp.astro`、レイアウト：`src/layouts/ReplacePwshpLayout.astro`（`base.css` `silver.css` `gold.css` `appraisal.css` は読み込まない）。
-- スタイル：`src/styles/replace-pwshp.css`。`appraisal.css`（= `silver.css` のコピー）に、4ステップ、`.mid-cta`、3列の比較表の変更を加えたもの。`ReplacePwshpLayout` 以外から読み込まない（`body` `a` `button` `dialog` などに直接指定があるため）。
+- ページ：`src/pages/replace-pwshp.astro`、レイアウト：`src/layouts/ReplacePwshpLayout.astro`（`base.css` `silver.css` `gold.css` `appraisal.css` は読み込まない。土台の `silver-family.css` を読み、その後に `replace-pwshp.css` を読む）。
+- スタイル：`src/styles/silver-family.css`（Silver、Appraisal と共通の土台）の後に、`src/styles/replace-pwshp.css`（このLPだけの差分：カテゴリのアイコン、4ステップ、`.mid-cta`、3列の比較表）を読む。`ReplacePwshpLayout` 以外から読み込まない（`body` `a` `button` `dialog` などに直接指定があるため）。
 - 動き：`src/scripts/silver.ts` を Silver・Appraisal と**共用**する。動きを変えるときは、3つのLPを確認する。
 - 文言：meta、フォームの文言、FAQ、品目カードは `src/content/lps/replace-pwshp.ts`。比較表の表示フラグは `src/content/lps/replace-pwshp-comparison.ts`。それ以外の見出し・本文は `replace-pwshp.astro` に直接書いてある。
 - 共通：問い合わせフォーム（`ContactForm`）、ZIP確認（`ZipCheck`）、計測（GTM `GTM-PQQFZ723`、`cta_click` / `faq_open` / `form_start` / `form_submit`）、会社情報（`company.ts`）、法務リンク、買取の流れの文言（`purchase-flow.ts`）。
