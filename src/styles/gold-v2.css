@@ -1,7 +1,8 @@
 /*
  * Gold LP, second design (/gold-v2): the Figma design "バイセルUS_GOLD_LP", revision B (SP_W390_B, frame width 390px).
- * There is only the mobile design, so the page is one column of at most 430px, centred on wide screens, and nothing in
- * this file changes layout with the screen width. Written from the Figma frame (sizes read from its layer data, colours
+ * The Figma has the mobile design only, so below 960px the page is one column of at most 430px, centred. From 960px up
+ * the same sections are rearranged by the single @media (min-width:960px) block at the end of this file (there is no Figma
+ * for it); nothing else in this file depends on the screen width. Written from the Figma frame (sizes read from its layer data, colours
  * sampled from its screenshots); it shares no rules with gold.css, which belongs to /gold.
  *   - colours: gold #C9A86A, charcoal #2E2E3A (headings, buttons, dark sections), cream #FBF7F0, light grey #EEEEEE (footer), body text #4A4A55
  *   - fonts: Instrument Serif and Open Sans, self-hosted from /fonts (both SIL OFL)
@@ -42,13 +43,13 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .g2-page{position:relative;width:min(100%,430px);margin:0 auto;background:#fff;overflow-x:clip;box-shadow:0 0 0 1px rgba(46,46,58,.10)}
 section[id]{scroll-margin-top:12px}
 
-/* Announcement bar, header, navigation */
-.g2-ann{background:var(--cream);color:var(--ink);font-size:14px;line-height:21px;text-align:center;padding:11px 24px}
+/* Header, navigation */
 .g2-hd{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:62px;padding:0 24px;background:#fff}
 .g2-menu,.g2-hd-tel{display:grid;place-items:center;width:44px;height:44px;color:var(--ink)}
 .g2-menu{justify-self:start;margin-left:-9px}
 .g2-hd-tel{justify-self:end;margin-right:-9px}
 .g2-menu svg,.g2-hd-tel svg{width:26px;height:26px}
+.g2-hd .g2-hd-tel-n,.g2-hd .g2-hd-cta{display:none}
 .g2-logo{display:block;width:84px}
 .g2-logo img{width:100%;height:auto}
 .g2-nav{display:flex;justify-content:space-between;align-items:center;height:48px;padding:0 24px;background:#fff;font-size:16px;font-weight:500}
@@ -214,3 +215,86 @@ section[id]{scroll-margin-top:12px}
 .g2-sticky .g2-btn{flex:1;max-width:none;min-height:48px;margin:0}
 .g2-st-tel{display:grid;place-items:center;flex:none;width:52px;height:48px;border:1px solid #D5D5D5;border-radius:4px;color:var(--ink)}
 .g2-st-tel svg{width:22px;height:22px}
+
+/* Wide screens (960px and up): the same sections, rearranged. There is no Figma for this; below 960px nothing here applies.
+   The page spans the screen (to 1600px), the content sits in a 1120px column, and the sticky bar and the carousel buttons go. */
+@media (min-width:960px){
+  section[id]{scroll-margin-top:92px}
+  .g2-page{width:100%;max-width:1600px;box-shadow:none}
+  .g2-sticky,.g2-car-nav,.g2-menu,.g2-drawer{display:none!important}
+
+  /* Header: logo, links, phone and the request button in one row, kept at the top while scrolling */
+  .g2-top{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:28px;height:76px;padding:0 max(32px,calc((100% - 1120px)/2));background:#fff;border-bottom:1px solid var(--hair)}
+  .g2-hd{display:contents}
+  .g2-logo{order:0;width:96px}
+  .g2-nav{order:1;margin-left:auto;display:flex;gap:30px;height:auto;padding:0;background:none;font-size:15px}
+  .g2-hd-tel{order:2;width:auto;height:44px;margin:0;display:flex;gap:8px;font-size:15px;font-weight:600;text-decoration:none}
+  .g2-hd-tel svg{width:20px;height:20px}
+  .g2-hd .g2-hd-tel-n{display:inline}
+  .g2-hd .g2-hd-cta{order:3;display:flex;width:auto;max-width:none;min-height:44px;margin:0;padding:0 22px;font-size:13px}
+
+  /* Hero: the words on charcoal at the left, the photo at the right, fading into the charcoal */
+  .g2-hero{display:block;min-height:600px}
+  .g2-hero .g2-hero-photo{inset:0 0 0 auto;width:58%;height:100%}
+  .g2-hero .g2-hero-photo img{object-position:60% 40%}
+  .g2-hero .g2-hero-photo::after{background:linear-gradient(90deg,var(--ink) 0,rgba(46,46,58,.55) 18%,rgba(46,46,58,0) 42%)}
+  .g2-hero-body{width:58%;padding:84px 24px 56px max(32px,calc((100% - 1120px)/2));text-align:left}
+  .g2-hero-body>*{max-width:520px}
+  .g2-h1{max-width:540px;margin:0 0 24px;font-size:54px;text-wrap:balance}
+  .g2-hero-body .g2-btn{margin:0}
+  .g2-pts{margin:32px 0 0;max-width:500px}
+  .g2-auth{margin:28px 0 0}
+
+  /* Sections: the content column */
+  .g2-sec,.g2-final,.g2-co{padding-inline:max(32px,calc((100% - 1120px)/2))}
+  .g2-sec{padding-block:88px}
+  .g2-h2{max-width:760px;font-size:44px}
+  .g2-lead{max-width:680px;font-size:18px}
+  .g2-note{max-width:680px}
+
+  /* Steps: four across */
+  .g2-steps{grid-template-columns:repeat(4,1fr);gap:24px;margin:44px 0 48px}
+  .g2-step .g2-photo{height:auto;aspect-ratio:17/8}
+
+  /* Who we are: the photo and the words side by side */
+  .g2-co{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr auto auto auto 1fr;column-gap:72px;padding-block:88px;text-align:left}
+  .g2-co-photo{grid-column:1;grid-row:1/-1;height:auto;aspect-ratio:684/385}
+  .g2-who,.g2-co .g2-h2,.g2-co p:last-child{grid-column:2}
+  .g2-who{grid-row:2;margin:0 0 14px}
+  .g2-co .g2-h2{grid-row:3;margin:0 0 16px;font-size:42px}
+  .g2-co p:last-child{grid-row:4;margin:0;max-width:440px;font-size:18px}
+
+  /* What we buy: a grid, not a carousel */
+  .g2-car{margin:44px 0 0}
+  .g2-car-vp{flex-wrap:wrap;justify-content:center;gap:24px;overflow:visible;scroll-snap-type:none;padding:0}
+  .g2-card{flex:0 0 calc((100% - 72px)/4)}
+  .g2-card .g2-photo{height:auto}
+  .g2-note{margin-top:44px}
+
+  /* The four promises: four across */
+  .g2-bl{display:grid;grid-template-columns:repeat(4,1fr);margin:44px 0 48px;border-bottom:1px solid var(--hair)}
+  .g2-bl li{flex-direction:column;justify-content:flex-start;gap:14px;min-height:0;padding:28px 20px;border-bottom:0;border-left:1px solid var(--hair);text-align:center}
+  .g2-bl li:first-child{border-left:0}
+
+  /* Areas: the two cards side by side */
+  .g2-areas{grid-template-columns:1fr 1fr;gap:24px;margin:44px 0 28px}
+  .g2-zipnote,.g2-office{max-width:none}
+
+  /* Questions: a narrower column */
+  .g2-qa{max-width:760px;margin-inline:auto}
+  .g2-faq .g2-h2{margin-bottom:36px}
+
+  /* Request: the words and the phone at the left, the form at the right */
+  .g2-final{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,auto) 1fr;column-gap:72px;align-items:start;padding-block:88px;text-align:left}
+  .g2-final>:not(.g2-panel){grid-column:1}
+  .g2-final .g2-h2{max-width:none;margin:12px 0 14px;font-size:48px}
+  .g2-fin-p{font-size:18px}
+  .g2-panel{grid-column:2;grid-row:1/-1;margin-top:0;padding:40px 36px 36px}
+
+  /* Footer: the blocks side by side */
+  .g2-foot{display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px 56px;padding:48px max(32px,calc((100% - 1120px)/2)) 32px}
+  .g2-foot-logo{flex:0 0 100%;max-width:none}
+  .g2-foot-logo img{width:95px}
+  .g2-foot p{flex:1 1 260px;max-width:360px;margin-top:0}
+  .g2-foot p.g2-copy{flex:0 0 100%;max-width:none;margin-top:8px;padding-bottom:0}
+}

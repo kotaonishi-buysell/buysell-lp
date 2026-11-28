@@ -28,11 +28,16 @@ test('gold-v2.css is loaded only by GoldV2Layout, which loads no other LP styles
   }
 });
 
-test('the design is one mobile layout: a column of at most 430px, and no width-dependent rules', () => {
+test('the Figma is mobile only: below 960px one column of at most 430px; the only width rule is one 960px block (no zoom)', () => {
   const css = read('src/styles/gold-v2.css');
-  assert.match(css, /\.g2-page\{[^}]*width:min\(100%,430px\)/);
-  assert.doesNotMatch(css, /@media\s*\(\s*(min|max)-width/, 'nothing changes layout with the screen width');
+  assert.match(css, /\.g2-page\{[^}]*width:min\(100%,430px\)/, 'the mobile column');
+  const code = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const widthRules = [...code.matchAll(/@media\s*\(\s*(?:min|max)-width\s*:\s*[^)]+\)/g)].map((m) => m[0].replace(/\s+/g, ''));
+  assert.deepEqual(widthRules, ['@media(min-width:960px)'], 'one block for wide screens, nothing else depends on the width');
   assert.doesNotMatch(css, /--pc-zoom/);
+  // From 960px up the sticky bar, the carousel buttons and the drawer menu are not used.
+  const wide = code.slice(code.indexOf('@media (min-width:960px)'));
+  assert.match(wide, /\.g2-sticky,\.g2-car-nav,\.g2-menu,\.g2-drawer\{display:none!important\}/);
 });
 
 test('the page uses the shared contact form, brand logo and company facts, not its own copies', () => {

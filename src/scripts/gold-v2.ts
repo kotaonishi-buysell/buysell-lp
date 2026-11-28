@@ -1,6 +1,6 @@
 /*
  * Behaviour of the second Gold LP (/gold-v2): the menu drawer, the previous/next buttons of the "what we buy" carousel,
- * and the sticky bar at the bottom. The shared scripts (main.ts) handle the phone and "free appraisal" buttons, the FAQ
+ * and the sticky bar at the bottom (the bar and the carousel buttons are mobile only; from 960px up the layout is rearranged in CSS). The shared scripts (main.ts) handle the phone and "free appraisal" buttons, the FAQ
  * events and the contact form. Nothing moves by itself: there is no auto-advance and no animation to pause.
  */
 
@@ -56,6 +56,14 @@ const initCarousel = (): void => {
     viewport.addEventListener('scroll', update, { passive: true });
     addEventListener('resize', update);
     update();
+    // On wide screens (gold-v2.css, 960px and up) the cards are a grid and nothing scrolls: the box is then not a keyboard stop.
+    const wide = window.matchMedia?.('(min-width: 960px)');
+    const sync = (): void => {
+      if (wide?.matches) viewport.removeAttribute('tabindex');
+      else viewport.setAttribute('tabindex', '0');
+    };
+    wide?.addEventListener('change', sync);
+    sync();
   });
 };
 
