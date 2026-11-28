@@ -63,7 +63,11 @@
 
 #### サービス アカウントの鍵で追加する
 
-組織が鍵の作成を許可している必要があります（Google Cloud で、Sheets API を有効にし、サービス アカウントの JSON の鍵を作り、スプレッドシートを、そのアカウントに、編集者として共有します）。Netlify の環境変数は、`GOOGLE_SERVICE_ACCOUNT_EMAIL`（鍵の `client_email`）、`GOOGLE_PRIVATE_KEY`（鍵の `private_key`。改行が `\n` と文字で入っていても動きます）、`GOOGLE_SHEET_ID`（シートの URL の `/d/` と `/edit` の間）の 3 つです。タブ名を変えるときは、`GOOGLE_SHEET_TAB`。鍵の作成が組織ポリシー（`iam.managed.disableServiceAccountKeyCreation`）で止められたときは、管理者に、このプロジェクトだけ、一時的にオフにしてもらうか、A の方法を使います。
+組織が鍵の作成を許可している必要があります（Google Cloud で、Sheets API を有効にし、サービス アカウントの JSON の鍵を作り、スプレッドシートを、そのアカウントに、編集者として共有します）。Netlify の環境変数は、`GOOGLE_SERVICE_ACCOUNT_EMAIL`（鍵の `client_email`）、`GOOGLE_PRIVATE_KEY`（鍵の `private_key`。改行が `\n` と文字で入っていても動きます）、`GOOGLE_SHEET_ID`（シートの URL の `/d/` と `/edit` の間）の 3 つです。
+
+**書き込み先のタブ：** おすすめは `GOOGLE_SHEET_GID`（タブの番号。シートの URL の `gid=` のあとの数字）です。これを設定すると、タブの名前を変えても、書き込み先は変わりません（Google に、その番号のタブの今の名前を聞いてから書きます。名前は5分間覚え、変更で書き込みが拒否されたときは、聞き直します）。`GOOGLE_SHEET_GID` がないときは、`GOOGLE_SHEET_TAB`（タブの名前）、それもないときは `Inquiries` という名前のタブに書きます。**名前で指定している場合、タブの名前を変えると、書き込みは失敗します**（画面は成功に見えますが、問い合わせは Netlify Forms にだけ入ります）。
+
+鍵の作成が組織ポリシー（`iam.managed.disableServiceAccountKeyCreation`）で止められたときは、管理者に、このプロジェクトだけ、一時的にオフにしてもらってください。
 
 **1 行目の見出し（この順番）**
 

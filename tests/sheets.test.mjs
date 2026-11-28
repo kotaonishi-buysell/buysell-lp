@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createVerify, generateKeyPairSync } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { SHEET_COLUMNS, appendRow, resetTokenCache, sheetsConfigured, signJwt, toDallasTime, toRow } from '../src/server/sheets.ts';
+import { SHEET_COLUMNS, appendRow, resetTabCache, resetTokenCache, sheetsConfigured, signJwt, toDallasTime, toRow } from '../src/server/sheets.ts';
 import { handleContact } from '../src/server/contact.ts';
 import { UTM_KEYS, canFallBack, DeliveryError } from '../src/lib/contact-form.ts';
 
@@ -117,6 +117,84 @@ test('appendRow throws, with no visitor data in the message, when Google refuses
   });
   resetTokenCache();
   await assert.rejects(() => appendRow(['x'], withTestUrls, google({ tokenStatus: 400 }).fetch, now()), /Google sign-in answered 400/);
+});
+
+// ---------- finding the tab by its id (GOOGLE_SHEET_GID) ----------
+
+/** Google with a spreadsheet whose tabs can be renamed between calls; appends to a name that no longer exists answer 400. */
+const renamableSheet = (tabs) => {
+  const calls = [];
+  const fetch = async (url, options) => {
+    const text = String(url);
+    calls.push({ url: text, options });
+    if (text.includes('/token')) return new Response(JSON.stringify({ access_token: 't', expires_in: 3600 }), { status: 200 });
+    if (!text.includes(':append')) {
+      return new Response(JSON.stringify({ sheets: tabs.map((t) => ({ properties: { sheetId: t.id, title: t.title } })) }), { status: 200 });
+    }
+    const written = decodeURIComponent(text).match(/\/values\/'(.*)'!A:A:append/)?.[1].replace(/''/g, "'");
+    return new Response('{}', { status: tabs.some((t) => t.title === written) ? 200 : 400 });
+  };
+  return { calls, fetch, tabs };
+};
+const lookups = (g) => g.calls.filter((c) => !c.url.includes('/token') && !c.url.includes(':append'));
+const appends = (g) => g.calls.filter((c) => c.url.includes(':append'));
+const writtenTab = (call) => decodeURIComponent(call.url).match(/\/values\/'(.*)'!A:A:append/)[1];
+const byId = { ...withTestUrls, GOOGLE_SHEET_GID: '2116123203' };
+
+test('with GOOGLE_SHEET_GID the row goes to the tab that has that id, whatever the tab is called now', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 0, title: 'Notes' }, { id: 2116123203, title: '10_Inquiries' }]);
+  await appendRow(['a'], { ...byId, GOOGLE_SHEET_TAB: 'Inquiries' }, g.fetch, now());
+  assert.equal(lookups(g).length, 1);
+  assert.match(lookups(g)[0].url, /^https:\/\/sheets\.test\/v4\/spreadsheets\/SHEET123\?fields=/);
+  assert.equal(lookups(g)[0].options.method, 'GET');
+  assert.equal(lookups(g)[0].options.headers.Authorization, 'Bearer t');
+  assert.equal(appends(g).length, 1);
+  assert.equal(writtenTab(appends(g)[0]), '10_Inquiries', 'the id wins over GOOGLE_SHEET_TAB');
+});
+
+test('the tab found by its id is remembered for a few minutes, then looked up again', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 2116123203, title: 'Inquiries' }]);
+  await appendRow(['1'], byId, g.fetch, now());
+  await appendRow(['2'], byId, g.fetch, now());
+  assert.equal(lookups(g).length, 1, 'one lookup for two rows');
+  await appendRow(['3'], byId, g.fetch, new Date('2026-11-17T12:06:00Z'));
+  assert.equal(lookups(g).length, 2, 'looked up again after the cache time');
+});
+
+test('a tab renamed while its old name is remembered: the write is refused (400), the name is looked up again, and the row is saved', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 2116123203, title: 'Inquiries' }]);
+  await appendRow(['1'], byId, g.fetch, now());
+  g.tabs[0].title = 'Renamed tab'; // someone renames the tab in Google Sheets
+  await appendRow(['2'], byId, g.fetch, now());
+  assert.deepEqual(appends(g).map(writtenTab), ['Inquiries', 'Inquiries', 'Renamed tab']);
+  assert.equal(lookups(g).length, 2);
+});
+
+test('an id that no tab has is an error (nothing is written), and the message holds no visitor data', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 1, title: 'Inquiries' }]);
+  await assert.rejects(() => appendRow(['Maria', '2145550123'], byId, g.fetch, now()), (error) => {
+    assert.match(error.message, /no tab with the id 2116123203/);
+    assert(!/Maria|2145550123/.test(error.message));
+    return true;
+  });
+  assert.equal(appends(g).length, 0);
+});
+
+test('a GOOGLE_SHEET_GID that is not a number is ignored: the tab name is used, with no lookup', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 5, title: 'Leads' }]);
+  await appendRow(['a'], { ...withTestUrls, GOOGLE_SHEET_GID: 'abc', GOOGLE_SHEET_TAB: 'Leads' }, g.fetch, now());
+  assert.equal(lookups(g).length, 0);
+  assert.equal(writtenTab(appends(g)[0]), 'Leads');
 });
 
 // ---------- the receiving function ----------

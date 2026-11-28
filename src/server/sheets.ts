@@ -9,7 +9,9 @@
  *   GOOGLE_SERVICE_ACCOUNT_EMAIL   the service account's address (client_email in its key file)
  *   GOOGLE_PRIVATE_KEY             its private key (private_key in the key file; "\n" written as text is accepted)
  *   GOOGLE_SHEET_ID                the id in the sheet's address: docs.google.com/spreadsheets/d/<ID>/edit
- *   GOOGLE_SHEET_TAB               optional, the tab (sheet) name; default "Inquiries"
+ *   GOOGLE_SHEET_GID               optional, the tab's id: the number after "gid=" in the sheet's address. When set, the tab is
+ *                                  found by this number, so renaming the tab changes nothing (recommended)
+ *   GOOGLE_SHEET_TAB               optional, the tab (sheet) name; used when GOOGLE_SHEET_GID is not set. Default "Inquiries"
  *   GOOGLE_TOKEN_URL, GOOGLE_SHEETS_API_URL   optional, for testing only: replace Google's addresses
  */
 import { UTM_KEYS, type ContactRequest } from '../lib/contact-form.ts';
@@ -18,6 +20,7 @@ export interface SheetsEnv {
   GOOGLE_SERVICE_ACCOUNT_EMAIL?: string;
   GOOGLE_PRIVATE_KEY?: string;
   GOOGLE_SHEET_ID?: string;
+  GOOGLE_SHEET_GID?: string;
   GOOGLE_SHEET_TAB?: string;
   GOOGLE_TOKEN_URL?: string;
   GOOGLE_SHEETS_API_URL?: string;
@@ -188,6 +191,46 @@ async function accessToken(env: SheetsEnv, transport: typeof fetch, now: Date): 
   return data.access_token;
 }
 
+// ---------- finding the tab ----------
+
+/** The tab's id, when GOOGLE_SHEET_GID holds one (digits only); otherwise null. */
+const tabId = (env: SheetsEnv): number | null => (/^\d+$/.test((env.GOOGLE_SHEET_GID ?? '').trim()) ? Number(env.GOOGLE_SHEET_GID!.trim()) : null);
+
+/** How long a tab name found by its id is trusted (a rename is noticed within this time, or at once after a failed write). */
+const TAB_NAME_TTL_MS = 5 * 60_000;
+
+let cachedTab: { title: string; expiresAt: number; key: string } | null = null;
+
+/** Forgets the cached tab name (tests). */
+export const resetTabCache = (): void => {
+  cachedTab = null;
+};
+
+/**
+ * The name of the tab to write to. With GOOGLE_SHEET_GID it asks Google for the tab that has that id, so the tab can be
+ * renamed freely; without it, the name from GOOGLE_SHEET_TAB (default "Inquiries") is used as it is.
+ */
+async function tabName(env: SheetsEnv, token: string, transport: typeof fetch, now: Date, fresh: boolean): Promise<string> {
+  const id = tabId(env);
+  if (id === null) return env.GOOGLE_SHEET_TAB || DEFAULT_TAB;
+
+  const key = `${env.GOOGLE_SHEET_ID}|${id}`;
+  if (!fresh && cachedTab && cachedTab.key === key && cachedTab.expiresAt > now.getTime()) return cachedTab.title;
+
+  const base = env.GOOGLE_SHEETS_API_URL || SHEETS_URL;
+  const response = await transport(`${base}/${encodeURIComponent(env.GOOGLE_SHEET_ID!)}?fields=${encodeURIComponent('sheets.properties(sheetId,title)')}`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!response.ok) throw new Error(`Google Sheets answered ${response.status} when looking up the tab`);
+  const data = (await response.json()) as { sheets?: { properties?: { sheetId?: unknown; title?: unknown } }[] };
+  const found = data.sheets?.map((sheet) => sheet.properties).find((properties) => properties?.sheetId === id);
+  if (!found || typeof found.title !== 'string') throw new Error(`The sheet has no tab with the id ${id} (GOOGLE_SHEET_GID)`);
+  cachedTab = { title: found.title, expiresAt: now.getTime() + TAB_NAME_TTL_MS, key };
+  return found.title;
+}
+
 /**
  * Appends one row at the end of the tab. Throws when Google does not accept it; the caller decides what the
  * visitor sees. The error message holds no visitor data.
@@ -198,24 +241,30 @@ export async function appendRow(
   transport: typeof fetch = fetch,
   now: Date = new Date(),
 ): Promise<void> {
-  const tab = (env.GOOGLE_SHEET_TAB || DEFAULT_TAB).replace(/'/g, "''");
-  const range = encodeURIComponent(`'${tab}'!A:A`);
   const base = env.GOOGLE_SHEETS_API_URL || SHEETS_URL;
-  const url = `${base}/${encodeURIComponent(env.GOOGLE_SHEET_ID!)}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+  const byId = tabId(env) !== null;
 
-  const send = async (token: string) =>
-    transport(url, {
+  const send = async (token: string, fresh: boolean) => {
+    const tab = (await tabName(env, token, transport, now, fresh)).replace(/'/g, "''");
+    const range = encodeURIComponent(`'${tab}'!A:A`);
+    const url = `${base}/${encodeURIComponent(env.GOOGLE_SHEET_ID!)}/values/${range}:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`;
+    return transport(url, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ majorDimension: 'ROWS', values: [row] }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
+  };
 
-  let response = await send(await accessToken(env, transport, now));
+  let response = await send(await accessToken(env, transport, now), false);
   if (response.status === 401) {
     // The cached token was refused (revoked or expired early): sign in again, once.
     resetTokenCache();
-    response = await send(await accessToken(env, transport, now));
+    response = await send(await accessToken(env, transport, now), false);
+  }
+  if (byId && response.status === 400) {
+    // The tab may have been renamed since its name was cached (Google cannot read the old name): look it up again, once.
+    response = await send(await accessToken(env, transport, now), true);
   }
   if (!response.ok) throw new Error(`Google Sheets answered ${response.status}`);
 }

@@ -234,7 +234,7 @@ UTM パラメータ（`utm_source` / `utm_medium` / `utm_campaign` / `utm_term` 
 - 買取できる品目と例、できない品目（カテゴリとフォームの選択肢）
 - 申込み後の連絡までの営業日数
 - SMS 同意の文言（今は仮。`src/content/contact-form.ts`）
-- Google スプレッドシートへの保存の設定（Netlify の環境変数 `GOOGLE_SERVICE_ACCOUNT_EMAIL` `GOOGLE_PRIVATE_KEY` `GOOGLE_SHEET_ID` `GOOGLE_SHEET_TAB`。手順は [docs/forms/contact-form.md](docs/forms/contact-form.md)）と、予備の Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
+- Google スプレッドシートへの保存の設定（Netlify の環境変数 `GOOGLE_SERVICE_ACCOUNT_EMAIL` `GOOGLE_PRIVATE_KEY` `GOOGLE_SHEET_ID` `GOOGLE_SHEET_GID`（タブの番号。タブ名を変えても動く。おすすめ）`GOOGLE_SHEET_TAB`。手順は [docs/forms/contact-form.md](docs/forms/contact-form.md)）と、予備の Netlify Forms の通知の設定（Netlify の「Forms」→「Form notifications」で、通知先のメールを追加）。メールを関数から送る方式を使う場合は、Netlify の環境変数 `RESEND_API_KEY` `CONTACT_TO_EMAIL` `CONTACT_FROM_EMAIL` と、Resend の送信元ドメインの認証
 - プライバシーポリシー・利用規約・個人情報販売拒否のページの URL
 - コールトラッキングツール（GTM コンテナ ID は設定済み）
 - ファーストビューの写真と OG 画像（今は無地のプレースホルダー）、ロゴ
