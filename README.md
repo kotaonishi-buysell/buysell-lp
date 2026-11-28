@@ -4,7 +4,7 @@
 
 - **Downsizing LP（`/downsizing`）**：共通の部品とデザインシステムで組んだ型。残りの3本（Declutter / Parents' belongings / Brand goods）は、コンテンツファイルを1つ足せば同じ部品で作れる構成にしてある。
 - **Silver LP（`/silver`）**：Codex で作ったモックを取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Silver LP](#silver-lp-silver)。
-- **Gold LP 第2案（`/gold-v2`）**：Figma のスマホ幅のデザインから新しく作った、専用ページ・専用CSSのLP（`/gold` とは別。**公開中だが、検索には出さない**：`/gold` が主のGold LP。`noindex` を付けてある）。PCでも同じスマホ幅の1列で表示する。色はチャコール（改修B案）。会社と手順の写真は Figma B の書き出し、他は `/gold` と同じ画像（`public/images/gold-v2/` にコピー）。詳しくは [Gold v2 DESIGN_SYSTEM.md](docs/design/gold-v2/DESIGN_SYSTEM.md)。
+- **Gold LP 第2案（`/gold-v2`）**：Figma のスマホ幅のデザインから新しく作った、専用ページ・専用CSSのLP（`/gold` とは別。**公開中だが、検索には出さない**：`/gold` が主のGold LP。`noindex` を付けてある）。960px未満はスマホ幅の1列、960px以上（PC）は同じセクションを並べ直して表示する。色はチャコール（改修B案）。会社と手順の写真は Figma B の書き出し、他は `/gold` と同じ画像（`public/images/gold-v2/` にコピー）。詳しくは [Gold v2 DESIGN_SYSTEM.md](docs/design/gold-v2/DESIGN_SYSTEM.md)。
 - **Gold LP（`/gold`）**：デザイナーの静的HTML（金の買取、案2）を取り込んだ、専用ページ・専用CSSのLP。フォーム・計測・会社情報だけ共通。詳しくは [Gold LP](#gold-lp-gold)。
 - **Appraisal LP（`/appraisal`）**：総合買取（アクセサリー、ブランド品、時計、ジュエリー、アンティーク、カメラ、金貨、銀食器）のLP。**公開ページ**。Silver と同じ骨格・動きで、専用のCSSとページを持つ。詳しくは [Appraisal DESIGN_SYSTEM.md](docs/design/appraisal/DESIGN_SYSTEM.md)。
 - **Replace-pwshp LP（`/replace-pwshp`）**：店頭への持ち込みをやめて出張査定を選んでもらうLP（**公開ページ**。仕様書は [docs/lp-house-call-spec.md](docs/lp-house-call-spec.md)）。Appraisal と同じ骨格・動きで、色・書体は Silver と同じ。専用のCSSとページを持つ。詳しくは [Replace-pwshp DESIGN_SYSTEM.md](docs/design/replace-pwshp/DESIGN_SYSTEM.md)。
@@ -103,7 +103,7 @@ src/
   scripts/               ブラウザ側の処理（計測、フォーム、追従バー、FAQ、ZIP判定）
   scripts/silver.ts      Silver 専用の動き（カテゴリのリボン、スクロール演出、FAQ の開閉）
   pages/gold.astro       Gold のページ本体（デザイナーの静的HTMLを取り込んだもの）
-  pages/gold-v2.astro    Gold 第2案のページ本体（Figma のスマホ幅デザイン。PCでも同じ幅の1列）
+  pages/gold-v2.astro    Gold 第2案のページ本体（Figma のスマホ幅デザイン。960px以上は並べ直す）
   scripts/gold.ts        Gold 専用の動き（カルーセル、タブ、メニュー、追従バー）
   content/lps/gold.ts    Gold：meta、フォーム文言、未確定の事実を含む文（{{TODO}}）
   components/ZipCheck.astro  全LP共通のZIP確認の欄（動作は scripts/zip-check.ts、判定は lib/zip-area.ts）
