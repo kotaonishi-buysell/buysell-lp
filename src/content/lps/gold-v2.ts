@@ -1,5 +1,5 @@
 /*
- * Gold LP, second design (/gold-v2): the Figma design "バイセルUS_GOLD_LP" (SP_W390_A), a single mobile layout that is also
+ * Gold LP, second design (/gold-v2): the Figma design "バイセルUS_GOLD_LP", revision B (SP_W390_B), a single mobile layout that is also
  * used, at the same width, on wide screens. It is a published page (src/pages/gold-v2.astro) next to /gold, which it does
  * not replace or change. This file holds what is shared with the other LPs' machinery (meta and the copy of the shared
  * contact form) and the copy that follows the company-wide sales flow. Company facts (phone, address, registration)
@@ -41,7 +41,7 @@ export const goldV2: CustomLandingPage = {
  * TODO: how soon after the request we visit ("We visit within N days").
  * TODO: the full list of items we buy (the Figma cards name chains, rings, earrings, broken pieces, watches and sterling silver).
  * TODO: the insurance wording ("Insured ...").
- * TODO: the photographs are the ones /gold uses (copied to public/images/gold-v2/); replace a file when Figma's own export arrives (docs/design/gold-v2/DESIGN_SYSTEM.md).
+ * TODO: the hero and the seven item cards still use the pictures /gold uses (copied to public/images/gold-v2/); replace a file when Figma's own export arrives (docs/design/gold-v2/DESIGN_SYSTEM.md).
  */
 export const goldV2Copy = {
   step4: `Nothing is bought at the visit. ${purchaseFlow.afterYes}`,
