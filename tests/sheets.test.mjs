@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createVerify, generateKeyPairSync } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import { SHEET_COLUMNS, appendRow, resetTokenCache, sheetsConfigured, signJwt, toDallasTime, toRow } from '../src/server/sheets.ts';
+import { SHEET_COLUMNS, appendRow, resetTabCache, resetTokenCache, sheetsConfigured, signJwt, toDallasTime, toRow } from '../src/server/sheets.ts';
 import { handleContact } from '../src/server/contact.ts';
 import { UTM_KEYS, canFallBack, DeliveryError } from '../src/lib/contact-form.ts';
 
@@ -60,14 +60,14 @@ test('a row has one cell per column, all text, and a message that starts with "=
   const row = toRow(request(), now(), true);
   assert.equal(row.length, SHEET_COLUMNS.length);
   assert(row.every((cell) => typeof cell === 'string'));
-  assert.equal(row[0], '2026-11-17 06:00:00 CST'); // 12:00 UTC is 6 a.m. in Dallas in November
+  assert.equal(row[0], '2026-11-17 06:00:00'); // 12:00 UTC is 6 a.m. in Dallas in November
   assert.equal(row[1], 'silver');
   assert.equal(row[5], 'yes');
   assert.equal(row[6], '2145550123');
   assert.equal(row[8], '=HYPERLINK("http://evil.example","click")');
   assert.equal(row[9], 'yes');
-  assert.equal(row[10], '2026-11-17 05:59:00 CST'); // SMS agreed at
-  assert.equal(row[12], '2026-11-17 05:59:30 CST'); // submitted at
+  assert.equal(row[10], '2026-11-17 05:59:00'); // SMS agreed at
+  assert.equal(row[12], '2026-11-17 05:59:30'); // submitted at
   assert.equal(row[13], 'google'); // utm_source
   assert.deepEqual(SHEET_COLUMNS.slice(-UTM_KEYS.length), UTM_KEYS);
   assert.equal(toRow(request({ smsConsent: false, smsConsentAt: null, smsConsentText: null }), now(), null)[9], 'no');
@@ -119,6 +119,84 @@ test('appendRow throws, with no visitor data in the message, when Google refuses
   await assert.rejects(() => appendRow(['x'], withTestUrls, google({ tokenStatus: 400 }).fetch, now()), /Google sign-in answered 400/);
 });
 
+// ---------- finding the tab by its id (GOOGLE_SHEET_GID) ----------
+
+/** Google with a spreadsheet whose tabs can be renamed between calls; appends to a name that no longer exists answer 400. */
+const renamableSheet = (tabs) => {
+  const calls = [];
+  const fetch = async (url, options) => {
+    const text = String(url);
+    calls.push({ url: text, options });
+    if (text.includes('/token')) return new Response(JSON.stringify({ access_token: 't', expires_in: 3600 }), { status: 200 });
+    if (!text.includes(':append')) {
+      return new Response(JSON.stringify({ sheets: tabs.map((t) => ({ properties: { sheetId: t.id, title: t.title } })) }), { status: 200 });
+    }
+    const written = decodeURIComponent(text).match(/\/values\/'(.*)'!A:A:append/)?.[1].replace(/''/g, "'");
+    return new Response('{}', { status: tabs.some((t) => t.title === written) ? 200 : 400 });
+  };
+  return { calls, fetch, tabs };
+};
+const lookups = (g) => g.calls.filter((c) => !c.url.includes('/token') && !c.url.includes(':append'));
+const appends = (g) => g.calls.filter((c) => c.url.includes(':append'));
+const writtenTab = (call) => decodeURIComponent(call.url).match(/\/values\/'(.*)'!A:A:append/)[1];
+const byId = { ...withTestUrls, GOOGLE_SHEET_GID: '2116123203' };
+
+test('with GOOGLE_SHEET_GID the row goes to the tab that has that id, whatever the tab is called now', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 0, title: 'Notes' }, { id: 2116123203, title: '10_Inquiries' }]);
+  await appendRow(['a'], { ...byId, GOOGLE_SHEET_TAB: 'Inquiries' }, g.fetch, now());
+  assert.equal(lookups(g).length, 1);
+  assert.match(lookups(g)[0].url, /^https:\/\/sheets\.test\/v4\/spreadsheets\/SHEET123\?fields=/);
+  assert.equal(lookups(g)[0].options.method, 'GET');
+  assert.equal(lookups(g)[0].options.headers.Authorization, 'Bearer t');
+  assert.equal(appends(g).length, 1);
+  assert.equal(writtenTab(appends(g)[0]), '10_Inquiries', 'the id wins over GOOGLE_SHEET_TAB');
+});
+
+test('the tab found by its id is remembered for a few minutes, then looked up again', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 2116123203, title: 'Inquiries' }]);
+  await appendRow(['1'], byId, g.fetch, now());
+  await appendRow(['2'], byId, g.fetch, now());
+  assert.equal(lookups(g).length, 1, 'one lookup for two rows');
+  await appendRow(['3'], byId, g.fetch, new Date('2026-11-17T12:06:00Z'));
+  assert.equal(lookups(g).length, 2, 'looked up again after the cache time');
+});
+
+test('a tab renamed while its old name is remembered: the write is refused (400), the name is looked up again, and the row is saved', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 2116123203, title: 'Inquiries' }]);
+  await appendRow(['1'], byId, g.fetch, now());
+  g.tabs[0].title = 'Renamed tab'; // someone renames the tab in Google Sheets
+  await appendRow(['2'], byId, g.fetch, now());
+  assert.deepEqual(appends(g).map(writtenTab), ['Inquiries', 'Inquiries', 'Renamed tab']);
+  assert.equal(lookups(g).length, 2);
+});
+
+test('an id that no tab has is an error (nothing is written), and the message holds no visitor data', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 1, title: 'Inquiries' }]);
+  await assert.rejects(() => appendRow(['Maria', '2145550123'], byId, g.fetch, now()), (error) => {
+    assert.match(error.message, /no tab with the id 2116123203/);
+    assert(!/Maria|2145550123/.test(error.message));
+    return true;
+  });
+  assert.equal(appends(g).length, 0);
+});
+
+test('a GOOGLE_SHEET_GID that is not a number is ignored: the tab name is used, with no lookup', async () => {
+  resetTokenCache();
+  resetTabCache();
+  const g = renamableSheet([{ id: 5, title: 'Leads' }]);
+  await appendRow(['a'], { ...withTestUrls, GOOGLE_SHEET_GID: 'abc', GOOGLE_SHEET_TAB: 'Leads' }, g.fetch, now());
+  assert.equal(lookups(g).length, 0);
+  assert.equal(writtenTab(appends(g)[0]), 'Leads');
+});
+
 // ---------- the receiving function ----------
 
 const post = (body) =>
@@ -147,7 +225,7 @@ test('an inquiry becomes a row in the sheet, with the service-area answer, and i
   assert.equal(appended(w).length, 1);
   const [row] = JSON.parse(appended(w)[0].options.body).values;
   assert.equal(row.length, SHEET_COLUMNS.length);
-  assert.equal(row[0], '2026-11-17 06:00:00 CST', 'the time that reaches Google is Dallas time');
+  assert.equal(row[0], '2026-11-17 06:00:00', 'the time that reaches Google is Dallas time');
   assert.equal(row[1], 'silver');
   assert.equal(row[2], 'Maria');
   assert.equal(row[5], 'yes'); // 75201 is in the service area
@@ -201,23 +279,23 @@ test('the browser falls back to Netlify Forms only when the function could not d
 
 // ---------- Dallas time ----------
 
-test('Dallas time: winter is CST (UTC-6), summer is CDT (UTC-5)', () => {
-  assert.equal(toDallasTime('2026-01-15T18:30:00Z'), '2026-01-15 12:30:00 CST');
-  assert.equal(toDallasTime('2026-07-04T18:30:00Z'), '2026-07-04 13:30:00 CDT');
-  assert.equal(toDallasTime(new Date('2026-07-04T18:30:00Z')), '2026-07-04 13:30:00 CDT');
+test('Dallas time: the wall clock follows CST (UTC-6) in winter and CDT (UTC-5) in summer, and no zone name is written', () => {
+  assert.equal(toDallasTime('2026-01-15T18:30:00Z'), '2026-01-15 12:30:00');
+  assert.equal(toDallasTime('2026-07-04T18:30:00Z'), '2026-07-04 13:30:00');
+  assert.equal(toDallasTime(new Date('2026-07-04T18:30:00Z')), '2026-07-04 13:30:00');
 });
 
 test('Dallas time: the date is the Dallas date, and midnight is 00, not 24', () => {
-  assert.equal(toDallasTime('2026-11-17T06:00:00Z'), '2026-11-17 00:00:00 CST');
-  assert.equal(toDallasTime('2026-11-17T05:59:59Z'), '2026-11-16 23:59:59 CST', 'still the 16th in Dallas');
-  assert.equal(toDallasTime('2026-07-01T04:59:59Z'), '2026-06-30 23:59:59 CDT');
+  assert.equal(toDallasTime('2026-11-17T06:00:00Z'), '2026-11-17 00:00:00');
+  assert.equal(toDallasTime('2026-11-17T05:59:59Z'), '2026-11-16 23:59:59', 'still the 16th in Dallas');
+  assert.equal(toDallasTime('2026-07-01T04:59:59Z'), '2026-06-30 23:59:59');
 });
 
-test('Dallas time: the clock changes (March 8 and November 1, 2026), and CST/CDT tells the two 1:30 a.m. apart', () => {
-  assert.equal(toDallasTime('2026-03-08T07:59:59Z'), '2026-03-08 01:59:59 CST');
-  assert.equal(toDallasTime('2026-03-08T08:00:00Z'), '2026-03-08 03:00:00 CDT', '2 a.m. does not exist: the clock jumps to 3');
-  assert.equal(toDallasTime('2026-11-01T06:30:00Z'), '2026-11-01 01:30:00 CDT');
-  assert.equal(toDallasTime('2026-11-01T07:30:00Z'), '2026-11-01 01:30:00 CST', 'the same wall-clock time, an hour later');
+test('Dallas time: the clock changes (March 8 and November 1, 2026); the repeated 1:30 a.m. reads the same twice (no CST/CDT)', () => {
+  assert.equal(toDallasTime('2026-03-08T07:59:59Z'), '2026-03-08 01:59:59');
+  assert.equal(toDallasTime('2026-03-08T08:00:00Z'), '2026-03-08 03:00:00', '2 a.m. does not exist: the clock jumps to 3');
+  assert.equal(toDallasTime('2026-11-01T06:30:00Z'), '2026-11-01 01:30:00');
+  assert.equal(toDallasTime('2026-11-01T07:30:00Z'), '2026-11-01 01:30:00', 'the same wall-clock text, an hour later: the known limit of writing no CST/CDT');
 });
 
 test('Dallas time: an empty value stays empty, and text that is not a date is kept (cleaned), not lost', () => {
@@ -232,9 +310,19 @@ test('through the function, "Submitted at" is the server time (the same as "Rece
   const w = world();
   await handleContact(post(request({ submittedAt: '1999-01-01T00:00:00.000Z' })), withTestUrls, { fetch: w.fetch, now });
   const [row] = JSON.parse(appended(w)[0].options.body).values;
-  assert.equal(row[0], '2026-11-17 06:00:00 CST');
+  assert.equal(row[0], '2026-11-17 06:00:00');
   assert.equal(row[12], row[0], 'the browser clock did not get into the column');
-  assert.equal(row[10], '2026-11-17 05:59:00 CST', 'the SMS agreement time is the visitor\'s browser clock');
+  assert.equal(row[10], '2026-11-17 05:59:00', 'the SMS agreement time is the visitor\'s browser clock');
+});
+
+test('no time cell ends with CST or CDT', () => {
+  const row = toRow(
+    { lp: 'silver', firstName: 'A', lastName: 'B', zip: '75201', phone: '2145550123', email: '', message: '', smsConsent: true, smsConsentAt: '2026-07-04T18:30:00.000Z', smsConsentText: 'x', submittedAt: '2026-07-04T18:30:00.000Z', utm: {}, honeypot: '', elapsedMs: 5000 },
+    new Date('2026-07-04T18:30:00Z'),
+    true,
+  );
+  for (const index of [0, 10, 12]) assert.equal(row[index], '2026-07-04 13:30:00');
+  assert.equal(row.some((cell) => /\b(CST|CDT)\b/.test(cell)), false);
 });
 
 test('the three time columns say Dallas time, and none says UTC any more', () => {
