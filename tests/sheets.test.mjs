@@ -60,14 +60,14 @@ test('a row has one cell per column, all text, and a message that starts with "=
   const row = toRow(request(), now(), true);
   assert.equal(row.length, SHEET_COLUMNS.length);
   assert(row.every((cell) => typeof cell === 'string'));
-  assert.equal(row[0], '2026-11-17 06:00:00 CST'); // 12:00 UTC is 6 a.m. in Dallas in November
+  assert.equal(row[0], '2026-11-17 06:00:00'); // 12:00 UTC is 6 a.m. in Dallas in November
   assert.equal(row[1], 'silver');
   assert.equal(row[5], 'yes');
   assert.equal(row[6], '2145550123');
   assert.equal(row[8], '=HYPERLINK("http://evil.example","click")');
   assert.equal(row[9], 'yes');
-  assert.equal(row[10], '2026-11-17 05:59:00 CST'); // SMS agreed at
-  assert.equal(row[12], '2026-11-17 05:59:30 CST'); // submitted at
+  assert.equal(row[10], '2026-11-17 05:59:00'); // SMS agreed at
+  assert.equal(row[12], '2026-11-17 05:59:30'); // submitted at
   assert.equal(row[13], 'google'); // utm_source
   assert.deepEqual(SHEET_COLUMNS.slice(-UTM_KEYS.length), UTM_KEYS);
   assert.equal(toRow(request({ smsConsent: false, smsConsentAt: null, smsConsentText: null }), now(), null)[9], 'no');
@@ -147,7 +147,7 @@ test('an inquiry becomes a row in the sheet, with the service-area answer, and i
   assert.equal(appended(w).length, 1);
   const [row] = JSON.parse(appended(w)[0].options.body).values;
   assert.equal(row.length, SHEET_COLUMNS.length);
-  assert.equal(row[0], '2026-11-17 06:00:00 CST', 'the time that reaches Google is Dallas time');
+  assert.equal(row[0], '2026-11-17 06:00:00', 'the time that reaches Google is Dallas time');
   assert.equal(row[1], 'silver');
   assert.equal(row[2], 'Maria');
   assert.equal(row[5], 'yes'); // 75201 is in the service area
@@ -201,23 +201,23 @@ test('the browser falls back to Netlify Forms only when the function could not d
 
 // ---------- Dallas time ----------
 
-test('Dallas time: winter is CST (UTC-6), summer is CDT (UTC-5)', () => {
-  assert.equal(toDallasTime('2026-01-15T18:30:00Z'), '2026-01-15 12:30:00 CST');
-  assert.equal(toDallasTime('2026-07-04T18:30:00Z'), '2026-07-04 13:30:00 CDT');
-  assert.equal(toDallasTime(new Date('2026-07-04T18:30:00Z')), '2026-07-04 13:30:00 CDT');
+test('Dallas time: the wall clock follows CST (UTC-6) in winter and CDT (UTC-5) in summer, and no zone name is written', () => {
+  assert.equal(toDallasTime('2026-01-15T18:30:00Z'), '2026-01-15 12:30:00');
+  assert.equal(toDallasTime('2026-07-04T18:30:00Z'), '2026-07-04 13:30:00');
+  assert.equal(toDallasTime(new Date('2026-07-04T18:30:00Z')), '2026-07-04 13:30:00');
 });
 
 test('Dallas time: the date is the Dallas date, and midnight is 00, not 24', () => {
-  assert.equal(toDallasTime('2026-11-17T06:00:00Z'), '2026-11-17 00:00:00 CST');
-  assert.equal(toDallasTime('2026-11-17T05:59:59Z'), '2026-11-16 23:59:59 CST', 'still the 16th in Dallas');
-  assert.equal(toDallasTime('2026-07-01T04:59:59Z'), '2026-06-30 23:59:59 CDT');
+  assert.equal(toDallasTime('2026-11-17T06:00:00Z'), '2026-11-17 00:00:00');
+  assert.equal(toDallasTime('2026-11-17T05:59:59Z'), '2026-11-16 23:59:59', 'still the 16th in Dallas');
+  assert.equal(toDallasTime('2026-07-01T04:59:59Z'), '2026-06-30 23:59:59');
 });
 
-test('Dallas time: the clock changes (March 8 and November 1, 2026), and CST/CDT tells the two 1:30 a.m. apart', () => {
-  assert.equal(toDallasTime('2026-03-08T07:59:59Z'), '2026-03-08 01:59:59 CST');
-  assert.equal(toDallasTime('2026-03-08T08:00:00Z'), '2026-03-08 03:00:00 CDT', '2 a.m. does not exist: the clock jumps to 3');
-  assert.equal(toDallasTime('2026-11-01T06:30:00Z'), '2026-11-01 01:30:00 CDT');
-  assert.equal(toDallasTime('2026-11-01T07:30:00Z'), '2026-11-01 01:30:00 CST', 'the same wall-clock time, an hour later');
+test('Dallas time: the clock changes (March 8 and November 1, 2026); the repeated 1:30 a.m. reads the same twice (no CST/CDT)', () => {
+  assert.equal(toDallasTime('2026-03-08T07:59:59Z'), '2026-03-08 01:59:59');
+  assert.equal(toDallasTime('2026-03-08T08:00:00Z'), '2026-03-08 03:00:00', '2 a.m. does not exist: the clock jumps to 3');
+  assert.equal(toDallasTime('2026-11-01T06:30:00Z'), '2026-11-01 01:30:00');
+  assert.equal(toDallasTime('2026-11-01T07:30:00Z'), '2026-11-01 01:30:00', 'the same wall-clock text, an hour later: the known limit of writing no CST/CDT');
 });
 
 test('Dallas time: an empty value stays empty, and text that is not a date is kept (cleaned), not lost', () => {
@@ -232,9 +232,19 @@ test('through the function, "Submitted at" is the server time (the same as "Rece
   const w = world();
   await handleContact(post(request({ submittedAt: '1999-01-01T00:00:00.000Z' })), withTestUrls, { fetch: w.fetch, now });
   const [row] = JSON.parse(appended(w)[0].options.body).values;
-  assert.equal(row[0], '2026-11-17 06:00:00 CST');
+  assert.equal(row[0], '2026-11-17 06:00:00');
   assert.equal(row[12], row[0], 'the browser clock did not get into the column');
-  assert.equal(row[10], '2026-11-17 05:59:00 CST', 'the SMS agreement time is the visitor\'s browser clock');
+  assert.equal(row[10], '2026-11-17 05:59:00', 'the SMS agreement time is the visitor\'s browser clock');
+});
+
+test('no time cell ends with CST or CDT', () => {
+  const row = toRow(
+    { lp: 'silver', firstName: 'A', lastName: 'B', zip: '75201', phone: '2145550123', email: '', message: '', smsConsent: true, smsConsentAt: '2026-07-04T18:30:00.000Z', smsConsentText: 'x', submittedAt: '2026-07-04T18:30:00.000Z', utm: {}, honeypot: '', elapsedMs: 5000 },
+    new Date('2026-07-04T18:30:00Z'),
+    true,
+  );
+  for (const index of [0, 10, 12]) assert.equal(row[index], '2026-07-04 13:30:00');
+  assert.equal(row.some((cell) => /\b(CST|CDT)\b/.test(cell)), false);
 });
 
 test('the three time columns say Dallas time, and none says UTC any more', () => {

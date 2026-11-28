@@ -71,8 +71,9 @@
 Received at (Dallas time)	Landing page	First name	Last name	ZIP code	In service area	Phone	Email	Message	Text messages (SMS)	SMS agreed at (Dallas time)	SMS wording shown	Submitted at (Dallas time)	utm_source	utm_medium	utm_campaign	utm_term	utm_content
 ```
 
-**日時の列（3つ）は、ダラス時間（米国中部時間）です。** `2026-11-17 06:00:00 CST` のように、末尾の **CST（冬時間）または CDT（夏時間）** で、どちらの時刻かを示します。対象の列は、「Received at」（関数が受け取った時刻）、「SMS agreed at」（SMS に同意した時刻。訪問者のブラウザの時計）、「Submitted at」（送信の時刻）です。
+**日時の列（3つ）は、ダラス時間（米国中部時間）です。** `2026-11-17 06:00:00` のように、ダラスの壁の時計の時刻だけを書きます（末尾に CST や CDT は付けません。冬は UTC-6、夏は UTC-5 で自動に切り替わります）。夏時間が終わる夜（11月の第1日曜）は、午前1時台が2回あり、その1時間だけは、どちらか見分けられません。対象の列は、「Received at」（関数が受け取った時刻）、「SMS agreed at」（SMS に同意した時刻。訪問者のブラウザの時計）、「Submitted at」（送信の時刻）です。
 - **「Submitted at」は、サーバーが付ける時刻で、「Received at」と同じ値です**（訪問者のブラウザの時計は使いません）。以前の見出しの「visitor clock」は、実態と合っていなかったため、外しました。
+- **2026-11-17 から、この `CST` を外すまでの行は、末尾に `CST` または `CDT` が付いています**（同じ時刻の意味で、表示だけ違います。必要なら、手で消してください）。
 - **2026-11-17 より前の行は、UTC のままです**（`2026-11-17T12:00:00.000Z` のように、末尾が `Z`）。形式が違うので、見分けられます。必要なら、手で直してください。
 - シートの 1 行目の見出しは、**手で書き換える必要があります**（コードは、見出しの行には触りません）。上の見出しの行を、そのまま貼り付けてください。
 - Netlify Forms に残る記録（予備）と、通知メールの時刻は、UTC のままです。

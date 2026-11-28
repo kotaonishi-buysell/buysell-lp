@@ -58,7 +58,7 @@ export const sheetsConfigured = (env: SheetsEnv): boolean =>
 /** Strips control characters (other than newline) so a cell cannot carry anything odd. */
 const clean = (value: string): string => value.replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, ' ');
 
-/** Dallas is on U.S. Central Time: CST in winter, CDT in summer (the database name of that zone is America/Chicago). */
+/** Dallas is on U.S. Central Time: CST in winter, CDT in summer (the database name of that zone is America/Chicago). The sheet shows the wall-clock time only, without CST/CDT. */
 export const DALLAS_TIME_ZONE = 'America/Chicago';
 
 let dallasClock: Intl.DateTimeFormat | null = null;
@@ -74,12 +74,11 @@ const clock = (): Intl.DateTimeFormat =>
     minute: '2-digit',
     second: '2-digit',
     hourCycle: 'h23', // midnight is 00, not 24
-    timeZoneName: 'short', // CST or CDT
   }));
 
 /**
- * A moment as Dallas time, written as text: "2026-11-17 06:00:00 CST". The CST/CDT at the end says which
- * offset applies, which also tells apart the two 1:30 a.m. of the night the clocks go back. An empty value stays
+ * A moment as Dallas time (the wall clock there), written as text: "2026-11-17 06:00:00". There is no CST/CDT at the end,
+ * so on the night the clocks go back (the first Sunday of November) the two 1:30 a.m. read the same. An empty value stays
  * empty; text that is not a date is kept as it came (cleaned), so nothing a visitor's browser sent is lost.
  * If the runtime cannot convert time zones, the row still gets written, with the time in UTC ("...Z").
  */
@@ -89,7 +88,7 @@ export function toDallasTime(value: Date | string | null | undefined): string {
   if (Number.isNaN(date.getTime())) return typeof value === 'string' ? clean(value) : '';
   try {
     const part = Object.fromEntries(clock().formatToParts(date).map((p) => [p.type, p.value]));
-    return `${part.year}-${part.month}-${part.day} ${part.hour}:${part.minute}:${part.second} ${part.timeZoneName}`;
+    return `${part.year}-${part.month}-${part.day} ${part.hour}:${part.minute}:${part.second}`;
   } catch {
     return date.toISOString();
   }
