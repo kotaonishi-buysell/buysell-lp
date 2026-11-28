@@ -3,6 +3,7 @@
 `/gold-v2` は、Figma で作られた Gold LP のデザイン（ファイル「バイセルUS_GOLD_LP」、フレーム `SP_W390_A`、幅390px）を、`/gold` とは別に新しく作ったLPです。**`/gold` には一切手を入れていません。** 他のLPのデザインシステムは使いません。**見た目の正本は Figma と `src/styles/gold-v2.css` です。**
 
 - Figma：ファイルキー `D9ezRBg2LGvlPx8KS3D7xY`、フレーム `29:412`（`SP_W390_A`）
+- **検索には出しません**（2026-11-27 に、`/gold` を主のGold LPと決めた）。`gold-v2.ts` の `meta.noindex: true` で、`<meta name="robots" content="noindex, nofollow">` を出し、canonical は付けません（`Document.astro`）。URL を知っている人（広告やテストの宛先）は、これまでどおり開けます。`robots.txt` で塞がないこと（クローラーが noindex を読めなくなるため。`tests/gold-v2.test.mjs` が確認）。検索に戻すときは、`noindex` の行を消すだけです。
 - **公開ページです**（`src/pages/gold-v2.astro`）。`/gold` とは別のページで、`/gold` は置き換えも変更もしていません。写真は `/gold` と同じ画像です（下の「写真」）。
 
 ## スマホ幅だけ
